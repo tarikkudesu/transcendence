@@ -4,7 +4,7 @@
 
 - The frontend should be developed using `Typescript` as base code
 - Your website must be a SPA, The user should be able to use the Back and Forward buttons of the browser.
-- Your website must be compatible with the **latest stable up-to-date version** of `*Mozilla Firefox`.*
+- Your website must be compatible with the **latest stable up-to-date version** of `Mozilla Firefox`.
 - The user should encounter no unhandled errors or warnings when browsing the website.
 - You must use Docker to run your website. Everything must be launched with a single command line to run an autonomous container.
 - Any password stored in your database must be **hashed**.
