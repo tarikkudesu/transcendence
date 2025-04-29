@@ -202,6 +202,19 @@ export class Pong {
 		}
 	}
 
+	drawSeperator() {
+		if (this.ctx === null || this.canvas === null) return;
+		this.ctx.beginPath();
+		this.ctx.arc(this.canvas.clientWidth / 2, 10, 5, Math.PI, 2 * Math.PI);
+		this.ctx.arc(this.canvas.clientWidth / 2, this.canvas.clientHeight - 10, 5, 2 * Math.PI, Math.PI);
+		this.ctx.closePath();
+		this.ctx.moveTo(this.canvas.clientWidth / 2, 10);
+		this.ctx.lineTo(this.canvas.clientWidth / 2, this.canvas.clientHeight - 10);
+		this.ctx.strokeStyle = 'black';
+		this.ctx.stroke();
+		this.ctx.fillStyle = 'black';
+		this.ctx.fill();
+	}
 	// ! Main Loooooooooop
 	mainLoop(frames: number) {
 		if (this.ctx === null || this.canvas === null) return;
@@ -209,8 +222,10 @@ export class Pong {
 		this.drawWall();
 		this.drawBall();
 		this.drawPaddles();
-		this.ctx.fillStyle = 'black';
-		this.ctx.fillRect(this.canvas.clientWidth / 2 - 5, 10, 10, this.canvas.clientHeight - 20);
+		this.drawSeperator();
+		// this.ctx.fillStyle = 'black';
+		// this.ctx.fillRect(this.canvas.clientWidth / 2 - 5, 10, 10, this.canvas.clientHeight - 20);
+
 		if (this.gaming === true) requestAnimationFrame(this.mainLoop);
 	}
 }
