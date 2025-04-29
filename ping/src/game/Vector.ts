@@ -48,5 +48,36 @@ class Vector {
 		return v1.x * v2.y - v1.y * v2.x;
 	}
 }
+export function drawVector(
+	ctx: CanvasRenderingContext2D,
+	startX: number,
+	startY: number,
+	endX: number,
+	endY: number,
+	color: string = 'red',
+	lineWidth: number = 2,
+	arrowSize: number = 10
+): void {
+	ctx.save();
 
+	ctx.strokeStyle = color;
+	ctx.fillStyle = color;
+	ctx.lineWidth = lineWidth;
+
+	const angle = Math.atan2(endY - startY, endX - startX);
+
+	ctx.beginPath();
+	ctx.moveTo(startX, startY);
+	ctx.lineTo(endX, endY);
+	ctx.stroke();
+
+	ctx.beginPath();
+	ctx.moveTo(endX, endY);
+	ctx.lineTo(endX - arrowSize * Math.cos(angle - Math.PI / 6), endY - arrowSize * Math.sin(angle - Math.PI / 6));
+	ctx.lineTo(endX - arrowSize * Math.cos(angle + Math.PI / 6), endY - arrowSize * Math.sin(angle + Math.PI / 6));
+	ctx.closePath();
+	ctx.fill();
+
+	ctx.restore();
+}
 export default Vector;

@@ -18,7 +18,7 @@ class Paddle {
 	vel: Vector = new Vector(0, 0);
 	acc: Vector = new Vector(0, 0);
 	constrains: Vector = new Vector(0, 0);
-	acceleration: number = 1;
+	acceleration: number = 1.8;
 	constructor({ constrains, radius, start, end }: Props) {
 		this.constrains = constrains;
 		this.radius = radius;
@@ -38,8 +38,8 @@ class Paddle {
 		ctx.lineTo(this.end.x, this.end.y);
 		ctx.strokeStyle = 'black';
 		ctx.stroke();
-		// ctx.fillStyle = "lightgreen";
-		// ctx.fill();
+		ctx.fillStyle = 'black';
+		ctx.fill();
 	}
 
 	move(Up: boolean, Down: boolean) {

@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { Pong } from './game/Pong';
-import Button from './Components/button';
+
+import { Text, Flex, Card } from '@radix-ui/themes';
 
 function App() {
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -14,11 +15,12 @@ function App() {
 	}, []);
 
 	return (
-		<div className="text-gray-400 text-center my-4">
-			PING PONG
+		<div className="h-screen py-12">
+			<Text as="div" align="center" weight="bold" size="8">
+				PING PONG
+			</Text>
 			<canvas
 				style={{
-					border: '1px solid #363a3f67',
 					borderRadius: 12,
 					display: 'block',
 					margin: '40px auto',
@@ -29,6 +31,18 @@ function App() {
 				height="600"
 				tabIndex={0}
 			></canvas>
+			<div className="mx-auto" style={{ maxWidth: 800 }}>
+				<Flex direction="column" justify="between" gap="3">
+					<Flex justify="between" gap="3">
+						<Card size="1">S</Card>
+						<Card size="1">Arraw Down</Card>
+					</Flex>
+					<Flex justify="between" gap="3">
+						<Card size="1">W</Card>
+						<Card size="1">Arraw Up</Card>
+					</Flex>
+				</Flex>
+			</div>
 		</div>
 	);
 }
