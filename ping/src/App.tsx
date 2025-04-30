@@ -15,7 +15,7 @@ function App() {
 	}, []);
 
 	return (
-		<div className="h-screen py-12">
+		<div className="h-screen py-12 overflow-hidden">
 			<Text as="div" align="center" weight="bold" size="8">
 				PING PONG
 			</Text>

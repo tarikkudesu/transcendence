@@ -54,7 +54,7 @@ export class Pong {
 			end: new Vector(width - this.paddleDistance, height / 2 + this.paddleHeight),
 			radius: this.paddleRadius,
 			constrains: new Vector(
-				this.paddleHeight + this.paddleRadius + this.ballRadius * 2,
+				this.paddleHeight + this.paddleRadius + this.ballRadius,
 				height - this.paddleHeight - this.paddleRadius - this.ballRadius
 			),
 		});
@@ -63,7 +63,7 @@ export class Pong {
 			end: new Vector(this.paddleDistance, height / 2 + this.paddleHeight),
 			radius: this.paddleRadius,
 			constrains: new Vector(
-				this.paddleHeight + this.paddleRadius + this.ballRadius * 2,
+				this.paddleHeight + this.paddleRadius + this.ballRadius,
 				height - this.paddleHeight - this.paddleRadius - this.ballRadius
 			),
 		});
@@ -73,7 +73,7 @@ export class Pong {
 		this.ball = new Ball({
 			pos: new Vector(width / 2, height / 2),
 			radius: this.ballRadius,
-			velocity: new Vector(1 * Math.cos(angle / 100), 1 * Math.sin(angle / 100)),
+			velocity: new Vector(1 * Math.cos(angle / 100), 1 * Math.sin(angle / 100)).mult(0.7),
 		});
 
 		// ! Add Event Listeners
@@ -216,17 +216,14 @@ export class Pong {
 		this.ctx.fill();
 	}
 	// ! Main Loooooooooop
-	mainLoop(frames: number) {
+	mainLoop() {
 		if (this.ctx === null || this.canvas === null) return;
 		this.ctx.clearRect(0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
 		this.drawWall();
 		this.drawBall();
 		this.drawPaddles();
 		this.drawSeperator();
-		// this.ctx.fillStyle = 'black';
-		// this.ctx.fillRect(this.canvas.clientWidth / 2 - 5, 10, 10, this.canvas.clientHeight - 20);
-
-		if (this.gaming === true) requestAnimationFrame(this.mainLoop);
+		requestAnimationFrame(this.mainLoop);
 	}
 }
 
