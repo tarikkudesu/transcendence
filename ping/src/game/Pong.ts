@@ -96,7 +96,6 @@ export class Pong {
 
 	drawBall(): void {
 		if (this.ctx === null || this.canvas === null) return;
-		this.ball.draw(this.ctx);
 		if (this.collision_ball_paddle(this.ball, this.rightPaddle)) {
 			this.penetration_resolution_ball_paddle(this.ball, this.rightPaddle);
 			this.collision_response_ball_paddle(this.ball, this.rightPaddle);
@@ -109,15 +108,15 @@ export class Pong {
 			this.penetration_resolution_ball_wall(this.ball, this.TopWall);
 			this.collision_response_ball_wall(this.ball, this.TopWall);
 		}
+		if (this.collision_detection_ball_wall(this.ball, this.BottomWall)) {
+			this.penetration_resolution_ball_wall(this.ball, this.BottomWall);
+			this.collision_response_ball_wall(this.ball, this.BottomWall);
+		}
 		if (this.collision_detection_ball_wall(this.ball, this.RightWall)) {
 			location.reload();
 			this.gaming = false;
 			// this.penetration_resolution_ball_wall(this.ball, this.RightWall);
 			// this.collision_response_ball_wall(this.ball, this.RightWall);
-		}
-		if (this.collision_detection_ball_wall(this.ball, this.BottomWall)) {
-			this.penetration_resolution_ball_wall(this.ball, this.BottomWall);
-			this.collision_response_ball_wall(this.ball, this.BottomWall);
 		}
 		if (this.collision_detection_ball_wall(this.ball, this.LeftWall)) {
 			location.reload();
@@ -126,12 +125,12 @@ export class Pong {
 			// this.collision_response_ball_wall(this.ball, this.LeftWall);
 		}
 		this.ball.reposition();
+		this.ball.draw(this.ctx);
 	}
 	drawWall() {
 		if (this.ctx === null || this.canvas === null) return;
 		this.TopWall.draw(this.ctx);
 		this.BottomWall.draw(this.ctx);
-		this.ball.draw(this.ctx);
 	}
 	drawPaddles() {
 		if (this.ctx === null || this.canvas === null) return;
