@@ -4,7 +4,8 @@ import _ from 'lodash';
 
 interface MessageProps {
 	event: string;
-	object: Object;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	object: any;
 }
 
 export class Message {

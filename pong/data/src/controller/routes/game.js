@@ -1,28 +1,52 @@
-import { WS } from '../../shared/ws-server.js';
+import { WS, Message, Connect } from '../../shared/ws-server.js';
 
 class newPlayer {
+	#sent = new Map();
+	#received = new Map();
 	constructor(username, socket) {
 		this.username = username;
 		this.socket = socket;
+		this.socket.username = username;
+	}
+	addInvite(username) {
+		if (!this.#invitates.get(username)) this.#invitates.set()
+	}
+	clearInvites() {
+		this.#invitates.clear();
 	}
 }
 
 class pdb {
 	static #db = new Map();
 
-	newPlayer(player) {
+	static connect(player) {
 		pdb.#db.set(player.username, player);
 	}
-	getUser(username) {
+	static disconnect(username) {
+		pdb.#db.delete(username);
+	}
+	static getUser(username) {
 		return pdb.#db.get(username);
 	}
-	send(username, data) {
+	getUsers() {
+		return pdb.#db.values();
+	}
+	static send(username, data) {
 		pdb.#db.get(username)?.socket.send(data);
 	}
-	broadcast(data) {
+	static broadcast(data) {
 		pdb.#db.values().forEach((p) => {
 			p.socket.send(data);
 		});
+	}
+	// static inviteUser() {
+	// 	pdb.#db.get(username)?.
+	// }
+
+	// ! Game Loop
+	static gameLoop() {}
+	static main() {
+		setInterval(pdb.gameLoop, 1000 / 60);
 	}
 }
 
@@ -33,9 +57,10 @@ function useParse(data, socket) {
 		// * connect, invite, play, hook
 		if (json.message == 'connect') {
 			const obj = WS.Json({ message: json.data, target: Connect.instance });
-			pdb.newPlayer(new player(obj.username, socket));
-		} else if (json.message == 'invite') {
-		} else if (json.message == 'hook') {
+			pdb.connect(new newPlayer(obj.username, socket));
+		} else if (json.message === 'invite') {
+		} else if (json.message === 'play') {
+		} else if (json.message === 'hook') {
 		} else if (json.message === 'error') {
 			throw new Error('Invalid message');
 		}
@@ -46,11 +71,14 @@ function useParse(data, socket) {
 
 export default async (fastify) => {
 	fastify.get('/', { websocket: true }, (connection, req) => {
-		console.log('Connected');
-		connection.socket.on('message', (message) => {
-			console.log(message.toString());
-			// useParse(message.toString(), socket.socket);
+		connection.on('message', (message) => {
+			useParse(message.toString(), connection);
 		});
-		connection.socket.on('close', (code, reason) => {});
+		connection.on('error', (err) => {
+			pdb.disconnect(connection.username);
+		});
+		connection.on('close', (code, reason) => {
+			pdb.disconnect(connection.username);
+		});
 	});
 };

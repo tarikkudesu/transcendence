@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
+import { WS } from '../protocole/ws-client';
 interface useWebsocketProps {
 	url: string;
-	openCallBack?: () => void;
-	closeCallBack?: () => void;
+	username: string;
 }
-export function useWebsocket({ url, openCallBack, closeCallBack }: useWebsocketProps) {
+export function useWebsocket({ url, username }: useWebsocketProps) {
 	const socketRef = useRef<WebSocket | null>(null);
 	const [data, setData] = useState<string>('');
 	const [error, setError] = useState<boolean>(false);
@@ -16,19 +16,17 @@ export function useWebsocket({ url, openCallBack, closeCallBack }: useWebsocketP
 	}
 	function onopen() {
 		setOpen(true);
-		if (openCallBack) openCallBack();
+		send(WS.ConnectMessage(username));
 	}
 	function onclose() {
 		setOpen(false);
 		setClose(true);
-		if (closeCallBack) closeCallBack();
 	}
 	function onerror() {
 		setError(true);
 	}
 	function send(message: string) {
-		console.log(socketRef.current);
-		// if (socketRef.current?.readyState) socketRef.current?.send(message);
+		if (socketRef.current?.OPEN) socketRef.current?.send(message);
 	}
 	useEffect(function () {
 		try {
@@ -38,7 +36,9 @@ export function useWebsocket({ url, openCallBack, closeCallBack }: useWebsocketP
 			socketRef.current.onerror = onerror;
 			socketRef.current.onclose = onclose;
 			socketRef.current.onopen = onopen;
-		} catch (err) {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		} catch (err: any) {
+			console.log(err.message);
 			setError(true);
 		}
 	}, []);

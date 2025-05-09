@@ -16,9 +16,9 @@ import { faker } from '@faker-js/faker';
 import { useState } from 'react';
 
 function App() {
-	const { data, send, error, close, open } = useWebsocket({ url: 'ws://localhost:3000/api/game/' });
-	const { game, chat, pool, invitations, tournement, playing } = useParser(data);
 	const [username, setUsername] = useState<string>(faker.internet.username());
+	const { data, send, error, close, open } = useWebsocket({ url: 'ws://localhost:3000/api/game/', username });
+	const { game, chat, pool, invitations, tournement, playing } = useParser(data);
 	const { notify } = useNotification();
 
 	if (error) notify({ message: 'Could not connect', error });
@@ -27,7 +27,7 @@ function App() {
 	return (
 		<>
 			<Button
-				disabled={open}
+				disabled={!open}
 				onClick={() => {
 					const m: string = WS.ConnectMessage(username);
 					send(m);
