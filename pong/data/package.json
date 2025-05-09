@@ -1,0 +1,33 @@
+{
+	"name": "pong",
+	"type": "module",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"dev": "nodemon index"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"bcrypt": "^5.1.1",
+		"better-sqlite3": "^11.9.1",
+		"fastify": "^5.2.2",
+		"fastify-cors": "^6.0.3",
+		"fastify-plugin": "^5.0.1",
+		"jsonwebtoken": "^9.0.2",
+		"lodash": "^4.17.21",
+		"nodemailer": "^6.10.1",
+		"sqlite": "^5.1.1",
+		"sqlite3": "^5.1.7"
+	},
+	"devDependencies": {
+		"@types/node": "^22.14.1",
+		"dotenv": "^16.5.0",
+		"nodemon": "^3.1.10",
+		"pino-pretty": "^13.0.0",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.8.3"
+	}
+}

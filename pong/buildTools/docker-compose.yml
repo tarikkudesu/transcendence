@@ -1,0 +1,35 @@
+services:
+  pong:
+    build: .
+    container_name: pong
+    image: server_app:tar
+    ports:
+      - target: 3000
+        published: 3000
+    volumes:
+      - "${PWD}/data:/home/data"
+    networks:
+      - net
+    env_file:
+      - .env
+    restart:
+      on-failure
+
+  redis:
+    build: ./tools/
+    container_name: redis
+    image: redis:tar
+    ports:
+      - target: 7419
+        published: 7419
+    networks:
+      - net
+    env_file:
+      - .env
+    restart:
+      on-failure
+
+networks:
+  net:
+    name: net
+    driver: bridge
