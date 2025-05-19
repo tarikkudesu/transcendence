@@ -1,7 +1,6 @@
-import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { createContext, useEffect, useRef, useState } from 'react';
 
-import { WS } from './ws-client';
-import { faker } from '@faker-js/faker';
+import { WS, WSC } from './ws-client';
 
 type SocketConnectionControls = {
 	data: string;
@@ -14,7 +13,6 @@ const SocketConnectionControlsInstance = {
 };
 
 export const SocketConnectionContext = createContext<SocketConnectionControls>(SocketConnectionControlsInstance);
-export const userContext = createContext<string>(faker.internet.username());
 
 interface useWebsocketProps {
 	url: string;
@@ -23,7 +21,6 @@ interface useWebsocketProps {
 }
 
 export function useTeaWebsocket({ url, openCallBack, closeCallBack }: useWebsocketProps) {
-	const username = useContext(userContext);
 	const socketRef = useRef<WebSocket | null>(null);
 	const [data, setData] = useState<string>('');
 	const [error, setError] = useState<boolean>(false);
@@ -31,16 +28,24 @@ export function useTeaWebsocket({ url, openCallBack, closeCallBack }: useWebsock
 	const [close, setClose] = useState<boolean>(false);
 
 	function onmessage(e: MessageEvent) {
-		console.log('WebSocket message received:', e.data);
+		console.log('WebSocket message received: ', e.data);
 		setData(e.data);
 	}
 	function onopen() {
 		console.log('WebSocket connection opened');
 		setOpen(true);
-		send(WS.ConnectMessage(username, 'img.img', 'MAIN', ''));
+		send(
+			WS.ConnectMessage(
+				WSC.username,
+				'https://images.unsplash.com/photo-1607346256330-dee7af15f7c5?&w=64&h=64&dpr=2&q=70&crop=focalpoint&fp-x=0.67&fp-y=0.5&fp-z=1.4&fit=crop',
+				'MAIN',
+				''
+			)
+		);
 		if (openCallBack) openCallBack();
 	}
 	function onclose() {
+		send(WS.ConnectMessage(WSC.username, 'img.img', 'MAIN', ''));
 		console.log('WebSocket connection closed');
 		setOpen(false);
 		setClose(true);
@@ -48,6 +53,8 @@ export function useTeaWebsocket({ url, openCallBack, closeCallBack }: useWebsock
 	}
 	function onerror() {
 		console.error('WebSocket error');
+		setClose(true);
+		setOpen(false);
 		setError(true);
 	}
 	function send(message: string) {

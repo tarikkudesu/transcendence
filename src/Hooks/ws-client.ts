@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker';
 import _ from 'lodash';
 
 // ! shared -----------------------------------------------------------------------------
@@ -21,19 +22,29 @@ export class Message {
 export class Pooler {
 	public username: string;
 	public img: string;
-	constructor(username: string, img: string) {
+	public invite_status: string;
+	constructor(username: string, img: string, invite_status: string) {
+		this.invite_status = invite_status;
 		this.username = username;
 		this.img = img;
 	}
-	static instance = new Pooler('', '');
+	static instance = new Pooler('', '', '');
 }
 
 export class Invitation {
-	public username: string = '';
-	public img: string = '';
-	public invite_status: string = '';
-	constructor() {}
-	static instance = new Invitation();
+	public sender: string;
+	public recipient: string;
+	public img: string;
+	public invite_status: 'pending' | 'accepted' | 'declined';
+	public created_at: number;
+	constructor(sender: string, recipient: string, img: string) {
+		this.sender = sender;
+		this.recipient = recipient;
+		this.invite_status = 'pending';
+		this.created_at = Date.now();
+		this.img = img;
+	}
+	static instance = new Invitation('', '', '');
 }
 
 export class WSError {
@@ -219,6 +230,7 @@ interface JsonProps {
 
 export class WSC {
 	private static instance: WSC | null;
+	public static username: string = faker.internet.username();
 	constructor() {
 		if (WSC.instance) return WSC.instance;
 		WSC.instance = this;
