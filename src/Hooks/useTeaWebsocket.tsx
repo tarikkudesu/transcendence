@@ -34,14 +34,7 @@ export function useTeaWebsocket({ url, openCallBack, closeCallBack }: useWebsock
 	function onopen() {
 		console.log('WebSocket connection opened');
 		setOpen(true);
-		send(
-			WS.ConnectMessage(
-				WSC.username,
-				'https://images.unsplash.com/photo-1607346256330-dee7af15f7c5?&w=64&h=64&dpr=2&q=70&crop=focalpoint&fp-x=0.67&fp-y=0.5&fp-z=1.4&fit=crop',
-				'MAIN',
-				''
-			)
-		);
+		send(WS.ConnectMessage(WSC.username, WSC.img, 'MAIN', ''));
 		if (openCallBack) openCallBack();
 	}
 	function onclose() {

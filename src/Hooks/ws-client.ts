@@ -1,6 +1,9 @@
 import { faker } from '@faker-js/faker';
 import _ from 'lodash';
 
+import { AvatarGenerator } from 'random-avatar-generator'; // ! ------------------------------------ remove
+const generator = new AvatarGenerator(); // ! ------------------------------------------------------ remove
+
 // ! shared -----------------------------------------------------------------------------
 
 interface MessageProps {
@@ -231,6 +234,7 @@ interface JsonProps {
 export class WSC {
 	private static instance: WSC | null;
 	public static username: string = faker.internet.username();
+	public static img: string = generator.generateRandomAvatar(WSC.username);
 	constructor() {
 		if (WSC.instance) return WSC.instance;
 		WSC.instance = this;

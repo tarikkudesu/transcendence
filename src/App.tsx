@@ -36,7 +36,7 @@ function App() {
 	return (
 		<>
 			<SocketConnectionContext.Provider value={{ data, send }}>
-				<Theme appearance="dark" accentColor="ruby" grayColor="mauve" panelBackground="solid" scaling="100%">
+				<Theme appearance="dark" accentColor="orange" grayColor="mauve" panelBackground="solid" scaling="100%">
 					<RouterProvider router={router} />
 				</Theme>
 			</SocketConnectionContext.Provider>
