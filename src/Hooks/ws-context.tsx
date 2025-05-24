@@ -1,26 +1,17 @@
-import { createContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { Hash, Invitations, Message, Play, Pool, WS, WSC, wsContext, type ClientInvitation, type ClientPlayer } from './ws-client';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import { ClientInvitation, ClientPlayer, Hash, Invitations, Message, Pool, WS, WSC } from './ws-client';
-
-type SocketConnectionControls = {
-	data: string;
-	send: (message: string) => void;
-};
-
-const SocketConnectionControlsInstance = {
-	data: '',
-	send: (message: string) => console.log(message),
-};
-
-export const SocketConnectionContext = createContext<SocketConnectionControls>(SocketConnectionControlsInstance);
-
-interface useWebsocketProps {
+interface WSProviderProps {
 	url?: string;
-	openCallBack?: () => void;
-	closeCallBack?: () => void;
+	children: React.ReactNode;
 }
+const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
+	const navigate = useNavigate();
 
-export function useTeaWebsocket({ url, openCallBack, closeCallBack }: useWebsocketProps) {
+	// * Parameters
+	const { game } = useParams();
+
 	// * Connection Managers
 	const socketRef = useRef<WebSocket | null>(null);
 	const [error, setError] = useState<boolean>(false);
@@ -37,20 +28,23 @@ export function useTeaWebsocket({ url, openCallBack, closeCallBack }: useWebsock
 		switch (event) {
 			case 'HASH': {
 				const h: Hash = WS.Json({ message, target: Hash.instance });
-				console.log(h);
 				setHash(h.hash);
 				break;
 			}
 			case 'POOL': {
 				const p: Pool = WS.Json({ message, target: Pool.instance });
-				console.log(p.pool);
 				setPool(p.pool);
+				console.log(p.pool);
 				break;
 			}
 			case 'INVITATIONS': {
 				const i: Invitations = WS.Json({ message, target: Invitations.instance });
-				console.log(i.invitations);
 				setInvitations(i.invitations);
+				break;
+			}
+			case 'PLAY': {
+				const p: Play = WS.Json({ message, target: Play.instance });
+				navigate('/server/' + p.game);
 				break;
 			}
 			default:
@@ -70,22 +64,20 @@ export function useTeaWebsocket({ url, openCallBack, closeCallBack }: useWebsock
 	useEffect(
 		function () {
 			function onmessage(e: MessageEvent) {
-				// console.log('WebSocket message received: ', e.data);
 				setData(e.data);
 				const m: Message = WS.Json({ message: e.data, target: Message.instance });
 				parse(m.message, m.data);
 			}
 			function onopen() {
 				console.log('WebSocket connection opened');
-				send(WS.ConnectMessage('', WSC.username, WSC.img, 'MAIN', ''));
+				if (game) send(WS.ConnectMessage(WSC.username, '', WSC.img, 'GAME', game));
+				else send(WS.ConnectMessage(WSC.username, '', WSC.img, 'MAIN', ''));
 				setOpen(true);
-				if (openCallBack) openCallBack();
 			}
 			function onclose() {
 				console.log('WebSocket connection closed');
 				setOpen(false);
 				setClose(true);
-				if (closeCallBack) closeCallBack();
 			}
 			if (url) {
 				try {
@@ -101,7 +93,9 @@ export function useTeaWebsocket({ url, openCallBack, closeCallBack }: useWebsock
 				}
 			}
 		},
-		[closeCallBack, openCallBack, url]
+		[game, url] // ! MAY POTENTIALY CAUSE PROBLEMS
 	);
-	return { data, send, error, open, close, hash, pool, invitations };
-}
+	return <wsContext.Provider value={{ error, close, open, data, hash, send, pool, invitations }}>{children}</wsContext.Provider>;
+};
+
+export default WSProvider;

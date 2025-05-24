@@ -2,52 +2,30 @@ import { faker } from '@faker-js/faker';
 import _ from 'lodash';
 
 import { AvatarGenerator } from 'random-avatar-generator'; // ! ------------------------------------ remove
+import { createContext } from 'react';
 const generator = new AvatarGenerator(); // ! ------------------------------------------------------ remove
 
 // ! shared -----------------------------------------------------------------------------
 
 interface MessageProps {
-	event: string;
+	username: string;
+	message: string;
+	hash: string;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	object: any;
+	data: any;
 }
-
 export class Message {
-	public message: string;
-	public data: string;
-	constructor({ event, object }: MessageProps) {
-		this.message = event;
-		this.data = JSON.stringify(object);
-	}
-	public static instance = new Message({ event: '', object: {} });
-}
-
-export class Pooler {
 	public username: string;
-	public img: string;
-	public invite_status: string;
-	constructor(username: string, img: string, invite_status: string) {
-		this.invite_status = invite_status;
+	public message: string;
+	public hash: string;
+	public data: string;
+	constructor({ username, hash, message, data }: MessageProps) {
+		this.data = JSON.stringify(data);
 		this.username = username;
-		this.img = img;
+		this.message = message;
+		this.hash = hash;
 	}
-	static instance = new Pooler('', '', '');
-}
-
-export class Invitation {
-	public sender: string;
-	public recipient: string;
-	public img: string;
-	public invite_status: 'pending' | 'accepted' | 'declined';
-	public created_at: number;
-	constructor(sender: string, recipient: string, img: string) {
-		this.sender = sender;
-		this.recipient = recipient;
-		this.invite_status = 'pending';
-		this.created_at = Date.now();
-		this.img = img;
-	}
-	static instance = new Invitation('', '', '');
+	static instance = new Message({ username: '', hash: '', message: '', data: {} });
 }
 
 export class WSError {
@@ -58,15 +36,38 @@ export class WSError {
 	static instance = new WSError('');
 }
 
+export class ClientPlayer {
+	public img: string;
+	public username: string;
+	public invite_status: 'unsent' | 'pending' | 'accepted' | 'declined';
+	constructor(username: string, img: string, invite_status: 'unsent' | 'pending' | 'accepted' | 'declined') {
+		this.invite_status = invite_status;
+		this.username = username;
+		this.img = img;
+	}
+	static instance = new ClientPlayer('', '', 'unsent');
+}
+export class ClientInvitation {
+	public img: string;
+	public sender: string;
+	public invite_status: 'unsent' | 'pending' | 'accepted' | 'declined';
+	constructor(sender: string, img: string, invite_status: 'unsent' | 'pending' | 'accepted' | 'declined') {
+		this.invite_status = invite_status;
+		this.sender = sender;
+		this.img = img;
+	}
+	static instance = new ClientInvitation('', '', 'unsent');
+}
+
 // ! res --------------------------------------------------------------------------------
 
 // * Pool
 export class Connect {
 	// TODO: initial game data can be added here
-	username: string;
 	img: string;
 	page: string;
 	query: string;
+	username: string;
 	constructor(username: string, img: string, page: string, query: string) {
 		this.username = username;
 		this.query = query;
@@ -77,43 +78,11 @@ export class Connect {
 }
 
 export class Invite {
-	sender: string;
 	recipient: string;
-	constructor(sender: string, recipient: string) {
-		this.sender = sender;
+	constructor(recipient: string) {
 		this.recipient = recipient;
 	}
-	public static instance = new Invite('', '');
-}
-
-export class Accept {
-	sender: string;
-	recipient: string;
-	constructor(sender: string, recipient: string) {
-		this.sender = sender;
-		this.recipient = recipient;
-	}
-	public static instance = new Accept('', '');
-}
-
-export class Reject {
-	sender: string;
-	recipient: string;
-	constructor(sender: string, recipient: string) {
-		this.sender = sender;
-		this.recipient = recipient;
-	}
-	public static instance = new Reject('', '');
-}
-
-export class Delete {
-	sender: string;
-	recipient: string;
-	constructor(sender: string, recipient: string) {
-		this.sender = sender;
-		this.recipient = recipient;
-	}
-	public static instance = new Delete('', '');
+	public static instance = new Invite('');
 }
 
 // * Game
@@ -130,6 +99,15 @@ export class Hook {
 // ! req --------------------------------------------------------------------------------
 
 // * Pool
+
+export class Play {
+	public game: string;
+	constructor(game: string) {
+		this.game = game;
+	}
+	static instance = new Play('');
+}
+
 export class Hash {
 	username: string = '';
 	hash: string = '';
@@ -139,19 +117,36 @@ export class Hash {
 }
 
 export class Pool {
-	public pool: Pooler[];
-	constructor(pool: Pooler[]) {
+	public pool: ClientPlayer[];
+	constructor(pool: ClientPlayer[]) {
 		this.pool = pool;
 	}
 	static instance = new Pool([]);
 }
 
 export class Invitations {
-	public invitations: Invitation[];
-	constructor(invitations: Invitation[]) {
+	public invitations: ClientInvitation[];
+	constructor(invitations: ClientInvitation[]) {
 		this.invitations = invitations;
 	}
 	static instance = new Invitations([]);
+}
+
+// * Game
+export class Start {
+	public start: string;
+	constructor() {
+		this.start = 'start';
+	}
+	public static instance = new Start();
+}
+
+export class Stop {
+	public stop: string;
+	constructor() {
+		this.stop = 'stop';
+	}
+	public static instance = new Stop();
 }
 
 export class Frame {
@@ -171,14 +166,6 @@ export class Frame {
 	public static instance = new Frame();
 }
 
-export class Lost {
-	public lost: string;
-	constructor() {
-		this.lost = 'lost';
-	}
-	static instance = new Lost();
-}
-
 export class Score {
 	public player: number;
 	public opponent: number;
@@ -189,38 +176,20 @@ export class Score {
 	static instance = new Score(0, 0);
 }
 
-export class Play {
-	username: string;
-	opponent: string;
-	constructor(username: string, opponent: string) {
-		this.username = username;
-		this.opponent = opponent;
-	}
-	public static instance = new Play('', '');
-}
-
-export class Start {
-	public start: string;
-	constructor() {
-		this.start = 'start';
-	}
-	public static instance = new Start();
-}
-
-export class Stop {
-	public stop: string;
-	constructor() {
-		this.stop = 'stop';
-	}
-	public static instance = new Stop();
-}
-
 export class Won {
 	public won: string;
 	constructor() {
 		this.won = 'won';
 	}
 	static instance = new Won();
+}
+
+export class Lost {
+	public lost: string;
+	constructor() {
+		this.lost = 'lost';
+	}
+	static instance = new Lost();
 }
 
 // ! Protocole ------------------------------------------------------------
@@ -253,29 +222,46 @@ export class WSC {
 	}
 
 	// ? Protocole Message Builders
-	ErrorMessage(error: string) {
-		return JSON.stringify(new Message({ event: 'ERROR', object: new WSError(error) }));
+	ErrorMessage(username: string, hash: string, error: string) {
+		return JSON.stringify(new Message({ username, hash, message: 'ERROR', data: new WSError(error) }));
 	}
 
-	ConnectMessage(username: string, img: string, page: string, query: string): string {
-		return JSON.stringify(new Message({ event: 'CONNECT', object: new Connect(username, img, page, query) }));
+	ConnectMessage(username: string, hash: string, img: string, page: string, query: string): string {
+		return JSON.stringify(new Message({ username, hash, message: 'CONNECT', data: new Connect(username, img, page, query) }));
 	}
-	InviteMessage(sender: string, recipient: string): string {
-		return JSON.stringify(new Message({ event: 'INVITE', object: new Invite(sender, recipient) }));
+	InviteMessage(username: string, hash: string, recipient: string): string {
+		return JSON.stringify(new Message({ username, hash, message: 'INVITE', data: new Invite(recipient) }));
 	}
-	AcceptMessage(sender: string, recipient: string): string {
-		return JSON.stringify(new Message({ event: 'ACCEPT', object: new Accept(sender, recipient) }));
+	AcceptMessage(username: string, hash: string, recipient: string): string {
+		return JSON.stringify(new Message({ username, hash, message: 'ACCEPT', data: new Invite(recipient) }));
 	}
-	RejectMessage(sender: string, recipient: string): string {
-		return JSON.stringify(new Message({ event: 'REJECT', object: new Reject(sender, recipient) }));
+	RejectMessage(username: string, hash: string, recipient: string): string {
+		return JSON.stringify(new Message({ username, hash, message: 'REJECT', data: new Invite(recipient) }));
 	}
-	DeleteMessage(sender: string, recipient: string): string {
-		return JSON.stringify(new Message({ event: 'DELETE', object: new Delete(sender, recipient) }));
+	DeleteMessage(username: string, hash: string, recipient: string): string {
+		return JSON.stringify(new Message({ username, hash, message: 'DELETE', data: new Invite(recipient) }));
 	}
 
-	HookMessage(up: boolean, down: boolean): string {
-		return JSON.stringify(new Message({ event: 'HOOK', object: new Hook(up, down) }));
+	HookMessage(username: string, hash: string, up: boolean, down: boolean): string {
+		return JSON.stringify(new Message({ username, hash, message: 'HOOK', data: new Hook(up, down) }));
 	}
 }
 
 export const WS = new WSC();
+
+class initialState {
+	// * Websocket vars
+	error: boolean = false;
+	close: boolean = false;
+	open: boolean = false;
+	data: string = '';
+
+	// * Incoming data
+	hash: string = '';
+	pool: ClientPlayer[] = [];
+	invitations: ClientInvitation[] = [];
+
+	send: (message: string) => void = () => {};
+}
+
+export const wsContext = createContext(new initialState());

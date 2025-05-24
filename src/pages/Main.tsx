@@ -1,18 +1,19 @@
 import { Cross2Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
-import { Card, Grid, TextField, Text, Box, Avatar, Flex, Button, Inset, IconButton, Badge } from '@radix-ui/themes';
-import { useContext, useEffect, useState } from 'react';
-import { SocketConnectionContext } from '../Hooks/useTeaWebsocket';
-import { Invitation, Invitations, Message, Pool, Pooler, WS, WSC } from '../Hooks/ws-client';
+import { Card, Grid, TextField, Text, Box, Avatar, Flex, Button, Inset, Badge } from '@radix-ui/themes';
+import { useContext, useState } from 'react';
+import { ClientInvitation, ClientPlayer, WS, WSC, wsContext } from '../Hooks/ws-client';
+import { Link } from 'react-router-dom';
 
 interface PlayerCardProps {
-	pooler: Pooler;
+	pooler: ClientPlayer;
 }
 
 const PlayerCard: React.FC<PlayerCardProps> = ({ pooler }) => {
-	const { send } = useContext(SocketConnectionContext);
+	const { send, hash } = useContext(wsContext);
 
 	function inviteAction(): React.ReactNode {
-		if (pooler.invite_status === 'none') return <Button onClick={() => send(WS.InviteMessage(WSC.username, pooler.username))}>Invite</Button>;
+		if (pooler.invite_status === 'unsent')
+			return <Button onClick={() => send(WS.InviteMessage(WSC.username, hash, pooler.username))}>Invite</Button>;
 		else if (pooler.invite_status === 'pending') return <Button loading>Invite</Button>;
 		else if (pooler.invite_status === 'declined') return <Button disabled>Invite</Button>;
 	}
@@ -58,20 +59,32 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ pooler }) => {
 };
 
 interface InvitationCardProps {
-	invite: Invitation;
+	invite: ClientInvitation;
 }
 const InvitationCard: React.FC<InvitationCardProps> = ({ invite }) => {
-	const { send } = useContext(SocketConnectionContext);
+	const { send, hash } = useContext(wsContext);
 
 	return (
 		<Card>
 			<Inset clip="padding-box" side="top" pb="current" className="relative">
 				<Box height="120px"></Box>
 				<Flex direction="column" align="center" className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2">
-					<div style={{ height: 90, width: 90 }} className="border-2 border-orange-500/80 rounded-full flex justify-center items-center">
-						<div style={{ height: 80, width: 80 }} className="border-2 border-orange-500/60 rounded-full flex justify-center items-center">
-							<div style={{ height: 70, width: 70 }} className="border-2 border-orange-500/40 rounded-full flex justify-center items-center">
-								<div style={{ height: 60, width: 60 }} className="border-2 border-orange-500/20 rounded-full flex justify-center items-center">
+					<div
+						style={{ height: 90, width: 90 }}
+						className="border-2 border-orange-500/80 rounded-full flex justify-center items-center"
+					>
+						<div
+							style={{ height: 80, width: 80 }}
+							className="border-2 border-orange-500/60 rounded-full flex justify-center items-center"
+						>
+							<div
+								style={{ height: 70, width: 70 }}
+								className="border-2 border-orange-500/40 rounded-full flex justify-center items-center"
+							>
+								<div
+									style={{ height: 60, width: 60 }}
+									className="border-2 border-orange-500/20 rounded-full flex justify-center items-center"
+								>
 									<Avatar size="4" src={invite.img} radius="full" fallback="T" />
 								</div>
 							</div>
@@ -79,7 +92,10 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ invite }) => {
 					</div>
 				</Flex>
 				{invite.invite_status !== 'pending' ? (
-					<Box className="absolute top-2 right-2 p-1 opacity-50 hover:opacity-100" onClick={() => send(WS.DeleteMessage(invite.sender, invite.recipient))}>
+					<Box
+						className="absolute top-2 right-2 p-1 opacity-50 hover:opacity-100"
+						onClick={() => send(WS.DeleteMessage(WSC.username, hash, invite.sender))}
+					>
 						<Cross2Icon />
 					</Box>
 				) : (
@@ -91,7 +107,12 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ invite }) => {
 			</Text>
 			<Box height="24px" />
 			<Flex justify="center">
-				<Button disabled={invite.invite_status !== 'pending'} size="1" onClick={() => send(WS.AcceptMessage(invite.sender, WSC.username))} style={{ width: '100%' }}>
+				<Button
+					disabled={invite.invite_status !== 'pending'}
+					size="1"
+					onClick={() => send(WS.AcceptMessage(WSC.username, hash, invite.sender))}
+					style={{ width: '100%' }}
+				>
 					Accept
 				</Button>
 			</Flex>
@@ -100,7 +121,7 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ invite }) => {
 				<Button
 					variant="soft"
 					size="1"
-					onClick={() => send(WS.RejectMessage(invite.sender, WSC.username))}
+					onClick={() => send(WS.RejectMessage(WSC.username, hash, invite.sender))}
 					style={{ width: '100%' }}
 					disabled={invite.invite_status !== 'pending'}
 				>
@@ -113,40 +134,17 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ invite }) => {
 
 const Main: React.FC<unknown> = () => {
 	const [query, setQuery] = useState<string>('');
-	const { data } = useContext(SocketConnectionContext);
-	const [pool, setPool] = useState<Pooler[]>([]);
-	const [invitations, setInvitations] = useState<Invitation[]>([]);
-
-	useEffect(
-		function () {
-			try {
-				if (data === '') throw new Error('no data');
-				const message: Message = WS.Json({ message: data, target: Message.instance });
-				switch (message.message) {
-					case 'POOL': {
-						const p: Pool = WS.Json({ message: message.data, target: Pool.instance });
-						setPool(p.pool);
-						break;
-					}
-					case 'INVITATIONS': {
-						const i: Invitations = WS.Json({ message: message.data, target: Invitations.instance });
-						setInvitations(i.invitations);
-						break;
-					}
-					default:
-						break;
-				}
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			} catch (err: any) {
-				return;
-			}
-		},
-		[data]
-	);
+	const { pool, invitations, hash } = useContext(wsContext);
 
 	return (
 		<>
 			<div className="max-w-300 mx-auto px-12">
+				<Text align="center">{hash}</Text>
+				<Flex justify="center" mb="3">
+					<Link to="/server/jhfg-sffw-iuer-ecmn">
+						<Button>Play</Button>
+					</Link>
+				</Flex>
 				<Grid columns={{ initial: '1', md: '2' }} gap="3">
 					<Card>
 						<TextField.Root
@@ -172,10 +170,9 @@ const Main: React.FC<unknown> = () => {
 								<Box height="12px" />
 								<Flex direction="column" gap="2">
 									{pool.map((pooler, index) => {
-										// if (query.length === 0) return;
-										// console.log(query.toLowerCase(), pooler.username.slice(0, query.length).toLowerCase());
-										// if (query.toLowerCase() === pooler.username.slice(0, query.length).toLowerCase())
-										return <PlayerCard pooler={pooler} key={index} />;
+										if (query.length === 0) return;
+										if (query.toLowerCase() === pooler.username.slice(0, query.length).toLowerCase())
+											return <PlayerCard pooler={pooler} key={index} />;
 									})}
 								</Flex>
 							</>
