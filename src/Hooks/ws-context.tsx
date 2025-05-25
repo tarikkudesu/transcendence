@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Hash, Invitations, Message, Play, Pool, WS, WSC, wsContext, type ClientInvitation, type ClientPlayer } from './ws-client';
+import { Frame, Hash, Invitations, Message, Play, Pool, Score, WS, WSC, wsContext, ClientInvitation, ClientPlayer } from './ws-client';
 import { useNavigate, useParams } from 'react-router-dom';
 
 interface WSProviderProps {
@@ -24,33 +24,8 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 	const [pool, setPool] = useState<ClientPlayer[]>([]);
 	const [invitations, setInvitations] = useState<ClientInvitation[]>([]);
 
-	function parse(event: string, message: string) {
-		switch (event) {
-			case 'HASH': {
-				const h: Hash = WS.Json({ message, target: Hash.instance });
-				setHash(h.hash);
-				break;
-			}
-			case 'POOL': {
-				const p: Pool = WS.Json({ message, target: Pool.instance });
-				setPool(p.pool);
-				console.log(p.pool);
-				break;
-			}
-			case 'INVITATIONS': {
-				const i: Invitations = WS.Json({ message, target: Invitations.instance });
-				setInvitations(i.invitations);
-				break;
-			}
-			case 'PLAY': {
-				const p: Play = WS.Json({ message, target: Play.instance });
-				navigate('/server/' + p.game);
-				break;
-			}
-			default:
-				break;
-		}
-	}
+	const [score, setScore] = useState<number[]>([0, 0]);
+	const [frame, setFrame] = useState<Frame>(new Frame());
 
 	function onerror() {
 		console.error('WebSocket error');
@@ -63,13 +38,67 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 	}
 	useEffect(
 		function () {
+			function parse(event: string, message: string) {
+				switch (event) {
+					// ? Pool
+					case 'HASH': {
+						const h: Hash = WS.Json({ message, target: Hash.instance });
+						setHash(h.hash);
+						break;
+					}
+					case 'POOL': {
+						const p: Pool = WS.Json({ message, target: Pool.instance });
+						setPool(p.pool);
+						break;
+					}
+					case 'INVITATIONS': {
+						const i: Invitations = WS.Json({ message, target: Invitations.instance });
+						setInvitations(i.invitations);
+						break;
+					}
+					case 'PLAY': {
+						const p: Play = WS.Json({ message, target: Play.instance });
+						navigate('/server/' + p.game);
+						break;
+					}
+					// ? Game
+					case 'START': {
+						console.log(message);
+						break;
+					}
+					case 'STOP': {
+						console.log(message);
+						break;
+					}
+					case 'FRAME': {
+						const f: Frame = WS.Json({ message, target: Frame.instance });
+						setFrame(f);
+						break;
+					}
+					case 'SCORE': {
+						const s: Score = WS.Json({ message, target: Score.instance });
+						setScore([s.player, s.opponent]);
+						break;
+					}
+					case 'LOST': {
+						console.log(message);
+						break;
+					}
+					case 'WON': {
+						console.log(message);
+						break;
+					}
+					default:
+						break;
+				}
+			}
 			function onmessage(e: MessageEvent) {
 				setData(e.data);
 				const m: Message = WS.Json({ message: e.data, target: Message.instance });
 				parse(m.message, m.data);
 			}
 			function onopen() {
-				console.log('WebSocket connection opened');
+				console.log('WebSocket connection opened', game);
 				if (game) send(WS.ConnectMessage(WSC.username, '', WSC.img, 'GAME', game));
 				else send(WS.ConnectMessage(WSC.username, '', WSC.img, 'MAIN', ''));
 				setOpen(true);
@@ -93,9 +122,13 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 				}
 			}
 		},
-		[game, url] // ! MAY POTENTIALY CAUSE PROBLEMS
+		[game, navigate, url] // ! MAY POTENTIALY CAUSE PROBLEMS
 	);
-	return <wsContext.Provider value={{ error, close, open, data, hash, send, pool, invitations }}>{children}</wsContext.Provider>;
+	return (
+		<wsContext.Provider value={{ error, close, open, data, hash, send, pool, invitations, score, frame }}>
+			{children}
+		</wsContext.Provider>
+	);
 };
 
 export default WSProvider;

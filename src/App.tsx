@@ -11,16 +11,16 @@ import WSProvider from './Hooks/ws-context';
 const router = createBrowserRouter([
 	{
 		path: '/',
-		element: <Home />,
+		element: (
+			<WSProvider url="ws://localhost:3000/api/game/">
+				<Home />
+			</WSProvider>
+		),
 		errorElement: <ErrorPage />,
 		children: [
 			{
 				path: 'main',
-				element: (
-					<WSProvider url="ws://localhost:3000/api/game/">
-						<Main />
-					</WSProvider>
-				),
+				element: <Main />,
 			},
 			{
 				path: 'local',
@@ -28,11 +28,7 @@ const router = createBrowserRouter([
 			},
 			{
 				path: 'server/:game',
-				element: (
-					<WSProvider url="ws://localhost:3000/api/game/">
-						<Server />
-					</WSProvider>
-				),
+				element: <Server />,
 			},
 		],
 	},

@@ -150,20 +150,17 @@ export class Stop {
 }
 
 export class Frame {
-	ballX: number = 0;
-	ballY: number = 0;
-	ballRadius: number = 0;
-	paddleRadius: number = 0;
-	leftPaddleTopX: number = 0;
-	leftPaddleTopY: number = 0;
-	rightPaddleTopX: number = 0;
-	rightPaddleTopY: number = 0;
-	leftPaddleBottomX: number = 0;
-	leftPaddleBottomY: number = 0;
-	rightPaddleBottomX: number = 0;
-	rightPaddleBottomY: number = 0;
+	public ballX: number = 0;
+	public ballY: number = 0;
+	public ballRadius: number = 0;
+	public paddleRadius: number = 0;
+	public paddleHeight: number = 0;
+	public leftPaddlePosX: number = 0;
+	public leftPaddlePosY: number = 0;
+	public rightPaddlePosX: number = 0;
+	public rightPaddlePosY: number = 0;
 	constructor() {}
-	public static instance = new Frame();
+	static instance = new Frame();
 }
 
 export class Score {
@@ -260,6 +257,9 @@ class initialState {
 	hash: string = '';
 	pool: ClientPlayer[] = [];
 	invitations: ClientInvitation[] = [];
+
+	score: number[] = [0, 0];
+	frame: Frame = new Frame();
 
 	send: (message: string) => void = () => {};
 }
