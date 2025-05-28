@@ -13,40 +13,33 @@ export function useTeaGame() {
 
 	switch (data) {
 		case 'START':
-			console.log('Game started');
 			setPlaying(true);
 			break;
 		case 'STOP': {
-			console.log('Game stopped');
 			setPlaying(false);
 			break;
 		}
 		case 'FRAME': {
-			console.log('Game frame');
 			const parsedFrame: Frame = WS.Json({ message: data, target: Frame.instance }) as Frame;
 			setFrame(parsedFrame);
 			break;
 		}
 		case 'SCORE': {
-			console.log('Game score');
 			const parsedScore: Score = WS.Json({ message: data, target: Score.instance }) as Score;
 			setScore(parsedScore);
 			setPlaying(false);
 			break;
 		}
 		case 'WON': {
-			console.log('Game won');
 			setPlaying(false);
 			setWon(true);
 			break;
 		}
 		case 'LOST':
-			console.log('Game lost');
 			setPlaying(false);
 			setLost(true);
 			break;
 		case 'DRAW':
-			console.log('Game draw');
 			setPlaying(false);
 			setDraw(true);
 			break;

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Frame, Hash, Invitations, Message, Play, Pool, Score, WS, WSC, wsContext, ClientInvitation, ClientPlayer } from './ws-client';
+import { Frame, Hash, Invitations, Message, Play, Pool, Score, WS, wsContext, ClientInvitation, ClientPlayer, WSC } from './ws-client';
 import { useNavigate, useParams } from 'react-router-dom';
 
 interface WSProviderProps {
@@ -26,6 +26,8 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 
 	const [score, setScore] = useState<number[]>([0, 0]);
 	const [frame, setFrame] = useState<Frame>(new Frame());
+	const [won, setWon] = useState<boolean>(false);
+	const [lost, setLost] = useState<boolean>(false);
 
 	function onerror() {
 		console.error('WebSocket error');
@@ -33,6 +35,14 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 		setOpen(false);
 		setError(true);
 	}
+
+	function reset() {
+		setScore([0, 0]);
+		setFrame(new Frame());
+		setLost(false);
+		setWon(false);
+	}
+
 	function send(message: string) {
 		if (socketRef.current?.OPEN) socketRef.current?.send(message);
 	}
@@ -82,10 +92,12 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 					}
 					case 'LOST': {
 						console.log(message);
+						setLost(true);
 						break;
 					}
 					case 'WON': {
 						console.log(message);
+						setWon(true);
 						break;
 					}
 					default:
@@ -98,7 +110,7 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 				parse(m.message, m.data);
 			}
 			function onopen() {
-				console.log('WebSocket connection opened', game);
+				console.log('WebSocket connection opened');
 				if (game) send(WS.ConnectMessage(WSC.username, '', WSC.img, 'GAME', game));
 				else send(WS.ConnectMessage(WSC.username, '', WSC.img, 'MAIN', ''));
 				setOpen(true);
@@ -125,7 +137,7 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 		[game, navigate, url] // ! MAY POTENTIALY CAUSE PROBLEMS
 	);
 	return (
-		<wsContext.Provider value={{ error, close, open, data, hash, send, pool, invitations, score, frame }}>
+		<wsContext.Provider value={{ error, close, open, data, hash, send, pool, invitations, score, frame, won, lost, reset }}>
 			{children}
 		</wsContext.Provider>
 	);

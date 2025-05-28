@@ -63,18 +63,23 @@ export class ClientInvitation {
 
 // * Pool
 export class Connect {
-	// TODO: initial game data can be added here
 	img: string;
 	page: string;
 	query: string;
-	username: string;
-	constructor(username: string, img: string, page: string, query: string) {
-		this.username = username;
+	constructor(img: string, page: string, query: string) {
 		this.query = query;
 		this.page = page;
 		this.img = img;
 	}
-	public static instance = new Connect('', '', '', '');
+	public static instance = new Connect('', '', '');
+}
+
+export class Disconnect {
+	page: string;
+	constructor(page: string) {
+		this.page = page;
+	}
+	public static instance = new Disconnect('');
 }
 
 export class Invite {
@@ -224,7 +229,10 @@ export class WSC {
 	}
 
 	ConnectMessage(username: string, hash: string, img: string, page: string, query: string): string {
-		return JSON.stringify(new Message({ username, hash, message: 'CONNECT', data: new Connect(username, img, page, query) }));
+		return JSON.stringify(new Message({ username, hash, message: 'CONNECT', data: new Connect(img, page, query) }));
+	}
+	DisonnectMessage(username: string, hash: string, page: string): string {
+		return JSON.stringify(new Message({ username, hash, message: 'DISCONNECT', data: new Disconnect(page) }));
 	}
 	InviteMessage(username: string, hash: string, recipient: string): string {
 		return JSON.stringify(new Message({ username, hash, message: 'INVITE', data: new Invite(recipient) }));
@@ -246,6 +254,27 @@ export class WSC {
 
 export const WS = new WSC();
 
+export const { ErrorMessage, ConnectMessage, InviteMessage, AcceptMessage, RejectMessage, DeleteMessage, HookMessage, DisonnectMessage } = WS;
+
+export function rescaleFrame(f: Frame, width: number, height: number): Frame {
+	const scaleX = width / 1024;
+	const scaleY = height / 768;
+	const scaleRadius = Math.min(scaleX, scaleY);
+
+	return {
+		...f,
+		ballX: Math.ceil(f.ballX * scaleX),
+		ballY: Math.ceil(f.ballY * scaleY),
+		ballRadius: Math.ceil(f.ballRadius * scaleRadius),
+		paddleRadius: Math.ceil(f.paddleRadius * scaleRadius),
+		paddleHeight: Math.ceil(f.paddleHeight * scaleY),
+		leftPaddlePosX: Math.ceil(f.leftPaddlePosX * scaleX),
+		leftPaddlePosY: Math.ceil(f.leftPaddlePosY * scaleY),
+		rightPaddlePosX: Math.ceil(f.rightPaddlePosX * scaleX),
+		rightPaddlePosY: Math.ceil(f.rightPaddlePosY * scaleY),
+	};
+}
+
 class initialState {
 	// * Websocket vars
 	error: boolean = false;
@@ -260,8 +289,11 @@ class initialState {
 
 	score: number[] = [0, 0];
 	frame: Frame = new Frame();
+	lost: boolean = false;
+	won: boolean = false;
 
 	send: (message: string) => void = () => {};
+	reset: () => void = () => {};
 }
 
 export const wsContext = createContext(new initialState());

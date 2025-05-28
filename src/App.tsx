@@ -7,6 +7,7 @@ import Main from './pages/Main';
 import Local from './pages/Local';
 import Server from './pages/Server';
 import WSProvider from './Hooks/ws-context';
+import Extra from './pages/Extra';
 
 const router = createBrowserRouter([
 	{
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
 			{
 				path: 'server/:game',
 				element: <Server />,
+			},
+			{
+				path: 'extra',
+				element: <Extra />,
 			},
 		],
 	},

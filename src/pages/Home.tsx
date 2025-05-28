@@ -7,7 +7,7 @@ const Home: React.FC<unknown> = () => {
 		<>
 			<Box height="24px" />
 			<Flex justify="between" className='px-12'>
-				<Box />
+
 				<Text as="div" align="center" size="3" weight="bold">
 					PONG
 				</Text>

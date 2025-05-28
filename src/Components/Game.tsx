@@ -9,12 +9,10 @@ const Game: React.FC<unknown> = () => {
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
-			console.log(e.code);
 			if (e.code === 'ArrowDown') setDown(true);
 			if (e.code === 'ArrowUp') setUp(true);
 		};
 		const handleKeyUp = (e: KeyboardEvent) => {
-			console.log(e.code);
 			if (e.code === 'ArrowDown') setDown(false);
 			if (e.code === 'ArrowUp') setUp(false);
 		};

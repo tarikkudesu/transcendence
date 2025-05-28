@@ -1,8 +1,7 @@
 import { Cross2Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import { Card, Grid, TextField, Text, Box, Avatar, Flex, Button, Inset, Badge } from '@radix-ui/themes';
-import { useContext, useState } from 'react';
-import { ClientInvitation, ClientPlayer, WS, WSC, wsContext } from '../Hooks/ws-client';
-import { Link } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+import { ClientInvitation, ClientPlayer, ConnectMessage, DisonnectMessage, WS, WSC, wsContext } from '../Hooks/ws-client';
 
 interface PlayerCardProps {
 	pooler: ClientPlayer;
@@ -134,17 +133,16 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ invite }) => {
 
 const Main: React.FC<unknown> = () => {
 	const [query, setQuery] = useState<string>('');
-	const { pool, invitations, hash } = useContext(wsContext);
+	const { pool, invitations, send, hash } = useContext(wsContext);
+
+	useEffect(function () {
+		send(ConnectMessage(WSC.username, '', WSC.img, 'MAIN', ''));
+		return () => send(DisonnectMessage(WSC.username, hash, 'MAIN'));
+	}, []);
 
 	return (
 		<>
 			<div className="max-w-300 mx-auto px-12">
-				<Text align="center">{hash}</Text>
-				<Flex justify="center" mb="3">
-					<Link to="/server/jhfg-sffw-iuer-ecmn">
-						<Button>Play</Button>
-					</Link>
-				</Flex>
 				<Grid columns={{ initial: '1', md: '2' }} gap="3">
 					<Card>
 						<TextField.Root

@@ -37,19 +37,16 @@ export function useTeaWebsocket({ url, openCallBack, closeCallBack }: useWebsock
 		switch (event) {
 			case 'HASH': {
 				const h: Hash = WS.Json({ message, target: Hash.instance });
-				console.log(h);
 				setHash(h.hash);
 				break;
 			}
 			case 'POOL': {
 				const p: Pool = WS.Json({ message, target: Pool.instance });
-				console.log(p.pool);
 				setPool(p.pool);
 				break;
 			}
 			case 'INVITATIONS': {
 				const i: Invitations = WS.Json({ message, target: Invitations.instance });
-				console.log(i.invitations);
 				setInvitations(i.invitations);
 				break;
 			}
@@ -70,7 +67,6 @@ export function useTeaWebsocket({ url, openCallBack, closeCallBack }: useWebsock
 	useEffect(
 		function () {
 			function onmessage(e: MessageEvent) {
-				// console.log('WebSocket message received: ', e.data);
 				setData(e.data);
 				const m: Message = WS.Json({ message: e.data, target: Message.instance });
 				parse(m.message, m.data);
