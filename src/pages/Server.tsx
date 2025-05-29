@@ -56,7 +56,7 @@ const Server: React.FC<unknown> = () => {
 			</Flex>
 			<div className="parent">
 				<div className="div1"></div>
-				<div ref={ref} className="div2 bg-amber-500/10 rounded-4xl aspect-[4/3] relative overflow-hidden">
+				<div ref={ref} className="div2 bg-amber-500/10 border-1 border-white rounded-4xl aspect-[4/3] relative overflow-hidden">
 					{won ? (
 						<Flex direction="column" align="center" className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
 							<Text size="7" weight="bold" mb="3">
@@ -102,14 +102,13 @@ const Server: React.FC<unknown> = () => {
 								style={{ height: 100, width: 100 }}
 							></div>
 							<Box
-								className="bg-amber-600 absolute rounded-full border-l-1 border-white"
+								className="bg-teal-600 absolute rounded-tr-full rounded-br-full rounded-tl-md rounded-bl-md border-l-1 border-white"
 								style={{
 									width: f.paddleRadius * 2,
 									height: f.paddleHeight,
 									top: f.leftPaddlePosY - f.paddleHeight / 2,
 									left: f.leftPaddlePosX - f.paddleRadius,
 								}}
-								height="100px"
 							></Box>
 							<Box
 								className="bg-white absolute rounded-full"
@@ -121,14 +120,13 @@ const Server: React.FC<unknown> = () => {
 								}}
 							></Box>
 							<Box
-								className="bg-amber-600 absolute rounded-full border-r-1 border-white"
+								className="bg-orange-600 absolute rounded-tl-full rounded-bl-full rounded-tr-md rounded-br-md border-r-1 border-white"
 								style={{
 									width: f.paddleRadius * 2,
 									height: f.paddleHeight,
 									top: f.rightPaddlePosY - f.paddleHeight / 2,
 									left: f.rightPaddlePosX - f.paddleRadius,
 								}}
-								height="100px"
 							></Box>
 						</>
 					) : (
