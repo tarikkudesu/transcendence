@@ -1,7 +1,7 @@
 import { Cross2Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import { Card, Grid, TextField, Text, Box, Avatar, Flex, Button, Inset, Badge } from '@radix-ui/themes';
-import { useContext, useEffect, useState } from 'react';
-import { ClientInvitation, ClientPlayer, ConnectMessage, DisonnectMessage, WS, WSC, wsContext } from '../Hooks/ws-client';
+import { useContext, useState } from 'react';
+import { ClientInvitation, ClientPlayer, WS, WSC, wsContext } from '../Hooks/ws-client';
 
 interface PlayerCardProps {
 	pooler: ClientPlayer;
@@ -133,12 +133,7 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ invite }) => {
 
 const Main: React.FC<unknown> = () => {
 	const [query, setQuery] = useState<string>('');
-	const { pool, invitations, send, hash } = useContext(wsContext);
-
-	useEffect(function () {
-		send(ConnectMessage(WSC.username, '', WSC.img, 'MAIN', ''));
-		return () => send(DisonnectMessage(WSC.username, hash, 'MAIN'));
-	}, []);
+	const { pool, invitations } = useContext(wsContext);
 
 	return (
 		<>

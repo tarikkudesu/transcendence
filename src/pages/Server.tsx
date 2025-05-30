@@ -1,9 +1,12 @@
 import { Box, Button, Flex, Text } from '@radix-ui/themes';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { Frame, rescaleFrame, WS, WSC, wsContext } from '../Hooks/ws-client';
-import { useNavigate } from 'react-router-dom';
+import { EngageMessage, Frame, rescaleFrame, WS, WSC, wsContext } from '../Hooks/ws-client';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const Server: React.FC<unknown> = () => {
+	// * Parameters
+	const { game } = useParams();
+
 	const { score, frame, send, hash, won, lost, reset } = useContext(wsContext);
 	const ref = useRef<HTMLDivElement>(null);
 	const [f, setF] = useState<Frame>(frame);
@@ -26,13 +29,14 @@ const Server: React.FC<unknown> = () => {
 	}
 
 	useEffect(function () {
+		send(EngageMessage(WSC.username, hash, game ? game : '')); // ! needs more thinking
 		document.addEventListener('keyup', keyUp);
 		document.addEventListener('keydown', keyDown);
 		return () => {
 			document.removeEventListener('keyup', keyUp);
 			document.removeEventListener('keydown', keyDown);
 		};
-	});
+	}, []);
 
 	useEffect(
 		function () {
@@ -102,7 +106,7 @@ const Server: React.FC<unknown> = () => {
 								style={{ height: 100, width: 100 }}
 							></div>
 							<Box
-								className="bg-teal-600 absolute rounded-tr-full rounded-br-full rounded-tl-md rounded-bl-md border-l-1 border-white"
+								className="bg-teal-600 absolute rounded-tr-md rounded-br-md border-l-1 border-white"
 								style={{
 									width: f.paddleRadius * 2,
 									height: f.paddleHeight,
@@ -120,7 +124,7 @@ const Server: React.FC<unknown> = () => {
 								}}
 							></Box>
 							<Box
-								className="bg-orange-600 absolute rounded-tl-full rounded-bl-full rounded-tr-md rounded-br-md border-r-1 border-white"
+								className="bg-orange-600 absolute rounded-tl-md rounded-bl-md border-r-1 border-white"
 								style={{
 									width: f.paddleRadius * 2,
 									height: f.paddleHeight,

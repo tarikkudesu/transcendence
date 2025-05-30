@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { Frame, Hash, Invitations, Message, Play, Pool, Score, WS, wsContext, ClientInvitation, ClientPlayer, WSC } from './ws-client';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Frame, Hash, Invitations, Message, Play, Pool, Score, WS, wsContext, ClientInvitation, ClientPlayer, WSC, ConnectMessage } from './ws-client';
+import { useNavigate } from 'react-router-dom';
 
 interface WSProviderProps {
 	url?: string;
@@ -8,9 +8,6 @@ interface WSProviderProps {
 }
 const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 	const navigate = useNavigate();
-
-	// * Parameters
-	const { game } = useParams();
 
 	// * Connection Managers
 	const socketRef = useRef<WebSocket | null>(null);
@@ -111,8 +108,7 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 			}
 			function onopen() {
 				console.log('WebSocket connection opened');
-				if (game) send(WS.ConnectMessage(WSC.username, '', WSC.img, 'GAME', game));
-				else send(WS.ConnectMessage(WSC.username, '', WSC.img, 'MAIN', ''));
+				send(ConnectMessage(WSC.username, '', WSC.img, 'MAIN', ''));
 				setOpen(true);
 			}
 			function onclose() {
@@ -134,7 +130,7 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 				}
 			}
 		},
-		[game, navigate, url] // ! MAY POTENTIALY CAUSE PROBLEMS
+		[navigate, url] // ! MAY POTENTIALY CAUSE PROBLEMS
 	);
 	return (
 		<wsContext.Provider value={{ error, close, open, data, hash, send, pool, invitations, score, frame, won, lost, reset }}>

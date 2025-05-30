@@ -74,12 +74,12 @@ export class Connect {
 	public static instance = new Connect('', '', '');
 }
 
-export class Disconnect {
-	page: string;
-	constructor(page: string) {
-		this.page = page;
+export class Engage {
+	gid: string;
+	constructor(gid: string) {
+		this.gid = gid;
 	}
-	public static instance = new Disconnect('');
+	public static instance = new Engage('');
 }
 
 export class Invite {
@@ -231,8 +231,8 @@ export class WSC {
 	ConnectMessage(username: string, hash: string, img: string, page: string, query: string): string {
 		return JSON.stringify(new Message({ username, hash, message: 'CONNECT', data: new Connect(img, page, query) }));
 	}
-	DisonnectMessage(username: string, hash: string, page: string): string {
-		return JSON.stringify(new Message({ username, hash, message: 'DISCONNECT', data: new Disconnect(page) }));
+	EngageMessage(username: string, hash: string, gid: string): string {
+		return JSON.stringify(new Message({ username, hash, message: 'ENGAGE', data: new Engage(gid) }));
 	}
 	InviteMessage(username: string, hash: string, recipient: string): string {
 		return JSON.stringify(new Message({ username, hash, message: 'INVITE', data: new Invite(recipient) }));
@@ -254,7 +254,7 @@ export class WSC {
 
 export const WS = new WSC();
 
-export const { ErrorMessage, ConnectMessage, InviteMessage, AcceptMessage, RejectMessage, DeleteMessage, HookMessage, DisonnectMessage } = WS;
+export const { ErrorMessage, ConnectMessage, InviteMessage, AcceptMessage, RejectMessage, DeleteMessage, HookMessage, EngageMessage } = WS;
 
 export function rescaleFrame(f: Frame, width: number, height: number): Frame {
 	const scaleX = width / 1024;
