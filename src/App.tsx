@@ -8,6 +8,7 @@ import Local from './pages/Local';
 import Server from './pages/Server';
 import WSProvider from './Hooks/ws-context';
 import Extra from './pages/Extra';
+import { Toaster } from 'react-hot-toast';
 
 const router = createBrowserRouter([
 	{
@@ -43,6 +44,7 @@ function App() {
 	return (
 		<>
 			<Theme appearance="dark" accentColor="orange" grayColor="mauve" panelBackground="solid" scaling="100%">
+				<Toaster />
 				<RouterProvider router={router} />
 			</Theme>
 		</>

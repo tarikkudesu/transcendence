@@ -1,6 +1,22 @@
 import { useEffect, useRef, useState } from 'react';
-import { Frame, Hash, Invitations, Message, Play, Pool, Score, WS, wsContext, ClientInvitation, ClientPlayer, WSC, ConnectMessage } from './ws-client';
+import {
+	WS,
+	WSC,
+	Pool,
+	Play,
+	Hash,
+	Frame,
+	Score,
+	Message,
+	wsContext,
+	Invitations,
+	ClientPlayer,
+	ConnectMessage,
+	ClientInvitation,
+	WSError,
+} from './ws-client';
 import { useNavigate } from 'react-router-dom';
+import { useNotification } from './useNotification';
 
 interface WSProviderProps {
 	url?: string;
@@ -8,8 +24,7 @@ interface WSProviderProps {
 }
 const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 	const navigate = useNavigate();
-
-	// * Connection Managers
+	const { notify } = useNotification();
 	const socketRef = useRef<WebSocket | null>(null);
 	const [error, setError] = useState<boolean>(false);
 	const [close, setClose] = useState<boolean>(false);
@@ -21,27 +36,32 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 	const [pool, setPool] = useState<ClientPlayer[]>([]);
 	const [invitations, setInvitations] = useState<ClientInvitation[]>([]);
 
-	const [score, setScore] = useState<number[]>([0, 0]);
-	const [frame, setFrame] = useState<Frame>(new Frame());
 	const [won, setWon] = useState<boolean>(false);
 	const [lost, setLost] = useState<boolean>(false);
+	const [stop, setStop] = useState<boolean>(false);
+	const [start, setStart] = useState<boolean>(false);
+	const [score, setScore] = useState<number[]>([0, 0]);
+	const [frame, setFrame] = useState<Frame>(new Frame());
 
 	function onerror() {
 		console.error('WebSocket error');
-		setClose(true);
 		setOpen(false);
+		setClose(true);
 		setError(true);
 	}
 
 	function reset() {
+		setWon(false);
+		setLost(false);
+		setStop(false);
+		setStart(false);
 		setScore([0, 0]);
 		setFrame(new Frame());
-		setLost(false);
-		setWon(false);
 	}
 
 	function send(message: string) {
 		if (socketRef.current?.OPEN) socketRef.current?.send(message);
+		else throw new Error('Socket no available');
 	}
 	useEffect(
 		function () {
@@ -70,11 +90,11 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 					}
 					// ? Game
 					case 'START': {
-						console.log(message);
+						setStart(true);
 						break;
 					}
 					case 'STOP': {
-						console.log(message);
+						setStop(true);
 						break;
 					}
 					case 'FRAME': {
@@ -88,13 +108,16 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 						break;
 					}
 					case 'LOST': {
-						console.log(message);
 						setLost(true);
 						break;
 					}
 					case 'WON': {
-						console.log(message);
 						setWon(true);
+						break;
+					}
+					case 'ERROR': {
+						const r: WSError = WS.Json({ message, target: WSError.instance });
+						notify({ message: r.message, error: true });
 						break;
 					}
 					default:
@@ -103,8 +126,13 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 			}
 			function onmessage(e: MessageEvent) {
 				setData(e.data);
-				const m: Message = WS.Json({ message: e.data, target: Message.instance });
-				parse(m.message, m.data);
+				try {
+					const m: Message = WS.Json({ message: e.data, target: Message.instance });
+					parse(m.message, m.data);
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				} catch (err: any) {
+					notify({ message: err.message, error: true });
+				}
 			}
 			function onopen() {
 				console.log('WebSocket connection opened');
@@ -133,7 +161,9 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 		[navigate, url] // ! MAY POTENTIALY CAUSE PROBLEMS
 	);
 	return (
-		<wsContext.Provider value={{ error, close, open, data, hash, send, pool, invitations, score, frame, won, lost, reset }}>
+		<wsContext.Provider
+			value={{ error, close, open, data, hash, send, pool, invitations, start, stop, score, frame, won, lost, reset }}
+		>
 			{children}
 		</wsContext.Provider>
 	);

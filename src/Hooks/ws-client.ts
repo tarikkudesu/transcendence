@@ -218,14 +218,14 @@ export class WSC {
 		const json = JSON.parse(message);
 		const properties = Object.getOwnPropertyNames(json);
 		Object.getOwnPropertyNames(target).forEach((property) => {
-			if (_.includes(properties, property) === false) throw new Error('Invalid JSON');
+			if (_.includes(properties, property) === false) throw new Error('Invalid JSON ' + message + JSON.stringify(target));
 		});
 		return json;
 	}
 
 	// ? Protocole Message Builders
-	ErrorMessage(username: string, hash: string, error: string) {
-		return JSON.stringify(new Message({ username, hash, message: 'ERROR', data: new WSError(error) }));
+	ErrorMessage(error: string) {
+		return JSON.stringify(new Message({ username: '', hash: '', message: 'ERROR', data: new WSError(error) }));
 	}
 
 	ConnectMessage(username: string, hash: string, img: string, page: string, query: string): string {
@@ -256,6 +256,31 @@ export const WS = new WSC();
 
 export const { ErrorMessage, ConnectMessage, InviteMessage, AcceptMessage, RejectMessage, DeleteMessage, HookMessage, EngageMessage } = WS;
 
+class initialState {
+	// * Websocket vars
+	error: boolean = false;
+	close: boolean = false;
+	open: boolean = false;
+	data: string = '';
+
+	// * Incoming data
+	hash: string = '';
+	pool: ClientPlayer[] = [];
+	invitations: ClientInvitation[] = [];
+
+	won: boolean = false;
+	lost: boolean = false;
+	stop: boolean = false;
+	start: boolean = false;
+	score: number[] = [0, 0];
+	frame: Frame = new Frame();
+
+	send: (message: string) => void = () => {};
+	reset: () => void = () => {};
+}
+
+export const wsContext = createContext(new initialState());
+
 export function rescaleFrame(f: Frame, width: number, height: number): Frame {
 	const scaleX = width / 1024;
 	const scaleY = height / 768;
@@ -274,26 +299,3 @@ export function rescaleFrame(f: Frame, width: number, height: number): Frame {
 		rightPaddlePosY: Math.ceil(f.rightPaddlePosY * scaleY),
 	};
 }
-
-class initialState {
-	// * Websocket vars
-	error: boolean = false;
-	close: boolean = false;
-	open: boolean = false;
-	data: string = '';
-
-	// * Incoming data
-	hash: string = '';
-	pool: ClientPlayer[] = [];
-	invitations: ClientInvitation[] = [];
-
-	score: number[] = [0, 0];
-	frame: Frame = new Frame();
-	lost: boolean = false;
-	won: boolean = false;
-
-	send: (message: string) => void = () => {};
-	reset: () => void = () => {};
-}
-
-export const wsContext = createContext(new initialState());
