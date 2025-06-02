@@ -1,20 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import {
-	WS,
-	WSC,
-	Pool,
-	Play,
-	Hash,
-	Frame,
-	Score,
-	Message,
-	wsContext,
-	Invitations,
-	ClientPlayer,
-	ConnectMessage,
-	ClientInvitation,
-	WSError,
-} from './ws-client';
+import { WS, Pool, Play, Hash, Frame, Score, Message, wsContext, Invitations, ClientPlayer, ClientInvitation, WSError } from './ws-client';
 import { useNavigate } from 'react-router-dom';
 import { useNotification } from './useNotification';
 
@@ -61,7 +46,7 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 
 	function send(message: string) {
 		if (socketRef.current?.OPEN) socketRef.current?.send(message);
-		else throw new Error('Socket no available');
+		// else throw new Error('Socket not available');
 	}
 	useEffect(
 		function () {
@@ -136,7 +121,6 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 			}
 			function onopen() {
 				console.log('WebSocket connection opened');
-				send(ConnectMessage(WSC.username, '', WSC.img, 'MAIN', ''));
 				setOpen(true);
 			}
 			function onclose() {
@@ -160,6 +144,7 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 		},
 		[navigate, url] // ! MAY POTENTIALY CAUSE PROBLEMS
 	);
+
 	return (
 		<wsContext.Provider
 			value={{ error, close, open, data, hash, send, pool, invitations, start, stop, score, frame, won, lost, reset }}

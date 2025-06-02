@@ -1,4 +1,3 @@
-import { faker } from '@faker-js/faker';
 import _ from 'lodash';
 
 import { AvatarGenerator } from 'random-avatar-generator'; // ! ------------------------------------ remove
@@ -138,6 +137,27 @@ export class Invitations {
 }
 
 // * Game
+
+export class Game {
+	public start: boolean = false;
+	public stop: boolean = false;
+	public lost: boolean = false;
+	public won: boolean = false;
+	public opponent: number = 0;
+	public player: number = 0;
+	public ballX: number = 0;
+	public ballY: number = 0;
+	public ballRadius: number = 0;
+	public paddleRadius: number = 0;
+	public paddleHeight: number = 0;
+	public leftPaddlePosX: number = 0;
+	public leftPaddlePosY: number = 0;
+	public rightPaddlePosX: number = 0;
+	public rightPaddlePosY: number = 0;
+	constructor() {}
+	public static instance = new Game();
+}
+
 export class Start {
 	public start: string;
 	constructor() {
@@ -204,7 +224,7 @@ interface JsonProps {
 
 export class WSC {
 	private static instance: WSC | null;
-	public static username: string = faker.internet.username();
+	public static username: string = '';
 	public static img: string = generator.generateRandomAvatar(WSC.username);
 	constructor() {
 		if (WSC.instance) return WSC.instance;

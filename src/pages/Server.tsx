@@ -77,6 +77,8 @@ interface GameFrameElementProps {
 	f: Frame;
 }
 const GameFrameElement: React.FC<GameFrameElementProps> = ({ f }) => {
+	// const { send, hash } = useContext(wsContext);
+	// send(WS.UpdateMessage(WSC.username, hash));
 	return (
 		<>
 			<div
@@ -121,6 +123,7 @@ const GameFrameElement: React.FC<GameFrameElementProps> = ({ f }) => {
 const Server: React.FC<unknown> = () => {
 	const { score, frame, send, hash, start, stop, won, lost } = useContext(wsContext);
 
+	const navigate = useNavigate();
 	const { game } = useParams();
 	const ref = useRef<HTMLDivElement>(null);
 
@@ -140,7 +143,8 @@ const Server: React.FC<unknown> = () => {
 	}
 
 	useEffect(function () {
-		send(EngageMessage(WSC.username, hash, game ? game : '')); // ! needs more thinking
+		if (game) send(EngageMessage(WSC.username, hash, game ? game : '')); // ! needs more thinking
+		else navigate(-1);
 		document.addEventListener('keyup', keyUp);
 		document.addEventListener('keydown', keyDown);
 		return () => {
