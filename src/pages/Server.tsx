@@ -1,9 +1,9 @@
 import { useContext, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Box, Button, Flex, Spinner, Text } from '@radix-ui/themes';
-import { EngageMessage, Frame, rescaleFrame, WS, WSC, wsContext } from '../Hooks/ws-client';
+import { ClientPong, EngageMessage, rescaleFrame, WS, WSC, wsContext } from '../Hooks/ws-client';
 
-const Lost: React.FC<unknown> = () => {
+export const Lost: React.FC<unknown> = () => {
 	const navigate = useNavigate();
 	const { reset } = useContext(wsContext);
 	return (
@@ -22,7 +22,7 @@ const Lost: React.FC<unknown> = () => {
 		</Flex>
 	);
 };
-const Won: React.FC<unknown> = () => {
+export const Won: React.FC<unknown> = () => {
 	const navigate = useNavigate();
 	const { reset } = useContext(wsContext);
 
@@ -42,7 +42,7 @@ const Won: React.FC<unknown> = () => {
 		</Flex>
 	);
 };
-const Stop: React.FC<unknown> = () => {
+export const Stop: React.FC<unknown> = () => {
 	const navigate = useNavigate();
 	const { reset } = useContext(wsContext);
 
@@ -62,7 +62,7 @@ const Stop: React.FC<unknown> = () => {
 		</Flex>
 	);
 };
-const Start: React.FC<unknown> = () => {
+export const Start: React.FC<unknown> = () => {
 	return (
 		<Flex direction="column" align="center" className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
 			<Text size="3" weight="bold" mb="3">
@@ -74,11 +74,10 @@ const Start: React.FC<unknown> = () => {
 };
 
 interface GameFrameElementProps {
-	f: Frame;
+	f: ClientPong;
 }
 const GameFrameElement: React.FC<GameFrameElementProps> = ({ f }) => {
-	// const { send, hash } = useContext(wsContext);
-	// send(WS.UpdateMessage(WSC.username, hash));
+	console.log(f);
 	return (
 		<>
 			<div
@@ -121,7 +120,7 @@ const GameFrameElement: React.FC<GameFrameElementProps> = ({ f }) => {
 };
 
 const Server: React.FC<unknown> = () => {
-	const { score, frame, send, hash, start, stop, won, lost } = useContext(wsContext);
+	const { send, hash, pong } = useContext(wsContext);
 
 	const navigate = useNavigate();
 	const { game } = useParams();
@@ -130,20 +129,20 @@ const Server: React.FC<unknown> = () => {
 	function keyUp(e: KeyboardEvent) {
 		e.preventDefault();
 		if (e.code === 'ArrowDown' || e.code === 'ArrowUp') {
-			send(WS.HookMessage(WSC.username, hash, false, false));
+			send(WS.HookMessage(WSC.username, hash, 'pong', game ? game : '', false, false));
 		}
 	}
 	function keyDown(e: KeyboardEvent) {
 		e.preventDefault();
 		if (e.code === 'ArrowUp') {
-			send(WS.HookMessage(WSC.username, hash, true, false));
+			send(WS.HookMessage(WSC.username, hash, 'pong', game ? game : '', true, false));
 		} else if (e.code === 'ArrowDown') {
-			send(WS.HookMessage(WSC.username, hash, false, true));
+			send(WS.HookMessage(WSC.username, hash, 'pong', game ? game : '', false, true));
 		}
 	}
 
 	useEffect(function () {
-		if (game) send(EngageMessage(WSC.username, hash, game ? game : '')); // ! needs more thinking
+		if (game) send(EngageMessage(WSC.username, hash, 'pong', game ? game : '')); // ! needs more thinking
 		else navigate(-1);
 		document.addEventListener('keyup', keyUp);
 		document.addEventListener('keydown', keyDown);
@@ -154,23 +153,22 @@ const Server: React.FC<unknown> = () => {
 	}, []);
 
 	function Content(): React.ReactNode {
-		if (stop) return <Stop />;
-		if (won) return <Won />;
-		if (lost) return <Lost />;
-		if (start && !stop && !lost && !won && ref.current)
-			return <GameFrameElement f={rescaleFrame(frame, ref.current.clientWidth, ref.current.clientHeight)} />;
-		return <Start />;
+		if (pong.stop) return <Stop />;
+		if (pong.won) return <Won />;
+		if (pong.lost) return <Lost />;
+		if (!pong.start) return <Start />;
+		if (ref.current) return <GameFrameElement f={rescaleFrame(pong, ref.current.clientWidth, ref.current.clientHeight)} />;
 	}
 
 	return (
 		<>
 			<Flex justify="center" my="3">
 				<Text size="9" weight="bold">
-					{score[1]}
+					{pong.playerScore}
 				</Text>
 				<Box width="100px"></Box>
 				<Text size="9" weight="bold">
-					{score[0]}
+					{pong.opponentScore}
 				</Text>
 			</Flex>
 			<div className="parent">

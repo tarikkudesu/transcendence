@@ -43,7 +43,7 @@ const Home: React.FC<unknown> = () => {
 					<Text size="1" weight="bold" className="opacity-80">
 						{WSC.username}
 					</Text>
-					<Avatar size="2" src={WSC.img} radius="full" fallback="T" className="border-2 border-amber-600 p-0.5" />
+					<Avatar size="2" src="/src/assets/profile.png" radius="full" fallback="T" className="border-2 border-amber-600 p-0.5" />
 				</Flex>
 			</Flex>
 			<Dialog.Root>
@@ -82,7 +82,7 @@ const Home: React.FC<unknown> = () => {
 								disabled={username === ''}
 								onClick={() => {
 									WSC.username = username;
-									send(ConnectMessage(username, '', WSC.img, 'MAIN', ''));
+									send(ConnectMessage(username, ''));
 								}}
 							>
 								Save

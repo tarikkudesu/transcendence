@@ -1,8 +1,8 @@
 import _ from 'lodash';
 
-import { AvatarGenerator } from 'random-avatar-generator'; // ! ------------------------------------ remove
+// import { AvatarGenerator } from 'random-avatar-generator'; // ! ------------------------------------ remove
 import { createContext } from 'react';
-const generator = new AvatarGenerator(); // ! ------------------------------------------------------ remove
+// const generator = new AvatarGenerator(); // ! ------------------------------------------------------ remove
 
 // ! shared -----------------------------------------------------------------------------
 
@@ -10,6 +10,7 @@ interface MessageProps {
 	username: string;
 	message: string;
 	hash: string;
+	game: 'pong' | 'card of doom';
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	data: any;
 }
@@ -17,14 +18,17 @@ export class Message {
 	public username: string;
 	public message: string;
 	public hash: string;
-	public data: string;
-	constructor({ username, hash, message, data }: MessageProps) {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	public data: any;
+	public game: 'pong' | 'card of doom';
+	constructor({ username, hash, message, data, game }: MessageProps) {
 		this.data = JSON.stringify(data);
 		this.username = username;
 		this.message = message;
 		this.hash = hash;
+		this.game = game;
 	}
-	static instance = new Message({ username: '', hash: '', message: '', data: {} });
+	static instance = new Message({ username: '', hash: '', message: '', data: {}, game: 'pong' });
 }
 
 export class WSError {
@@ -36,42 +40,32 @@ export class WSError {
 }
 
 export class ClientPlayer {
-	public img: string;
 	public username: string;
+	public game: 'pong' | 'card of doom';
 	public invite_status: 'unsent' | 'pending' | 'accepted' | 'declined';
-	constructor(username: string, img: string, invite_status: 'unsent' | 'pending' | 'accepted' | 'declined') {
+	constructor(username: string, game: 'pong' | 'card of doom', invite_status: 'unsent' | 'pending' | 'accepted' | 'declined') {
 		this.invite_status = invite_status;
 		this.username = username;
-		this.img = img;
+		this.game = game;
 	}
-	static instance = new ClientPlayer('', '', 'unsent');
+	static instance = new ClientPlayer('', 'pong', 'unsent');
 }
+
 export class ClientInvitation {
-	public img: string;
 	public sender: string;
+	public game: 'pong' | 'card of doom';
 	public invite_status: 'unsent' | 'pending' | 'accepted' | 'declined';
-	constructor(sender: string, img: string, invite_status: 'unsent' | 'pending' | 'accepted' | 'declined') {
+	constructor(sender: string, game: 'pong' | 'card of doom', invite_status: 'unsent' | 'pending' | 'accepted' | 'declined') {
 		this.invite_status = invite_status;
 		this.sender = sender;
-		this.img = img;
+		this.game = game;
 	}
-	static instance = new ClientInvitation('', '', 'unsent');
+	static instance = new ClientInvitation('', 'pong', 'unsent');
 }
 
 // ! res --------------------------------------------------------------------------------
 
 // * Pool
-export class Connect {
-	img: string;
-	page: string;
-	query: string;
-	constructor(img: string, page: string, query: string) {
-		this.query = query;
-		this.page = page;
-		this.img = img;
-	}
-	public static instance = new Connect('', '', '');
-}
 
 export class Engage {
 	gid: string;
@@ -91,13 +85,25 @@ export class Invite {
 
 // * Game
 export class Hook {
+	gid: string;
 	up: boolean;
 	down: boolean;
-	constructor(up: boolean, down: boolean) {
+	constructor(gid: string, up: boolean, down: boolean) {
 		this.up = up;
+		this.gid = gid;
 		this.down = down;
 	}
-	public static instance = new Hook(false, false);
+	public static instance = new Hook('', false, false);
+}
+
+export class Flip {
+	gid: string;
+	pos: number;
+	constructor(gid: string, pos: number) {
+		this.gid = gid;
+		this.pos = pos;
+	}
+	public static instance = new Flip('', 0);
 }
 
 // ! req --------------------------------------------------------------------------------
@@ -105,9 +111,9 @@ export class Hook {
 // * Pool
 
 export class Play {
-	public game: string;
-	constructor(game: string) {
-		this.game = game;
+	public gid: string;
+	constructor(gid: string) {
+		this.gid = gid;
 	}
 	static instance = new Play('');
 }
@@ -115,7 +121,6 @@ export class Play {
 export class Hash {
 	username: string = '';
 	hash: string = '';
-	img: string = '';
 	constructor() {}
 	static instance = new Hash();
 }
@@ -138,13 +143,13 @@ export class Invitations {
 
 // * Game
 
-export class Game {
+export class ClientPong {
+	public playerScore: number = 0;
+	public opponentScore: number = 0;
 	public start: boolean = false;
 	public stop: boolean = false;
 	public lost: boolean = false;
 	public won: boolean = false;
-	public opponent: number = 0;
-	public player: number = 0;
 	public ballX: number = 0;
 	public ballY: number = 0;
 	public ballRadius: number = 0;
@@ -155,63 +160,19 @@ export class Game {
 	public rightPaddlePosX: number = 0;
 	public rightPaddlePosY: number = 0;
 	constructor() {}
-	public static instance = new Game();
+	public static instance = new ClientPong();
 }
 
-export class Start {
-	public start: string;
-	constructor() {
-		this.start = 'start';
-	}
-	public static instance = new Start();
-}
-
-export class Stop {
-	public stop: string;
-	constructor() {
-		this.stop = 'stop';
-	}
-	public static instance = new Stop();
-}
-
-export class Frame {
-	public ballX: number = 0;
-	public ballY: number = 0;
-	public ballRadius: number = 0;
-	public paddleRadius: number = 0;
-	public paddleHeight: number = 0;
-	public leftPaddlePosX: number = 0;
-	public leftPaddlePosY: number = 0;
-	public rightPaddlePosX: number = 0;
-	public rightPaddlePosY: number = 0;
+export class ClientCardOfDoom {
+	public cards: string[] = [];
+	public playerScore: number = 0;
+	public opponentScore: number = 0;
+	public start: boolean = false;
+	public stop: boolean = false;
+	public lost: boolean = false;
+	public won: boolean = false;
 	constructor() {}
-	static instance = new Frame();
-}
-
-export class Score {
-	public player: number;
-	public opponent: number;
-	constructor(player: number, opponent: number) {
-		this.player = player;
-		this.opponent = opponent;
-	}
-	static instance = new Score(0, 0);
-}
-
-export class Won {
-	public won: string;
-	constructor() {
-		this.won = 'won';
-	}
-	static instance = new Won();
-}
-
-export class Lost {
-	public lost: string;
-	constructor() {
-		this.lost = 'lost';
-	}
-	static instance = new Lost();
+	public static instance = new ClientCardOfDoom();
 }
 
 // ! Protocole ------------------------------------------------------------
@@ -225,7 +186,7 @@ interface JsonProps {
 export class WSC {
 	private static instance: WSC | null;
 	public static username: string = '';
-	public static img: string = generator.generateRandomAvatar(WSC.username);
+	// public static img: string = generator.generateRandomAvatar(WSC.username);
 	constructor() {
 		if (WSC.instance) return WSC.instance;
 		WSC.instance = this;
@@ -245,30 +206,33 @@ export class WSC {
 
 	// ? Protocole Message Builders
 	ErrorMessage(error: string) {
-		return JSON.stringify(new Message({ username: '', hash: '', message: 'ERROR', data: new WSError(error) }));
+		return JSON.stringify(new Message({ username: '', hash: '', message: 'ERROR', game: 'pong', data: new WSError(error) }));
 	}
 
-	ConnectMessage(username: string, hash: string, img: string, page: string, query: string): string {
-		return JSON.stringify(new Message({ username, hash, message: 'CONNECT', data: new Connect(img, page, query) }));
+	ConnectMessage(username: string, hash: string): string {
+		return JSON.stringify(new Message({ username, hash, message: 'CONNECT', game: 'pong', data: {} }));
 	}
-	EngageMessage(username: string, hash: string, gid: string): string {
-		return JSON.stringify(new Message({ username, hash, message: 'ENGAGE', data: new Engage(gid) }));
+	EngageMessage(username: string, hash: string, game: 'pong' | 'card of doom', gid: string): string {
+		return JSON.stringify(new Message({ username, hash, message: 'ENGAGE', game, data: new Engage(gid) }));
 	}
-	InviteMessage(username: string, hash: string, recipient: string): string {
-		return JSON.stringify(new Message({ username, hash, message: 'INVITE', data: new Invite(recipient) }));
+	InviteMessage(username: string, hash: string, game: 'pong' | 'card of doom', recipient: string): string {
+		return JSON.stringify(new Message({ username, hash, message: 'INVITE', game, data: new Invite(recipient) }));
 	}
-	AcceptMessage(username: string, hash: string, recipient: string): string {
-		return JSON.stringify(new Message({ username, hash, message: 'ACCEPT', data: new Invite(recipient) }));
+	AcceptMessage(username: string, hash: string, game: 'pong' | 'card of doom', recipient: string): string {
+		return JSON.stringify(new Message({ username, hash, message: 'ACCEPT', game, data: new Invite(recipient) }));
 	}
-	RejectMessage(username: string, hash: string, recipient: string): string {
-		return JSON.stringify(new Message({ username, hash, message: 'REJECT', data: new Invite(recipient) }));
+	RejectMessage(username: string, hash: string, game: 'pong' | 'card of doom', recipient: string): string {
+		return JSON.stringify(new Message({ username, hash, message: 'REJECT', game, data: new Invite(recipient) }));
 	}
-	DeleteMessage(username: string, hash: string, recipient: string): string {
-		return JSON.stringify(new Message({ username, hash, message: 'DELETE', data: new Invite(recipient) }));
+	DeleteMessage(username: string, hash: string, game: 'pong' | 'card of doom', recipient: string): string {
+		return JSON.stringify(new Message({ username, hash, message: 'DELETE', game, data: new Invite(recipient) }));
 	}
 
-	HookMessage(username: string, hash: string, up: boolean, down: boolean): string {
-		return JSON.stringify(new Message({ username, hash, message: 'HOOK', data: new Hook(up, down) }));
+	HookMessage(username: string, hash: string, game: 'pong' | 'card of doom', gid: string, up: boolean, down: boolean): string {
+		return JSON.stringify(new Message({ username, hash, message: 'HOOK', game, data: new Hook(gid, up, down) }));
+	}
+	FlipMessage(username: string, hash: string, game: 'pong' | 'card of doom', gid: string, pos: number): string {
+		return JSON.stringify(new Message({ username, hash, message: 'FLIP', game, data: new Flip(gid, pos) }));
 	}
 }
 
@@ -288,12 +252,8 @@ class initialState {
 	pool: ClientPlayer[] = [];
 	invitations: ClientInvitation[] = [];
 
-	won: boolean = false;
-	lost: boolean = false;
-	stop: boolean = false;
-	start: boolean = false;
-	score: number[] = [0, 0];
-	frame: Frame = new Frame();
+	pong: ClientPong = ClientPong.instance;
+	doom: ClientCardOfDoom = ClientCardOfDoom.instance;
 
 	send: (message: string) => void = () => {};
 	reset: () => void = () => {};
@@ -301,7 +261,7 @@ class initialState {
 
 export const wsContext = createContext(new initialState());
 
-export function rescaleFrame(f: Frame, width: number, height: number): Frame {
+export function rescaleFrame(f: ClientPong, width: number, height: number): ClientPong {
 	const scaleX = width / 1024;
 	const scaleY = height / 768;
 	const scaleRadius = Math.min(scaleX, scaleY);

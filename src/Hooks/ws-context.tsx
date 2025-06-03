@@ -1,7 +1,21 @@
 import { useEffect, useRef, useState } from 'react';
-import { WS, Pool, Play, Hash, Frame, Score, Message, wsContext, Invitations, ClientPlayer, ClientInvitation, WSError } from './ws-client';
 import { useNavigate } from 'react-router-dom';
 import { useNotification } from './useNotification';
+
+import {
+	WS,
+	Pool,
+	Play,
+	Hash,
+	Message,
+	wsContext,
+	Invitations,
+	ClientPlayer,
+	ClientInvitation,
+	WSError,
+	ClientPong,
+	ClientCardOfDoom,
+} from './ws-client';
 
 interface WSProviderProps {
 	url?: string;
@@ -21,12 +35,8 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 	const [pool, setPool] = useState<ClientPlayer[]>([]);
 	const [invitations, setInvitations] = useState<ClientInvitation[]>([]);
 
-	const [won, setWon] = useState<boolean>(false);
-	const [lost, setLost] = useState<boolean>(false);
-	const [stop, setStop] = useState<boolean>(false);
-	const [start, setStart] = useState<boolean>(false);
-	const [score, setScore] = useState<number[]>([0, 0]);
-	const [frame, setFrame] = useState<Frame>(new Frame());
+	const [pong, setPong] = useState<ClientPong>(ClientPong.instance);
+	const [doom, setDoom] = useState<ClientCardOfDoom>(ClientCardOfDoom.instance);
 
 	function onerror() {
 		console.error('WebSocket error');
@@ -36,12 +46,8 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 	}
 
 	function reset() {
-		setWon(false);
-		setLost(false);
-		setStop(false);
-		setStart(false);
-		setScore([0, 0]);
-		setFrame(new Frame());
+		setPong(ClientPong.instance);
+		setDoom(ClientCardOfDoom.instance);
 	}
 
 	function send(message: string) {
@@ -50,7 +56,7 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 	}
 	useEffect(
 		function () {
-			function parse(event: string, message: string) {
+			function parse(event: string, message: string, game: 'pong' | 'card of doom') {
 				switch (event) {
 					// ? Pool
 					case 'HASH': {
@@ -70,34 +76,19 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 					}
 					case 'PLAY': {
 						const p: Play = WS.Json({ message, target: Play.instance });
-						navigate('/server/' + p.game);
+						if (game === 'pong') navigate('/server/' + p.gid);
+						else navigate('/extra/' + p.gid);
 						break;
 					}
 					// ? Game
-					case 'START': {
-						setStart(true);
+					case 'PONG': {
+						const p: ClientPong = WS.Json({ message, target: ClientPong.instance });
+						setPong(p);
 						break;
 					}
-					case 'STOP': {
-						setStop(true);
-						break;
-					}
-					case 'FRAME': {
-						const f: Frame = WS.Json({ message, target: Frame.instance });
-						setFrame(f);
-						break;
-					}
-					case 'SCORE': {
-						const s: Score = WS.Json({ message, target: Score.instance });
-						setScore([s.player, s.opponent]);
-						break;
-					}
-					case 'LOST': {
-						setLost(true);
-						break;
-					}
-					case 'WON': {
-						setWon(true);
+					case 'DOOM': {
+						const d: ClientCardOfDoom = WS.Json({ message, target: ClientCardOfDoom.instance });
+						setDoom(d);
 						break;
 					}
 					case 'ERROR': {
@@ -113,7 +104,7 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 				setData(e.data);
 				try {
 					const m: Message = WS.Json({ message: e.data, target: Message.instance });
-					parse(m.message, m.data);
+					parse(m.message, m.data, m.game);
 					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				} catch (err: any) {
 					notify({ message: err.message, error: true });
@@ -130,7 +121,7 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 			}
 			if (url) {
 				try {
-					// * 'ws://10.13.7.14:3000/api/game/'
+					// * 'ws://localhost:3000/api/game/'
 					socketRef.current = new WebSocket(url);
 					socketRef.current.onmessage = onmessage;
 					socketRef.current.onerror = onerror;
@@ -146,9 +137,7 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 	);
 
 	return (
-		<wsContext.Provider
-			value={{ error, close, open, data, hash, send, pool, invitations, start, stop, score, frame, won, lost, reset }}
-		>
+		<wsContext.Provider value={{ error, close, open, data, hash, send, pool, invitations, pong, doom, reset }}>
 			{children}
 		</wsContext.Provider>
 	);

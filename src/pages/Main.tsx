@@ -10,11 +10,12 @@ interface PlayerCardProps {
 const PlayerCard: React.FC<PlayerCardProps> = ({ pooler }) => {
 	const { send, hash } = useContext(wsContext);
 
-	function inviteAction(): React.ReactNode {
+	function inviteAction(game: 'pong' | 'card of doom'): React.ReactNode {
 		if (pooler.invite_status === 'unsent')
-			return <Button onClick={() => send(WS.InviteMessage(WSC.username, hash, pooler.username))}>Invite</Button>;
-		else if (pooler.invite_status === 'pending') return <Button loading>Invite</Button>;
-		else if (pooler.invite_status === 'declined') return <Button disabled>Invite</Button>;
+			return <Button onClick={() => send(WS.InviteMessage(WSC.username, hash, game, pooler.username))}>{game}</Button>;
+		if (game !== pooler.game) return <Button disabled>{game}</Button>;
+		else if (pooler.invite_status === 'pending') return <Button loading>{game}</Button>;
+		else if (pooler.invite_status === 'declined') return <Button disabled>{game}</Button>;
 	}
 
 	function inviteStatus(): React.ReactNode {
@@ -43,7 +44,7 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ pooler }) => {
 		<Card>
 			<Flex gap="2" justify="between">
 				<Flex align="center" justify="start" gap="3">
-					<Avatar size="3" src={pooler.img} radius="full" fallback="T" />
+					<Avatar size="3" src="/src/assets/profile.png" radius="full" fallback="T" />
 					<Box>
 						<Text mr="2" size="2" weight="bold">
 							{pooler.username}
@@ -51,7 +52,10 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ pooler }) => {
 						{inviteStatus()}
 					</Box>
 				</Flex>
-				<Flex align="center">{inviteAction()}</Flex>
+				<Flex align="center" gap="2">
+					{inviteAction('pong')}
+					{inviteAction('card of doom')}
+				</Flex>
 			</Flex>
 		</Card>
 	);
@@ -84,7 +88,7 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ invite }) => {
 									style={{ height: 60, width: 60 }}
 									className="border-2 border-orange-500/20 rounded-full flex justify-center items-center"
 								>
-									<Avatar size="4" src={invite.img} radius="full" fallback="T" />
+									<Avatar size="4" src="/src/assets/profile.png" radius="full" fallback="T" />
 								</div>
 							</div>
 						</div>
@@ -93,7 +97,7 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ invite }) => {
 				{invite.invite_status !== 'pending' ? (
 					<Box
 						className="absolute top-2 right-2 p-1 opacity-50 hover:opacity-100"
-						onClick={() => send(WS.DeleteMessage(WSC.username, hash, invite.sender))}
+						onClick={() => send(WS.DeleteMessage(WSC.username, hash, invite.game, invite.sender))}
 					>
 						<Cross2Icon />
 					</Box>
@@ -102,14 +106,17 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ invite }) => {
 				)}
 			</Inset>
 			<Text align="center" as="div" size="1" weight="bold" className="opacity-80">
-				<Text style={{ color: 'var(--accent-10)' }}>{invite.sender}</Text> invited you to play a match
+				<Text style={{ color: 'var(--accent-10)' }}>{invite.sender}</Text> invited you to play{' '}
+				<Text style={{ color: 'var(--accent-9)' }} weight="bold">
+					{invite.game}
+				</Text>
 			</Text>
 			<Box height="24px" />
 			<Flex justify="center">
 				<Button
 					disabled={invite.invite_status !== 'pending'}
 					size="1"
-					onClick={() => send(WS.AcceptMessage(WSC.username, hash, invite.sender))}
+					onClick={() => send(WS.AcceptMessage(WSC.username, hash, invite.game, invite.sender))}
 					style={{ width: '100%' }}
 				>
 					Accept
@@ -120,7 +127,7 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ invite }) => {
 				<Button
 					variant="soft"
 					size="1"
-					onClick={() => send(WS.RejectMessage(WSC.username, hash, invite.sender))}
+					onClick={() => send(WS.RejectMessage(WSC.username, hash, invite.game, invite.sender))}
 					style={{ width: '100%' }}
 					disabled={invite.invite_status !== 'pending'}
 				>

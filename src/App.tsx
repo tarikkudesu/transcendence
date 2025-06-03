@@ -33,7 +33,7 @@ const router = createBrowserRouter([
 				element: <Server />,
 			},
 			{
-				path: 'extra',
+				path: 'extra/:game',
 				element: <Extra />,
 			},
 		],
