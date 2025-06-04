@@ -1,25 +1,32 @@
 import { useContext, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Box, Button, Flex, Spinner, Text } from '@radix-ui/themes';
+import { Box, Button, Card, Flex, Spinner, Text } from '@radix-ui/themes';
 import { ClientPong, EngageMessage, rescaleFrame, WS, WSC, wsContext } from '../Hooks/ws-client';
 
 export const Lost: React.FC<unknown> = () => {
 	const navigate = useNavigate();
 	const { reset } = useContext(wsContext);
 	return (
-		<Flex direction="column" align="center" className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-			<Text size="7" weight="bold" mb="3">
-				🖕 YOU LOST 🖕
-			</Text>
-			<Button
-				onClick={() => {
-					navigate(-1);
-					reset();
-				}}
-			>
-				Back To The Pool
-			</Button>
-		</Flex>
+		<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+			<Card>
+				<Flex direction="column" align="center">
+					<Box height="48px" />
+					<Text size="9" weight="bold" mb="3">
+						🖕 LOST 🖕
+					</Text>
+					<Box height="12px" />
+					<Button
+						onClick={() => {
+							navigate(-1);
+							reset();
+						}}
+					>
+						Back To The Pool
+					</Button>
+					<Box height="48px" />
+				</Flex>
+			</Card>
+		</div>
 	);
 };
 export const Won: React.FC<unknown> = () => {
@@ -27,19 +34,26 @@ export const Won: React.FC<unknown> = () => {
 	const { reset } = useContext(wsContext);
 
 	return (
-		<Flex direction="column" align="center" className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-			<Text size="7" weight="bold" mb="3">
-				🎉 YOU WON 🎉
-			</Text>
-			<Button
-				onClick={() => {
-					navigate(-1);
-					reset();
-				}}
-			>
-				Back To The Pool
-			</Button>
-		</Flex>
+		<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+			<Card>
+				<Flex direction="column" align="center">
+					<Box height="48px" />
+					<Text size="9" weight="bold" mb="3" mx="4">
+						🎉 WON 🎉
+					</Text>
+					<Box height="12px" />
+					<Button
+						onClick={() => {
+							navigate(-1);
+							reset();
+						}}
+					>
+						Back To The Pool
+					</Button>
+					<Box height="48px" />
+				</Flex>
+			</Card>
+		</div>
 	);
 };
 export const Stop: React.FC<unknown> = () => {

@@ -1,4 +1,4 @@
-import { Box, Flex, Grid, Text } from '@radix-ui/themes';
+import { Box, Grid } from '@radix-ui/themes';
 import { useContext, useEffect } from 'react';
 import { EngageMessage, WS, WSC, wsContext } from '../Hooks/ws-client';
 import { Lost, Start, Stop, Won } from './Server';
@@ -57,9 +57,11 @@ const Extra: React.FC<unknown> = () => {
 		if (!doom.start) return <Start />;
 		return (
 			<>
+				<div className={doom.lost || doom.won ? 'opacity-30' : ''}>
+					<GameFrameElement cards={doom.cards} />
+				</div>
 				{doom.lost ? <Lost /> : ''}
 				{doom.won ? <Won /> : ''}
-				<GameFrameElement cards={doom.cards} />
 			</>
 		);
 	}
@@ -73,7 +75,7 @@ const Extra: React.FC<unknown> = () => {
 		<>
 			<div className="parent">
 				<div className="div1"></div>
-				<div className="div2 min-h-100 relative overflow-hidden">{Content()}</div>
+				<div className="div2 min-h-100 relative">{Content()}</div>
 				<div className="div3"></div>
 			</div>
 		</>
