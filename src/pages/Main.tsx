@@ -11,30 +11,30 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ pooler }) => {
 	const { send, hash } = useContext(wsContext);
 
 	function inviteAction(game: 'pong' | 'card of doom'): React.ReactNode {
-		if (pooler.invite_status === 'unsent')
+		if (pooler.inviteStatus === 'unsent')
 			return <Button onClick={() => send(WS.InviteMessage(WSC.username, hash, game, pooler.username))}>{game}</Button>;
 		if (game !== pooler.game) return <Button disabled>{game}</Button>;
-		else if (pooler.invite_status === 'pending') return <Button loading>{game}</Button>;
-		else if (pooler.invite_status === 'declined') return <Button disabled>{game}</Button>;
+		else if (pooler.inviteStatus === 'pending') return <Button loading>{game}</Button>;
+		else if (pooler.inviteStatus === 'declined') return <Button disabled>{game}</Button>;
 	}
 
 	function inviteStatus(): React.ReactNode {
-		if (pooler.invite_status === 'pending')
+		if (pooler.inviteStatus === 'pending')
 			return (
 				<Badge size="1" color="blue">
-					{pooler.invite_status}
+					{pooler.inviteStatus}
 				</Badge>
 			);
-		else if (pooler.invite_status === 'declined')
+		else if (pooler.inviteStatus === 'declined')
 			return (
 				<Badge size="1" color="red">
-					{pooler.invite_status}
+					{pooler.inviteStatus}
 				</Badge>
 			);
-		else if (pooler.invite_status === 'accepted')
+		else if (pooler.inviteStatus === 'accepted')
 			return (
 				<Badge size="1" color="green">
-					{pooler.invite_status}
+					{pooler.inviteStatus}
 				</Badge>
 			);
 		return;
@@ -44,7 +44,14 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ pooler }) => {
 		<Card>
 			<Flex gap="2" justify="between">
 				<Flex align="center" justify="start" gap="3">
-					<Avatar size="3" src="/src/assets/profile.png" radius="full" fallback="T" />
+					<Avatar
+						style={{ borderColor: pooler.playerStatus === 'free' ? 'green' : 'orange' }}
+						className="border-2 p-0.5"
+						size="3"
+						src="/src/assets/profile.png"
+						radius="full"
+						fallback="T"
+					/>
 					<Box>
 						<Text mr="2" size="2" weight="bold">
 							{pooler.username}
@@ -94,7 +101,7 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ invite }) => {
 						</div>
 					</div>
 				</Flex>
-				{invite.invite_status !== 'pending' ? (
+				{invite.inviteStatus !== 'pending' ? (
 					<Box
 						className="absolute top-2 right-2 p-1 opacity-50 hover:opacity-100"
 						onClick={() => send(WS.DeleteMessage(WSC.username, hash, invite.game, invite.sender))}
@@ -114,7 +121,7 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ invite }) => {
 			<Box height="24px" />
 			<Flex justify="center">
 				<Button
-					disabled={invite.invite_status !== 'pending'}
+					disabled={invite.inviteStatus !== 'pending'}
 					size="1"
 					onClick={() => send(WS.AcceptMessage(WSC.username, hash, invite.game, invite.sender))}
 					style={{ width: '100%' }}
@@ -129,7 +136,7 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ invite }) => {
 					size="1"
 					onClick={() => send(WS.RejectMessage(WSC.username, hash, invite.game, invite.sender))}
 					style={{ width: '100%' }}
-					disabled={invite.invite_status !== 'pending'}
+					disabled={invite.inviteStatus !== 'pending'}
 				>
 					Reject
 				</Button>
@@ -170,9 +177,9 @@ const Main: React.FC<unknown> = () => {
 								<Box height="12px" />
 								<Flex direction="column" gap="2">
 									{pool.map((pooler, index) => {
-										if (query.length === 0) return;
-										if (query.toLowerCase() === pooler.username.slice(0, query.length).toLowerCase())
-											return <PlayerCard pooler={pooler} key={index} />;
+										// if (query.length === 0) return;
+										// if (query.toLowerCase() === pooler.username.slice(0, query.length).toLowerCase())
+										return <PlayerCard pooler={pooler} key={index} />;
 									})}
 								</Flex>
 							</>

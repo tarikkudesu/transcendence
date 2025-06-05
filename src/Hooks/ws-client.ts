@@ -42,21 +42,28 @@ export class WSError {
 export class ClientPlayer {
 	public username: string;
 	public game: 'pong' | 'card of doom';
-	public invite_status: 'unsent' | 'pending' | 'accepted' | 'declined';
-	constructor(username: string, game: 'pong' | 'card of doom', invite_status: 'unsent' | 'pending' | 'accepted' | 'declined') {
-		this.invite_status = invite_status;
+	public playerStatus: 'playing' | 'free';
+	public inviteStatus: 'unsent' | 'pending' | 'accepted' | 'declined';
+	constructor(
+		username: string,
+		game: 'pong' | 'card of doom',
+		playerStatus: 'playing' | 'free',
+		inviteStatus: 'unsent' | 'pending' | 'accepted' | 'declined'
+	) {
+		this.inviteStatus = inviteStatus;
+		this.playerStatus = playerStatus;
 		this.username = username;
 		this.game = game;
 	}
-	static instance = new ClientPlayer('', 'pong', 'unsent');
+	static instance = new ClientPlayer('', 'pong', 'free', 'unsent');
 }
 
 export class ClientInvitation {
 	public sender: string;
 	public game: 'pong' | 'card of doom';
-	public invite_status: 'unsent' | 'pending' | 'accepted' | 'declined';
-	constructor(sender: string, game: 'pong' | 'card of doom', invite_status: 'unsent' | 'pending' | 'accepted' | 'declined') {
-		this.invite_status = invite_status;
+	public inviteStatus: 'unsent' | 'pending' | 'accepted' | 'declined';
+	constructor(sender: string, game: 'pong' | 'card of doom', inviteStatus: 'unsent' | 'pending' | 'accepted' | 'declined') {
+		this.inviteStatus = inviteStatus;
 		this.sender = sender;
 		this.game = game;
 	}
@@ -165,12 +172,12 @@ export class ClientPong {
 
 export class ClientCardOfDoom {
 	public cards: string[] = [];
-	public playerScore: number = 0;
-	public opponentScore: number = 0;
+	public myturn: boolean = false;
 	public start: boolean = false;
 	public stop: boolean = false;
 	public lost: boolean = false;
 	public won: boolean = false;
+	public timer: number = 0;
 	constructor() {}
 	public static instance = new ClientCardOfDoom();
 }
