@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Box, Button, Card, Flex, Spinner, Text } from '@radix-ui/themes';
-import { ClientPong, EngageMessage, rescaleFrame, WS, WSC, wsContext } from '../Hooks/ws-client';
+import { ClientPong, EngageMessage, HookMessage, rescaleFrame, WSC, wsContext } from '../Hooks/ws-client';
 
 export const Lost: React.FC<unknown> = () => {
 	const navigate = useNavigate();
@@ -91,17 +91,10 @@ interface GameFrameElementProps {
 	f: ClientPong;
 }
 const GameFrameElement: React.FC<GameFrameElementProps> = ({ f }) => {
-	console.log(f);
 	return (
 		<>
-			<div
-				className="bg-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-80"
-				style={{ width: 2, height: '100%' }}
-			></div>
-			<div
-				className="border-2 border-white rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-80"
-				style={{ height: 100, width: 100 }}
-			></div>
+			<div className="bg-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-80" style={{ width: 2, height: '100%' }}></div>
+			<div className="border-2 border-white rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-80" style={{ height: 100, width: 100 }}></div>
 			<Box
 				className="bg-teal-600 absolute rounded-tr-md rounded-br-md border-l-1 border-white"
 				style={{
@@ -143,15 +136,15 @@ const Server: React.FC<unknown> = () => {
 	function keyUp(e: KeyboardEvent) {
 		e.preventDefault();
 		if (e.code === 'ArrowDown' || e.code === 'ArrowUp') {
-			send(WS.HookMessage(WSC.username, hash, 'pong', game ? game : '', false, false));
+			send(HookMessage(WSC.username, hash, 'pong', game ? game : '', false, false));
 		}
 	}
 	function keyDown(e: KeyboardEvent) {
 		e.preventDefault();
 		if (e.code === 'ArrowUp') {
-			send(WS.HookMessage(WSC.username, hash, 'pong', game ? game : '', true, false));
+			send(HookMessage(WSC.username, hash, 'pong', game ? game : '', true, false));
 		} else if (e.code === 'ArrowDown') {
-			send(WS.HookMessage(WSC.username, hash, 'pong', game ? game : '', false, true));
+			send(HookMessage(WSC.username, hash, 'pong', game ? game : '', false, true));
 		}
 	}
 
@@ -178,11 +171,11 @@ const Server: React.FC<unknown> = () => {
 		<>
 			<Flex justify="center" my="3">
 				<Text size="9" weight="bold">
-					{pong.playerScore}
+					{pong.opponentScore}
 				</Text>
 				<Box width="100px"></Box>
 				<Text size="9" weight="bold">
-					{pong.opponentScore}
+					{pong.playerScore}
 				</Text>
 			</Flex>
 			<div className="parent">

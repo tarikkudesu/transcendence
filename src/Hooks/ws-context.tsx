@@ -2,20 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useNotification } from './useNotification';
 
-import {
-	WS,
-	Pool,
-	Play,
-	Hash,
-	Message,
-	wsContext,
-	Invitations,
-	ClientPlayer,
-	ClientInvitation,
-	WSError,
-	ClientPong,
-	ClientCardOfDoom,
-} from './ws-client';
+import { Pool, Play, Hash, Message, wsContext, Invitations, ClientPlayer, ClientInvitation, WSError, ClientPong, ClientCardOfDoom, Json } from './ws-client';
 
 interface WSProviderProps {
 	url?: string;
@@ -52,7 +39,6 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 
 	function send(message: string) {
 		if (socketRef.current?.OPEN) socketRef.current?.send(message);
-		// else throw new Error('Socket not available');
 	}
 	useEffect(
 		function () {
@@ -60,39 +46,39 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 				switch (event) {
 					// ? Pool
 					case 'HASH': {
-						const h: Hash = WS.Json({ message, target: Hash.instance });
+						const h: Hash = Json({ message, target: Hash.instance });
 						setHash(h.hash);
 						break;
 					}
 					case 'POOL': {
-						const p: Pool = WS.Json({ message, target: Pool.instance });
+						const p: Pool = Json({ message, target: Pool.instance });
 						setPool(p.pool);
 						break;
 					}
 					case 'INVITATIONS': {
-						const i: Invitations = WS.Json({ message, target: Invitations.instance });
+						const i: Invitations = Json({ message, target: Invitations.instance });
 						setInvitations(i.invitations);
 						break;
 					}
 					case 'PLAY': {
-						const p: Play = WS.Json({ message, target: Play.instance });
+						const p: Play = Json({ message, target: Play.instance });
 						if (game === 'pong') navigate('/server/' + p.gid);
 						else navigate('/extra/' + p.gid);
 						break;
 					}
 					// ? Game
 					case 'PONG': {
-						const p: ClientPong = WS.Json({ message, target: ClientPong.instance });
+						const p: ClientPong = Json({ message, target: ClientPong.instance });
 						setPong(p);
 						break;
 					}
 					case 'DOOM': {
-						const d: ClientCardOfDoom = WS.Json({ message, target: ClientCardOfDoom.instance });
+						const d: ClientCardOfDoom = Json({ message, target: ClientCardOfDoom.instance });
 						setDoom(d);
 						break;
 					}
 					case 'ERROR': {
-						const r: WSError = WS.Json({ message, target: WSError.instance });
+						const r: WSError = Json({ message, target: WSError.instance });
 						notify({ message: r.message, error: true });
 						break;
 					}
@@ -103,7 +89,7 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 			function onmessage(e: MessageEvent) {
 				setData(e.data);
 				try {
-					const m: Message = WS.Json({ message: e.data, target: Message.instance });
+					const m: Message = Json({ message: e.data, target: Message.instance });
 					parse(m.message, m.data, m.game);
 					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				} catch (err: any) {
@@ -136,11 +122,7 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 		[navigate, url] // ! MAY POTENTIALY CAUSE PROBLEMS
 	);
 
-	return (
-		<wsContext.Provider value={{ error, close, open, data, hash, send, pool, invitations, pong, doom, reset }}>
-			{children}
-		</wsContext.Provider>
-	);
+	return <wsContext.Provider value={{ error, close, open, data, hash, send, pool, invitations, pong, doom, reset }}>{children}</wsContext.Provider>;
 };
 
 export default WSProvider;

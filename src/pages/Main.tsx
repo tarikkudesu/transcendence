@@ -1,7 +1,7 @@
+import { useContext, useState } from 'react';
 import { Cross2Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import { Card, Grid, TextField, Text, Box, Avatar, Flex, Button, Inset, Badge } from '@radix-ui/themes';
-import { useContext, useState } from 'react';
-import { ClientInvitation, ClientPlayer, WS, WSC, wsContext } from '../Hooks/ws-client';
+import { AcceptMessage, ClientInvitation, ClientPlayer, DeleteMessage, InviteMessage, RejectMessage, WSC, wsContext } from '../Hooks/ws-client';
 
 interface PlayerCardProps {
 	pooler: ClientPlayer;
@@ -11,8 +11,8 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ pooler }) => {
 	const { send, hash } = useContext(wsContext);
 
 	function inviteAction(game: 'pong' | 'card of doom'): React.ReactNode {
-		if (pooler.inviteStatus === 'unsent')
-			return <Button onClick={() => send(WS.InviteMessage(WSC.username, hash, game, pooler.username))}>{game}</Button>;
+		if (pooler.playerStatus === 'playing') return <Button disabled>{game}</Button>;
+		if (pooler.inviteStatus === 'unsent') return <Button onClick={() => send(InviteMessage(WSC.username, hash, game, pooler.username))}>{game}</Button>;
 		if (game !== pooler.game) return <Button disabled>{game}</Button>;
 		else if (pooler.inviteStatus === 'pending') return <Button loading>{game}</Button>;
 		else if (pooler.inviteStatus === 'declined') return <Button disabled>{game}</Button>;
@@ -44,14 +44,7 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ pooler }) => {
 		<Card>
 			<Flex gap="2" justify="between">
 				<Flex align="center" justify="start" gap="3">
-					<Avatar
-						style={{ borderColor: pooler.playerStatus === 'free' ? 'green' : 'orange' }}
-						className="border-2 p-0.5"
-						size="3"
-						src="/src/assets/profile.png"
-						radius="full"
-						fallback="T"
-					/>
+					<Avatar style={{ borderColor: pooler.playerStatus === 'free' ? 'green' : 'orange' }} className="border-2 p-0.5" size="3" src="/src/assets/profile.png" radius="full" fallback="T" />
 					<Box>
 						<Text mr="2" size="2" weight="bold">
 							{pooler.username}
@@ -79,22 +72,10 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ invite }) => {
 			<Inset clip="padding-box" side="top" pb="current" className="relative">
 				<Box height="120px"></Box>
 				<Flex direction="column" align="center" className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2">
-					<div
-						style={{ height: 90, width: 90 }}
-						className="border-2 border-orange-500/80 rounded-full flex justify-center items-center"
-					>
-						<div
-							style={{ height: 80, width: 80 }}
-							className="border-2 border-orange-500/60 rounded-full flex justify-center items-center"
-						>
-							<div
-								style={{ height: 70, width: 70 }}
-								className="border-2 border-orange-500/40 rounded-full flex justify-center items-center"
-							>
-								<div
-									style={{ height: 60, width: 60 }}
-									className="border-2 border-orange-500/20 rounded-full flex justify-center items-center"
-								>
+					<div style={{ height: 90, width: 90 }} className="border-2 border-orange-500/80 rounded-full flex justify-center items-center">
+						<div style={{ height: 80, width: 80 }} className="border-2 border-orange-500/60 rounded-full flex justify-center items-center">
+							<div style={{ height: 70, width: 70 }} className="border-2 border-orange-500/40 rounded-full flex justify-center items-center">
+								<div style={{ height: 60, width: 60 }} className="border-2 border-orange-500/20 rounded-full flex justify-center items-center">
 									<Avatar size="4" src="/src/assets/profile.png" radius="full" fallback="T" />
 								</div>
 							</div>
@@ -102,10 +83,7 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ invite }) => {
 					</div>
 				</Flex>
 				{invite.inviteStatus !== 'pending' ? (
-					<Box
-						className="absolute top-2 right-2 p-1 opacity-50 hover:opacity-100"
-						onClick={() => send(WS.DeleteMessage(WSC.username, hash, invite.game, invite.sender))}
-					>
+					<Box className="absolute top-2 right-2 p-1 opacity-50 hover:opacity-100" onClick={() => send(DeleteMessage(WSC.username, hash, invite.game, invite.sender))}>
 						<Cross2Icon />
 					</Box>
 				) : (
@@ -120,12 +98,7 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ invite }) => {
 			</Text>
 			<Box height="24px" />
 			<Flex justify="center">
-				<Button
-					disabled={invite.inviteStatus !== 'pending'}
-					size="1"
-					onClick={() => send(WS.AcceptMessage(WSC.username, hash, invite.game, invite.sender))}
-					style={{ width: '100%' }}
-				>
+				<Button disabled={invite.inviteStatus !== 'pending'} size="1" onClick={() => send(AcceptMessage(WSC.username, hash, invite.game, invite.sender))} style={{ width: '100%' }}>
 					Accept
 				</Button>
 			</Flex>
@@ -134,7 +107,7 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ invite }) => {
 				<Button
 					variant="soft"
 					size="1"
-					onClick={() => send(WS.RejectMessage(WSC.username, hash, invite.game, invite.sender))}
+					onClick={() => send(RejectMessage(WSC.username, hash, invite.game, invite.sender))}
 					style={{ width: '100%' }}
 					disabled={invite.inviteStatus !== 'pending'}
 				>
@@ -154,12 +127,7 @@ const Main: React.FC<unknown> = () => {
 			<div className="max-w-300 mx-auto px-12">
 				<Grid columns={{ initial: '1', md: '2' }} gap="3">
 					<Card>
-						<TextField.Root
-							value={query}
-							onChange={(event: React.ChangeEvent<HTMLInputElement>) => setQuery(event.target.value)}
-							placeholder="Search the pool"
-							className="outline-none"
-						>
+						<TextField.Root value={query} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setQuery(event.target.value)} placeholder="Search the pool" className="outline-none">
 							<TextField.Slot>
 								<MagnifyingGlassIcon height="16" width="16" />
 							</TextField.Slot>

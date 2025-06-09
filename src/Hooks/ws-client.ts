@@ -44,12 +44,7 @@ export class ClientPlayer {
 	public game: 'pong' | 'card of doom';
 	public playerStatus: 'playing' | 'free';
 	public inviteStatus: 'unsent' | 'pending' | 'accepted' | 'declined';
-	constructor(
-		username: string,
-		game: 'pong' | 'card of doom',
-		playerStatus: 'playing' | 'free',
-		inviteStatus: 'unsent' | 'pending' | 'accepted' | 'declined'
-	) {
+	constructor(username: string, game: 'pong' | 'card of doom', playerStatus: 'playing' | 'free', inviteStatus: 'unsent' | 'pending' | 'accepted' | 'declined') {
 		this.inviteStatus = inviteStatus;
 		this.playerStatus = playerStatus;
 		this.username = username;
@@ -198,54 +193,51 @@ export class WSC {
 		if (WSC.instance) return WSC.instance;
 		WSC.instance = this;
 	}
+}
+// * connect, invite, play, hook
 
-	// * connect, invite, play, hook
+// ? Comminication Helpers
+export function Json({ message, target }: JsonProps) {
+	const json = JSON.parse(message);
+	const properties = Object.getOwnPropertyNames(json);
+	Object.getOwnPropertyNames(target).forEach((property) => {
+		if (_.includes(properties, property) === false) throw new Error('Invalid JSON ' + message + JSON.stringify(target));
+	});
+	return json;
+}
 
-	// ? Comminication Helpers
-	Json({ message, target }: JsonProps) {
-		const json = JSON.parse(message);
-		const properties = Object.getOwnPropertyNames(json);
-		Object.getOwnPropertyNames(target).forEach((property) => {
-			if (_.includes(properties, property) === false) throw new Error('Invalid JSON ' + message + JSON.stringify(target));
-		});
-		return json;
-	}
+// ? Protocole Message Builders
+export function ErrorMessage(error: string) {
+	return JSON.stringify(new Message({ username: '', hash: '', message: 'ERROR', game: 'pong', data: new WSError(error) }));
+}
 
-	// ? Protocole Message Builders
-	ErrorMessage(error: string) {
-		return JSON.stringify(new Message({ username: '', hash: '', message: 'ERROR', game: 'pong', data: new WSError(error) }));
-	}
+export function ConnectMessage(username: string, hash: string): string {
+	return JSON.stringify(new Message({ username, hash, message: 'CONNECT', game: 'pong', data: {} }));
+}
+export function EngageMessage(username: string, hash: string, game: 'pong' | 'card of doom', gid: string): string {
+	return JSON.stringify(new Message({ username, hash, message: 'ENGAGE', game, data: new Engage(gid) }));
+}
+export function InviteMessage(username: string, hash: string, game: 'pong' | 'card of doom', recipient: string): string {
+	return JSON.stringify(new Message({ username, hash, message: 'INVITE', game, data: new Invite(recipient) }));
+}
+export function AcceptMessage(username: string, hash: string, game: 'pong' | 'card of doom', recipient: string): string {
+	return JSON.stringify(new Message({ username, hash, message: 'ACCEPT', game, data: new Invite(recipient) }));
+}
+export function RejectMessage(username: string, hash: string, game: 'pong' | 'card of doom', recipient: string): string {
+	return JSON.stringify(new Message({ username, hash, message: 'REJECT', game, data: new Invite(recipient) }));
+}
+export function DeleteMessage(username: string, hash: string, game: 'pong' | 'card of doom', recipient: string): string {
+	return JSON.stringify(new Message({ username, hash, message: 'DELETE', game, data: new Invite(recipient) }));
+}
 
-	ConnectMessage(username: string, hash: string): string {
-		return JSON.stringify(new Message({ username, hash, message: 'CONNECT', game: 'pong', data: {} }));
-	}
-	EngageMessage(username: string, hash: string, game: 'pong' | 'card of doom', gid: string): string {
-		return JSON.stringify(new Message({ username, hash, message: 'ENGAGE', game, data: new Engage(gid) }));
-	}
-	InviteMessage(username: string, hash: string, game: 'pong' | 'card of doom', recipient: string): string {
-		return JSON.stringify(new Message({ username, hash, message: 'INVITE', game, data: new Invite(recipient) }));
-	}
-	AcceptMessage(username: string, hash: string, game: 'pong' | 'card of doom', recipient: string): string {
-		return JSON.stringify(new Message({ username, hash, message: 'ACCEPT', game, data: new Invite(recipient) }));
-	}
-	RejectMessage(username: string, hash: string, game: 'pong' | 'card of doom', recipient: string): string {
-		return JSON.stringify(new Message({ username, hash, message: 'REJECT', game, data: new Invite(recipient) }));
-	}
-	DeleteMessage(username: string, hash: string, game: 'pong' | 'card of doom', recipient: string): string {
-		return JSON.stringify(new Message({ username, hash, message: 'DELETE', game, data: new Invite(recipient) }));
-	}
-
-	HookMessage(username: string, hash: string, game: 'pong' | 'card of doom', gid: string, up: boolean, down: boolean): string {
-		return JSON.stringify(new Message({ username, hash, message: 'HOOK', game, data: new Hook(gid, up, down) }));
-	}
-	FlipMessage(username: string, hash: string, game: 'pong' | 'card of doom', gid: string, pos: number): string {
-		return JSON.stringify(new Message({ username, hash, message: 'FLIP', game, data: new Flip(gid, pos) }));
-	}
+export function HookMessage(username: string, hash: string, game: 'pong' | 'card of doom', gid: string, up: boolean, down: boolean): string {
+	return JSON.stringify(new Message({ username, hash, message: 'HOOK', game, data: new Hook(gid, up, down) }));
+}
+export function FlipMessage(username: string, hash: string, game: 'pong' | 'card of doom', gid: string, pos: number): string {
+	return JSON.stringify(new Message({ username, hash, message: 'FLIP', game, data: new Flip(gid, pos) }));
 }
 
 export const WS = new WSC();
-
-export const { ErrorMessage, ConnectMessage, InviteMessage, AcceptMessage, RejectMessage, DeleteMessage, HookMessage, EngageMessage } = WS;
 
 class initialState {
 	// * Websocket vars

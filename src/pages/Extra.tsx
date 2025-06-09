@@ -1,6 +1,6 @@
-import { Box, Grid } from '@radix-ui/themes';
+import { Box, Grid, Text } from '@radix-ui/themes';
 import { useContext, useEffect } from 'react';
-import { EngageMessage, WS, WSC, wsContext } from '../Hooks/ws-client';
+import { EngageMessage, FlipMessage, WSC, wsContext } from '../Hooks/ws-client';
 import { Lost, Start, Stop, Won } from './Server';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -12,22 +12,17 @@ interface DiamondProps {
 const Diamond: React.FC<DiamondProps> = ({ state, index }) => {
 	const { send, hash } = useContext(wsContext);
 	const { game } = useParams();
-	const className: string =
-		'aspect-square bg-amber-700 hover:bg-amber-500 rounded-md xl:rounded-xl hover:border-b-8 border-amber-600 duration-100 demo-box cursor-pointer';
+	const className: string = 'aspect-square bg-amber-700 hover:bg-amber-500 rounded-md xl:rounded-xl hover:border-b-8 border-amber-600 duration-100 demo-box cursor-pointer';
 	const classNameActive: string = 'aspect-square bg-amber-950/80 rounded-md xl:rounded-xl cursor-pointer';
 
 	return (
 		<Box
 			className={state !== 'C' ? classNameActive : className}
 			onClick={() => {
-				if (state === 'C') send(WS.FlipMessage(WSC.username, hash, 'card of doom', game ? game : '', index));
+				if (state === 'C') send(FlipMessage(WSC.username, hash, 'card of doom', game ? game : '', index));
 			}}
 		>
-			{state !== 'C' ? (
-				<img src={state === 'B' ? '/src/assets/bomb_b.png' : '/src/assets/d.png'} className="p-8 zoom-bounce" draggable="false" />
-			) : (
-				''
-			)}
+			{state !== 'C' ? <img src={state === 'B' ? '/src/assets/bomb_b.png' : '/src/assets/d.png'} className="p-8 zoom-bounce" draggable="false" /> : ''}
 		</Box>
 	);
 };
@@ -57,6 +52,12 @@ const Extra: React.FC<unknown> = () => {
 		if (!doom.start) return <Start />;
 		return (
 			<>
+				<Text as="div" align="center">
+					Timer: {doom.timer}
+				</Text>
+				<Text as="div" align="center" mb="4">
+					My Turn: {doom.myturn ? 'yes' : 'no'}
+				</Text>
 				<div className={doom.lost || doom.won ? 'opacity-30' : ''}>
 					<GameFrameElement cards={doom.cards} />
 				</div>
