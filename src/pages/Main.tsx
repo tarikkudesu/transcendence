@@ -125,7 +125,7 @@ const Main: React.FC<unknown> = () => {
 	return (
 		<>
 			<div className="max-w-300 mx-auto px-12">
-				<Grid columns={{ initial: '1', md: '2' }} gap="3">
+				<Grid columns={{ initial: '1', md: '3' }} gap="3">
 					<Card>
 						<TextField.Root value={query} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setQuery(event.target.value)} placeholder="Search the pool" className="outline-none">
 							<TextField.Slot>
@@ -165,6 +165,35 @@ const Main: React.FC<unknown> = () => {
 								))}
 							</Grid>
 						)}
+					</Card>
+					<Card>
+						<Card>
+							<img
+								src="/src/assets/Tournament.png"
+								className="aspect-square"
+								alt="Tournament"
+								style={{
+									objectFit: 'cover',
+									display: 'block',
+									width: '100%',
+								}}
+							/>
+							<Flex className="flex-grow" justify="between" align="end">
+								<Box>
+									<Text as="div" size="3" weight="bold">
+										Big Donkey
+									</Text>
+									<Text as="div" size="1" className="opacity-75">
+										will open at 15:56
+									</Text>
+									{/* <Text as="div" size="1" className="opacity-75">
+										7 empty slots
+									</Text> */}
+								</Box>
+								<Button>Register</Button>
+							</Flex>
+						</Card>
+						
 					</Card>
 				</Grid>
 			</div>
