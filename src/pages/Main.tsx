@@ -1,7 +1,8 @@
 import { useContext, useState } from 'react';
 import { Cross2Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
-import { Card, Grid, TextField, Text, Box, Avatar, Flex, Button, Inset, Badge } from '@radix-ui/themes';
-import { AcceptMessage, ClientInvitation, ClientPlayer, DeleteMessage, InviteMessage, RejectMessage, WSC, wsContext } from '../Hooks/ws-client';
+import { Card, Grid, TextField, Text, Box, Avatar, Flex, Button, Inset, Badge, Tooltip } from '@radix-ui/themes';
+import { AcceptMessage, ClientInvitation, ClientPlayer, DeleteMessage, InviteMessage, RegisterMessage, RejectMessage, WSC, wsContext } from '../Hooks/ws-client';
+import { useNavigate } from 'react-router-dom';
 
 interface PlayerCardProps {
 	pooler: ClientPlayer;
@@ -119,12 +120,12 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ invite }) => {
 };
 
 const Main: React.FC<unknown> = () => {
+	const navigate = useNavigate();
 	const [query, setQuery] = useState<string>('');
-	const { pool, invitations } = useContext(wsContext);
-
+	const { pool, invitations, tournament, send, hash } = useContext(wsContext);
 	return (
 		<>
-			<div className="max-w-300 mx-auto px-12">
+			<div className="max-w-500 mx-auto px-12">
 				<Grid columns={{ initial: '1', md: '3' }} gap="3">
 					<Card>
 						<TextField.Root value={query} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setQuery(event.target.value)} placeholder="Search the pool" className="outline-none">
@@ -181,19 +182,85 @@ const Main: React.FC<unknown> = () => {
 							<Flex className="flex-grow" justify="between" align="end">
 								<Box>
 									<Text as="div" size="3" weight="bold">
-										Big Donkey
+										{tournament.name}
 									</Text>
-									<Text as="div" size="1" className="opacity-75">
-										will open at 15:56
-									</Text>
-									{/* <Text as="div" size="1" className="opacity-75">
-										7 empty slots
-									</Text> */}
+									{tournament.state === 'open' && (
+										<Text as="div" size="1" className="opacity-75">
+											{tournament.emptySlots} empty slots
+										</Text>
+									)}
+									{tournament.state === 'not open' && (
+										<Text as="div" size="1" className="opacity-75">
+											will open at {tournament.date}
+										</Text>
+									)}
+									{tournament.state === 'playing' && (
+										<Text as="div" size="1" className="opacity-75">
+											This is your match
+										</Text>
+									)}
 								</Box>
-								<Button>Register</Button>
+								{tournament.state === 'playing' && tournament.registered ? (
+									<Button disabled={tournament.gid === ''} onClick={() => navigate('/server/' + tournament.gid)}>
+										Play
+									</Button>
+								) : (
+									<Button disabled={tournament.state !== 'open' || tournament.registered} onClick={() => send(RegisterMessage(WSC.username, hash, 'pong', tournament.name))}>
+										Register
+									</Button>
+								)}
 							</Flex>
 						</Card>
-						
+						{tournament.state === 'playing' && (
+							<>
+								<Box height="12px" />
+								<Card>
+									<Flex align="end" justify="center" gap="4">
+										{tournament.results.map((ele, index) => (
+											<Tooltip content={ele.username} key={index}>
+												<Flex align="center" direction="column" gap="2">
+													<Avatar size="1" radius="full" fallback={`${ele.username[0]}`} className="border-2 p-0.5" style={{ borderColor: 'var(--accent-10)' }} />
+													<Box height={`${ele.level * 20}px`} width="15px" className="rounded-full" style={{ backgroundColor: 'var(--accent-10)' }}></Box>
+													<Text>{ele.level}</Text>
+												</Flex>
+											</Tooltip>
+										))}
+										{/* <Avatar size="4" src="/src/assets/3.png" radius="full" fallback="3" />
+										<Avatar size="4" src="/src/assets/2.png" radius="full" fallback="2" />
+										<Avatar size="4" src="/src/assets/1.png" radius="full" fallback="1" /> */}
+									</Flex>
+								</Card>
+							</>
+						)}
+						{tournament.state === 'playing' && (
+							<>
+								<Box height="12px" />
+								<Text as="div" align="center" weight="bold">
+									Tournament Live Games - ROUND {tournament.round} -
+								</Text>
+								{tournament.nextMatches.map((ele, index) => (
+									<Card mt="2" key={index}>
+										<Flex align="center" justify="center" gap="4">
+											<Flex align="center" gap="2">
+												<Avatar size="2" radius="full" fallback={'E'} className="border-2 p-0.5" style={{ borderColor: 'var(--accent-10)' }} />
+												<Text as="div" weight="bold">
+													{ele.player}
+												</Text>
+											</Flex>
+											<Text as="div" size="7" className="font-serif" weight="bold" style={{ color: 'var(--accent-10)' }}>
+												VS
+											</Text>
+											<Flex align="center" gap="2">
+												<Text as="div" weight="bold">
+													{ele.opponent}
+												</Text>
+												<Avatar size="2" radius="full" fallback="K" className="border-2 p-0.5" style={{ borderColor: 'var(--accent-10)' }} />
+											</Flex>
+										</Flex>
+									</Card>
+								))}
+							</>
+						)}
 					</Card>
 				</Grid>
 			</div>

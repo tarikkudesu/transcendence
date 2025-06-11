@@ -43,7 +43,7 @@ const router = createBrowserRouter([
 function App() {
 	return (
 		<>
-			<Theme appearance="dark" accentColor="orange" grayColor="mauve" panelBackground="solid" scaling="100%">
+			<Theme appearance="dark" accentColor="teal" grayColor="mauve" panelBackground="solid" scaling="100%">
 				<Toaster />
 				<RouterProvider router={router} />
 			</Theme>

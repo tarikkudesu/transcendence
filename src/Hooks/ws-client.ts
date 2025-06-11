@@ -65,9 +65,61 @@ export class ClientInvitation {
 	static instance = new ClientInvitation('', 'pong', 'unsent');
 }
 
+export type TournamentStateTYPE = 'not open' | 'open' | 'playing' | 'finished';
+export type TournamentMatchTYPE = {
+	player: string;
+	opponent: string;
+	finished: boolean;
+};
+export type TournamentPlayerTYPE = {
+	username: string;
+	level: number;
+};
+interface ClientTournamentProps {
+	gid: string;
+	name: string;
+	date: string;
+	round: number;
+	emptySlots: number;
+	registered: boolean;
+	state: TournamentStateTYPE;
+	results: TournamentPlayerTYPE[];
+	nextMatches: TournamentMatchTYPE[];
+}
+export class ClientTournament {
+	public gid: string;
+	public date: string;
+	public name: string;
+	public round: number;
+	public emptySlots: number;
+	public registered: boolean;
+	public state: TournamentStateTYPE;
+	public results: TournamentPlayerTYPE[];
+	public nextMatches: TournamentMatchTYPE[];
+	constructor({ name, date, emptySlots, state, results, registered, nextMatches, round, gid }: ClientTournamentProps) {
+		this.nextMatches = nextMatches;
+		this.registered = registered;
+		this.emptySlots = emptySlots;
+		this.results = results;
+		this.state = state;
+		this.round = round;
+		this.date = date;
+		this.name = name;
+		this.gid = gid;
+	}
+	static instance = new ClientTournament({ name: '', date: '', emptySlots: 0, registered: false, state: 'not open', results: [], nextMatches: [], round: 0, gid: '' });
+}
 // ! res --------------------------------------------------------------------------------
 
 // * Pool
+
+export class Register {
+	name: string;
+	constructor(name: string) {
+		this.name = name;
+	}
+	public static instance = new Register('');
+}
 
 export class Engage {
 	gid: string;
@@ -236,6 +288,9 @@ export function HookMessage(username: string, hash: string, game: 'pong' | 'card
 export function FlipMessage(username: string, hash: string, game: 'pong' | 'card of doom', gid: string, pos: number): string {
 	return JSON.stringify(new Message({ username, hash, message: 'FLIP', game, data: new Flip(gid, pos) }));
 }
+export function RegisterMessage(username: string, hash: string, game: 'pong' | 'card of doom', name: string): string {
+	return JSON.stringify(new Message({ username, hash, message: 'REGISTER', game, data: new Register(name) }));
+}
 
 export const WS = new WSC();
 
@@ -250,6 +305,7 @@ class initialState {
 	hash: string = '';
 	pool: ClientPlayer[] = [];
 	invitations: ClientInvitation[] = [];
+	tournament: ClientTournament = ClientTournament.instance;
 
 	pong: ClientPong = ClientPong.instance;
 	doom: ClientCardOfDoom = ClientCardOfDoom.instance;

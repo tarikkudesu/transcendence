@@ -43,7 +43,7 @@ const Home: React.FC<unknown> = () => {
 					<Text size="1" weight="bold" className="opacity-80">
 						{WSC.username}
 					</Text>
-					<Avatar size="2" src="/src/assets/profile.png" radius="full" fallback="T" className="border-2 border-amber-600 p-0.5" />
+					<Avatar size="2" src="/src/assets/profile.png" radius="full" fallback="T" className="border-2 p-0.5" style={{ borderColor: 'var(--accent-10)' }} />
 				</Flex>
 			</Flex>
 			<Dialog.Root>
@@ -64,11 +64,7 @@ const Home: React.FC<unknown> = () => {
 							<Text as="div" size="2" mb="1" weight="bold">
 								username
 							</Text>
-							<TextField.Root
-								defaultValue={username}
-								placeholder="Enter your username"
-								onChange={(e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
-							/>
+							<TextField.Root defaultValue={username} placeholder="Enter your username" onChange={(e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)} />
 						</label>
 					</Flex>
 					<Flex gap="3" mt="4" justify="end">

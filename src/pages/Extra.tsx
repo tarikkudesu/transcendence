@@ -12,12 +12,13 @@ interface DiamondProps {
 const Diamond: React.FC<DiamondProps> = ({ state, index }) => {
 	const { send, hash } = useContext(wsContext);
 	const { game } = useParams();
-	const className: string = 'aspect-square bg-amber-700 hover:bg-amber-500 rounded-md xl:rounded-xl hover:border-b-8 border-amber-600 duration-100 demo-box cursor-pointer';
+	const className: string = 'aspect-square bg-amber-700 hover:bg-amber-500 rounded-md xl:rounded-xl hover:border-b-8 duration-100 demo-box cursor-pointer';
 	const classNameActive: string = 'aspect-square bg-amber-950/80 rounded-md xl:rounded-xl cursor-pointer';
 
 	return (
 		<Box
 			className={state !== 'C' ? classNameActive : className}
+			style={{ borderColor: state === 'C' ? 'var(--accent-10)' : '' }}
 			onClick={() => {
 				if (state === 'C') send(FlipMessage(WSC.username, hash, 'card of doom', game ? game : '', index));
 			}}

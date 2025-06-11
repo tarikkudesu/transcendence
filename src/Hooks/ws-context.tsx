@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useNotification } from './useNotification';
 
-import { Pool, Play, Hash, Message, wsContext, Invitations, ClientPlayer, ClientInvitation, WSError, ClientPong, ClientCardOfDoom, Json } from './ws-client';
+import { Pool, Play, Hash, Message, wsContext, Invitations, ClientPlayer, ClientInvitation, WSError, ClientPong, ClientCardOfDoom, Json, ClientTournament } from './ws-client';
 
 interface WSProviderProps {
 	url?: string;
@@ -21,6 +21,7 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 	const [hash, setHash] = useState<string>('');
 	const [pool, setPool] = useState<ClientPlayer[]>([]);
 	const [invitations, setInvitations] = useState<ClientInvitation[]>([]);
+	const [tournament, setTournament] = useState<ClientTournament>(ClientTournament.instance);
 
 	const [pong, setPong] = useState<ClientPong>(ClientPong.instance);
 	const [doom, setDoom] = useState<ClientCardOfDoom>(ClientCardOfDoom.instance);
@@ -77,6 +78,12 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 						setDoom(d);
 						break;
 					}
+					case 'TOURNAMENT': {
+						const t: ClientTournament = Json({ message, target: ClientTournament.instance });
+						setTournament(t);
+						console.log(t);
+						break;
+					}
 					case 'ERROR': {
 						const r: WSError = Json({ message, target: WSError.instance });
 						notify({ message: r.message, error: true });
@@ -122,7 +129,7 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 		[navigate, url] // ! MAY POTENTIALY CAUSE PROBLEMS
 	);
 
-	return <wsContext.Provider value={{ error, close, open, data, hash, send, pool, invitations, pong, doom, reset }}>{children}</wsContext.Provider>;
+	return <wsContext.Provider value={{ error, close, open, data, hash, send, pool, invitations, tournament, pong, doom, reset }}>{children}</wsContext.Provider>;
 };
 
 export default WSProvider;
