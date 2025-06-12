@@ -114,9 +114,9 @@ export class ClientTournament {
 // * Pool
 
 export class Register {
-	name: string;
-	constructor(name: string) {
-		this.name = name;
+	alias: string;
+	constructor(alias: string) {
+		this.alias = alias;
 	}
 	public static instance = new Register('');
 }
