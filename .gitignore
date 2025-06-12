@@ -1,3 +1,6 @@
+*.prettierrc
+*.vscode/settings.json
+
 # Logs
 logs
 *.log
