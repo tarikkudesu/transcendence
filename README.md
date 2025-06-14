@@ -27,7 +27,7 @@
 
 ## Bonus + 25%
 
-- **Major module**: Introduce an AI opponent.
+- **Major module**: Remote players
 - **Major module**: Add another game with user history and matchmaking.
 - **Minor module**: Game customization options.
 
@@ -42,13 +42,13 @@
     - **Major module**: Standard user management, authentication, users across tournaments. ✅
     - **Major module**: Implementing a remote authentication. ✅
 - **Gameplay and user experience**
-    - **Major module**: Remote players
+    - **Major module**: Remote players. ✅
     - **Major module**: Multiplayer (more than 2 players in the same game).
     - **Major module**: Add another game with user history and matchmaking. ✅
     - **Minor module**: Game customization options. ✅
     - **Major module**: Live chat. ✅
 - **AI-Algo**
-    - **Major module**: Introduce an AI opponent. ✅
+    - **Major module**: Introduce an AI opponent.
     - **Minor module**: User and game stats dashboards
 - **Cybersecurity**
     - **Major module**: Implement WAF/ModSecurity with a hardened configura-tion and HashiCorp Vault for secrets management.
