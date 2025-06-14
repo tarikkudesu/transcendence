@@ -91,6 +91,11 @@ interface GameFrameElementProps {
 	f: ClientPong;
 }
 const GameFrameElement: React.FC<GameFrameElementProps> = ({ f }) => {
+	const playSound = () => {
+		const audio = new Audio('/src/assets/hit.mp3');
+		audio.play();
+	};
+	if (f.sound) playSound();
 	return (
 		<>
 			<div className="bg-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-80" style={{ width: 2, height: '100%' }}></div>
@@ -180,8 +185,8 @@ const Server: React.FC<unknown> = () => {
 			</Flex>
 			<div className="parent">
 				<div className="div1"></div>
-				<div ref={ref} className="div2 bg-amber-500/10 border-1 border-white rounded-4xl aspect-[4/3] relative overflow-hidden">
-					{Content()}
+				<div ref={ref} className="div2">
+					<div className="max-w-280 bg-amber-500/10 border-1 border-white rounded-4xl aspect-[4/3] relative overflow-hidden mx-auto">{Content()}</div>
 				</div>
 				<div className="div3"></div>
 			</div>

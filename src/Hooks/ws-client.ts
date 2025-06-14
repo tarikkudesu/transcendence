@@ -198,6 +198,8 @@ export class Invitations {
 // * Game
 
 export class ClientPong {
+	public sound: boolean = false;
+	public tinychat: string = '';
 	public playerScore: number = 0;
 	public opponentScore: number = 0;
 	public start: boolean = false;
@@ -218,6 +220,7 @@ export class ClientPong {
 }
 
 export class ClientCardOfDoom {
+	public tinychat: string[] = [];
 	public cards: string[] = [];
 	public myturn: boolean = false;
 	public start: boolean = false;
