@@ -92,7 +92,7 @@ interface GameFrameElementProps {
 }
 const GameFrameElement: React.FC<GameFrameElementProps> = ({ f }) => {
 	const playSound = () => {
-		const audio = new Audio('/src/assets/hit.mp3');
+		const audio = new Audio('/assets/hit.mp3');
 		audio.play();
 	};
 	if (f.sound) playSound();
@@ -133,8 +133,9 @@ const GameFrameElement: React.FC<GameFrameElementProps> = ({ f }) => {
 
 const Server: React.FC<unknown> = () => {
 	const { send, hash, pong } = useContext(wsContext);
-
 	const navigate = useNavigate();
+	if (WSC.username === '') navigate('/signin');
+
 	const { game } = useParams();
 	const ref = useRef<HTMLDivElement>(null);
 

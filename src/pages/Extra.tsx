@@ -23,7 +23,7 @@ const Diamond: React.FC<DiamondProps> = ({ state, index }) => {
 				if (state === 'C') send(FlipMessage(WSC.username, hash, 'card of doom', game ? game : '', index));
 			}}
 		>
-			{state !== 'C' ? <img src={state === 'B' ? '/src/assets/bomb_b.png' : '/src/assets/d.png'} className="p-8 zoom-bounce" draggable="false" /> : ''}
+			{state !== 'C' ? <img src={state === 'B' ? '/assets/bomb_b.png' : '/assets/d.png'} className="p-8 zoom-bounce" draggable="false" /> : ''}
 		</Box>
 	);
 };
@@ -47,6 +47,7 @@ const Extra: React.FC<unknown> = () => {
 	const { send, hash, doom } = useContext(wsContext);
 	const { game } = useParams();
 	const navigate = useNavigate();
+	if (WSC.username === '') navigate('/signin');
 
 	function Content(): React.ReactNode {
 		if (doom.stop) return <Stop />;

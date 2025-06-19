@@ -9,20 +9,25 @@ import Server from './pages/Server';
 import WSProvider from './Hooks/ws-context';
 import Extra from './pages/Extra';
 import { Toaster } from 'react-hot-toast';
+import SignIn from './pages/SignIn';
 
 const router = createBrowserRouter([
 	{
 		path: '/',
 		element: (
-			<WSProvider url="ws://localhost:3000/api/game/">
+			<WSProvider url="wss://localhost:7443/ws">
 				<Home />
 			</WSProvider>
 		),
 		errorElement: <ErrorPage />,
 		children: [
 			{
-				path: 'main',
+				index: true,
 				element: <Main />,
+			},
+			{
+				path: 'signin',
+				element: <SignIn />,
 			},
 			{
 				path: 'local',
@@ -37,6 +42,11 @@ const router = createBrowserRouter([
 				element: <Extra />,
 			},
 		],
+	},
+	{
+		path: '/error',
+		element: <ErrorPage />,
+		errorElement: <ErrorPage />,
 	},
 ]);
 

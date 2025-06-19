@@ -45,7 +45,7 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ pooler }) => {
 		<Card>
 			<Flex gap="2" justify="between">
 				<Flex align="center" justify="start" gap="3">
-					<Avatar style={{ borderColor: pooler.playerStatus === 'free' ? 'green' : 'orange' }} className="border-2 p-0.5" size="3" src="/src/assets/profile.png" radius="full" fallback="T" />
+					<Avatar style={{ borderColor: pooler.playerStatus === 'free' ? 'green' : 'orange' }} className="border-2 p-0.5" size="3" src="/assets/profile.png" radius="full" fallback="T" />
 					<Box>
 						<Text mr="2" size="2" weight="bold">
 							{pooler.username}
@@ -77,7 +77,7 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ invite }) => {
 						<div style={{ height: 80, width: 80 }} className="border-2 border-orange-500/60 rounded-full flex justify-center items-center">
 							<div style={{ height: 70, width: 70 }} className="border-2 border-orange-500/40 rounded-full flex justify-center items-center">
 								<div style={{ height: 60, width: 60 }} className="border-2 border-orange-500/20 rounded-full flex justify-center items-center">
-									<Avatar size="4" src="/src/assets/profile.png" radius="full" fallback="T" />
+									<Avatar size="4" src="/assets/profile.png" radius="full" fallback="T" />
 								</div>
 							</div>
 						</div>
@@ -121,6 +121,7 @@ const InvitationCard: React.FC<InvitationCardProps> = ({ invite }) => {
 
 const Main: React.FC<unknown> = () => {
 	const navigate = useNavigate();
+	if (WSC.username === '') navigate('/signin');
 	const [query, setQuery] = useState<string>('');
 	const { pool, invitations, tournament, send, hash } = useContext(wsContext);
 	return (
@@ -170,7 +171,7 @@ const Main: React.FC<unknown> = () => {
 					<Card>
 						<Card>
 							<img
-								src="/src/assets/Tournament.png"
+								src="/assets/Tournament.png"
 								className="aspect-square"
 								alt="Tournament"
 								style={{
@@ -225,9 +226,9 @@ const Main: React.FC<unknown> = () => {
 												</Flex>
 											</Tooltip>
 										))}
-										{/* <Avatar size="4" src="/src/assets/3.png" radius="full" fallback="3" />
-										<Avatar size="4" src="/src/assets/2.png" radius="full" fallback="2" />
-										<Avatar size="4" src="/src/assets/1.png" radius="full" fallback="1" /> */}
+										{/* <Avatar size="4" src="/assets/3.png" radius="full" fallback="3" />
+										<Avatar size="4" src="/assets/2.png" radius="full" fallback="2" />
+										<Avatar size="4" src="/assets/1.png" radius="full" fallback="1" /> */}
 									</Flex>
 								</Card>
 							</>
