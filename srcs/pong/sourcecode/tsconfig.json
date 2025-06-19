@@ -1,0 +1,16 @@
+{
+	"compilerOptions": {
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"target": "ES2020",
+		"module": "ESNext",
+		"moduleResolution": "Node",
+		"strict": true,
+		"forceConsistentCasingInFileNames": true,
+		"outDir": "srcs/game/dist",
+		"rootDir": "srcs/game",
+		"sourceMap": true
+	},
+	"include": ["srcs/game"],
+	"exclude": ["node_modules"]
+}

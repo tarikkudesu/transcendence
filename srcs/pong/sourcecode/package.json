@@ -1,0 +1,35 @@
+{
+	"name": "sourcecode",
+	"version": "1.0.0",
+	"main": "index.js",
+	"type": "module",
+	"scripts": {
+		"build": "tsc -p tsconfig.json"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"description": "",
+	"dependencies": {
+		"@fastify/websocket": "^11.1.0",
+		"date-fns": "^4.1.0",
+		"fastify": "^5.4.0",
+		"fastify-plugin": "^5.0.1",
+		"lodash": "^4.17.21",
+		"nodemon": "^3.1.10",
+		"pino-pretty": "^13.0.0",
+		"redis": "^5.5.6",
+		"unique-names-generator": "^4.7.1"
+	},
+	"devDependencies": {
+		"@eslint/js": "^9.29.0",
+		"@types/lodash": "^4.17.17",
+		"@types/node": "^24.0.3",
+		"@types/ws": "^8.18.1",
+		"dotenv": "^16.5.0",
+		"eslint": "^9.29.0",
+		"globals": "^16.2.0",
+		"typescript": "^5.8.3",
+		"typescript-eslint": "^8.34.1"
+	}
+}

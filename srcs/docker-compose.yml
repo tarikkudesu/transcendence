@@ -1,0 +1,91 @@
+services:
+    pong:
+        container_name: pong
+        build: ./pong
+        image: pong:pong
+        env_file:
+            - .env
+        networks:
+            - transcendance
+        expose:
+            - 3000
+        ports:
+            - target: 3000
+              published: 3000
+        develop:
+            watch:
+                - action: sync
+                  path: ./pong/sourcecode
+                  target: /app
+        restart: on-failure
+        # healthcheck:
+        #     test: ['CMD-SHELL', 'curl', '-f', 'http://localhost:3000/ping']
+        #     interval: 5s
+        #     timeout: 5s
+        #     retries: 5
+        #     start_period: 30s
+    backend:
+        container_name: backend
+        build: ./backend/
+        image: backend:pong
+        env_file:
+            - .env
+        networks:
+            - transcendance
+        expose:
+            - 3000
+        develop:
+            watch:
+                - action: sync
+                  path: ./backend/sourcecode
+                  target: /app
+        healthcheck:
+            test: ['CMD-SHELL', 'curl', '-f', 'http://localhost:3000/ping']
+            interval: 5s
+            timeout: 5s
+            retries: 5
+            start_period: 30s
+        restart: on-failure
+    nginx:
+        container_name: nginx
+        build: ./nginx/
+        image: nginx:pong
+        env_file:
+            - .env
+        networks:
+            - transcendance
+        ports:
+            - target: 7443
+              published: 7443
+        volumes:
+            - ./nginx/certs:/etc/nginx/certs:ro
+        develop:
+            watch:
+                - action: sync
+                  path: ./nginx/conf
+                  target: /etc/nginx
+        # depends_on:
+            # pong:
+            #     condition: service_healthy
+            #     restart: true
+            # backend:
+            #     condition: service_healthy
+            #     restart: true
+        restart: on-failure
+    redis:
+        container_name: redis
+        build: ./redis/
+        image: redis:pong
+        env_file:
+            - .env
+        networks:
+            - transcendance
+        ports:
+            - target: 9000
+              published: 9000
+        restart: on-failure
+
+networks:
+    transcendance:
+        name: transcendance
+        driver: bridge
