@@ -19,13 +19,13 @@ services:
                 - action: sync
                   path: ./pong/sourcecode
                   target: /app
-        # restart: on-failure
-        # healthcheck:
-        #     test: ['CMD-SHELL', 'curl -f http://localhost:3000/ws/ping']
-        #     interval: 5s
-        #     timeout: 5s
-        #     retries: 5
-        #     start_period: 30s
+        restart: on-failure
+        healthcheck:
+            test: ['CMD', 'curl', '-f', 'http://localhost:3000/ws/ping']
+            interval: 5s
+            timeout: 5s
+            retries: 5
+            start_period: 30s
     backend:
         container_name: backend
         build: ./backend/
@@ -43,13 +43,13 @@ services:
                 - action: sync
                   path: ./backend/sourcecode
                   target: /app
-        # restart: on-failure
-        # healthcheck:
-        #     test: ['CMD', 'curl -f http://localhost:3000/api/auth/pang']
-        #     interval: 5s
-        #     timeout: 5s
-        #     retries: 5
-        #     start_period: 30s
+        restart: on-failure
+        healthcheck:
+            test: ['CMD', 'curl', '-f', 'http://localhost:3000/api/auth/pang']
+            interval: 5s
+            timeout: 5s
+            retries: 5
+            start_period: 30s
     nginx:
         container_name: nginx
         build: ./nginx/
@@ -68,26 +68,26 @@ services:
                 - action: sync
                   path: ./nginx/conf
                   target: /etc/nginx
-        # depends_on:
-        #     pong:
-        #         condition: service_healthy
-        #         restart: true
-        #     backend:
-        #         condition: service_healthy
-        #         restart: true
-        # restart: on-failure
-    # redis:
-    #     container_name: redis
-    #     build: ./redis/
-    #     image: redis:pong
-    #     env_file:
-    #         - .env
-    #     networks:
-    #         - transcendance
-    #     ports:
-    #         - target: 9000
-    #           published: 9000
-    #     restart: on-failure
+        depends_on:
+            pong:
+                condition: service_healthy
+                restart: true
+            backend:
+                condition: service_healthy
+                restart: true
+        restart: on-failure
+    redis:
+        container_name: redis
+        build: ./redis/
+        image: redis:pong
+        env_file:
+            - .env
+        networks:
+            - transcendance
+        ports:
+            - target: 9000
+              published: 9000
+        restart: on-failure
 
 networks:
     transcendance:
