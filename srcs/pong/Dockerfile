@@ -1,6 +1,9 @@
-FROM node:lts
+FROM node:lts AS build
 WORKDIR /app
-COPY sourcecode/ /app
-RUN npm install
+COPY sourcecode/ .
+RUN npm ci
 RUN npm run build
-CMD ["node", "index.js"]
+
+FROM node:lts-slim
+COPY --from=build /app/dist /app
+CMD ["node", "/app/server.js"]

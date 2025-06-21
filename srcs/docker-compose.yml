@@ -5,6 +5,8 @@ services:
         image: pong:pong
         env_file:
             - .env
+        volumes:
+            - database:/database
         networks:
             - transcendance
         expose:
@@ -17,9 +19,9 @@ services:
                 - action: sync
                   path: ./pong/sourcecode
                   target: /app
-        restart: on-failure
+        # restart: on-failure
         # healthcheck:
-        #     test: ['CMD-SHELL', 'curl', '-f', 'http://localhost:3000/ping']
+        #     test: ['CMD-SHELL', 'curl -f http://localhost:3000/ws/ping']
         #     interval: 5s
         #     timeout: 5s
         #     retries: 5
@@ -30,6 +32,8 @@ services:
         image: backend:pong
         env_file:
             - .env
+        volumes:
+            - database:/database
         networks:
             - transcendance
         expose:
@@ -39,13 +43,13 @@ services:
                 - action: sync
                   path: ./backend/sourcecode
                   target: /app
-        healthcheck:
-            test: ['CMD-SHELL', 'curl', '-f', 'http://localhost:3000/ping']
-            interval: 5s
-            timeout: 5s
-            retries: 5
-            start_period: 30s
-        restart: on-failure
+        # restart: on-failure
+        # healthcheck:
+        #     test: ['CMD', 'curl -f http://localhost:3000/api/auth/pang']
+        #     interval: 5s
+        #     timeout: 5s
+        #     retries: 5
+        #     start_period: 30s
     nginx:
         container_name: nginx
         build: ./nginx/
@@ -65,27 +69,36 @@ services:
                   path: ./nginx/conf
                   target: /etc/nginx
         # depends_on:
-            # pong:
-            #     condition: service_healthy
-            #     restart: true
-            # backend:
-            #     condition: service_healthy
-            #     restart: true
-        restart: on-failure
-    redis:
-        container_name: redis
-        build: ./redis/
-        image: redis:pong
-        env_file:
-            - .env
-        networks:
-            - transcendance
-        ports:
-            - target: 9000
-              published: 9000
-        restart: on-failure
+        #     pong:
+        #         condition: service_healthy
+        #         restart: true
+        #     backend:
+        #         condition: service_healthy
+        #         restart: true
+        # restart: on-failure
+    # redis:
+    #     container_name: redis
+    #     build: ./redis/
+    #     image: redis:pong
+    #     env_file:
+    #         - .env
+    #     networks:
+    #         - transcendance
+    #     ports:
+    #         - target: 9000
+    #           published: 9000
+    #     restart: on-failure
 
 networks:
     transcendance:
         name: transcendance
         driver: bridge
+
+volumes:
+    database:
+        name: database
+        driver: local
+        driver_opts:
+            type: bind
+            o: bind
+            device: '/home/tamehri/Desktop/transcendence/srcs/database'

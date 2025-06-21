@@ -2,8 +2,8 @@ import Fastify from 'fastify';
 import env from 'dotenv';
 
 class Server {
-	constructor(logger) {
-		this.fastify = Fastify({ logger });
+	constructor() {
+		this.fastify = Fastify();
 	}
 
 	async registerPlugins() {
