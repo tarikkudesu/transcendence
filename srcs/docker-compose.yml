@@ -84,9 +84,8 @@ services:
             - .env
         networks:
             - transcendance
-        ports:
-            - target: 9000
-              published: 9000
+        expose:
+            - 9000
         restart: on-failure
 
 networks:
