@@ -11,9 +11,6 @@ services:
             - transcendance
         expose:
             - 3000
-        ports:
-            - target: 3000
-              published: 3000
         develop:
             watch:
                 - action: sync
@@ -21,7 +18,7 @@ services:
                   target: /app
         restart: on-failure
         healthcheck:
-            test: ['CMD', 'curl', '-f', 'http://localhost:3000/ws/ping']
+            test: ['CMD', 'curl', '-f', 'http://127.0.0.1:3000/ws/ping']
             interval: 5s
             timeout: 5s
             retries: 5
@@ -45,7 +42,7 @@ services:
                   target: /app
         restart: on-failure
         healthcheck:
-            test: ['CMD', 'curl', '-f', 'http://localhost:3000/api/auth/pang']
+            test: ['CMD', 'curl', '-f', 'http://127.0.0.1:3000/api/auth/pang']
             interval: 5s
             timeout: 5s
             retries: 5
