@@ -15,7 +15,7 @@ const router = createBrowserRouter([
 	{
 		path: '/',
 		element: (
-			<WSProvider url="wss://localhost:7443/ws">
+			<WSProvider url="ws://localhost:3000/game/ws">
 				<Home />
 			</WSProvider>
 		),
