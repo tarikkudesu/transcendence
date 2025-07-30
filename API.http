@@ -1,0 +1,82 @@
+###
+
+POST /auth/refresh
+
+
+###
+POST /signup
+{
+	"email": "",
+	"username": "",
+	"password": ""
+}
+
+
+###
+POST /login
+{
+	"username": "",
+	"password": ""
+}
+
+###
+POST /logout
+
+###
+POST /forgot-password
+{
+	"email": ""
+}
+
+###
+POST /reset-password
+{
+	"email" : "",
+	"password": "",
+	"verificationCode": ""
+}
+
+###
+POST /verify-user
+{
+	"email": "",
+	"verificationCode": ""
+}
+
+###
+POST /resend-code
+{
+	"email": ""
+}
+
+###
+POST /complite-profile/:username
+{
+	"bio": "",
+	"avatar": {
+		"filename": "",
+		"mimetype": ""
+	}
+}
+
+
+
+
+
+
+
+###
+GET /me/profile/:username
+
+PUT /me/profile/update/avatar/:username
+
+PUT /me/profile/update/username-bio/:username
+{
+	"newusername": "",
+	"bio": "",
+}
+
+PUT /me/profile/update/password/:username
+{
+	"newpassword": ""
+}

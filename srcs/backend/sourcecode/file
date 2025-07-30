@@ -1,0 +1,173 @@
+
+DROP TABLE IF EXISTS Tournament;
+DROP TABLE IF EXISTS Players;
+DROP TABLE IF EXISTS Games;
+
+CREATE TABLE  Tournament (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    tournament_date TEXT NOT NULL,
+    tournament_name TEXT NOT NULL
+);
+-- tournamentdate, tournament_name
+
+CREATE TABLE  Players (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    tournament_id INTEGER NOT NULL,
+    player_level DECIMAL DEFAULT 0.0,
+    FOREIGN KEY (tournament_id) REFERENCES Tournament(id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+-- username, tournament_name, player_level
+
+
+
+CREATE TABLE  Games (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    opponent_id INTEGER NOT NULL,
+    user_score INTEGER NOT NULL,
+    opponent_score INTEGER NOT NULL,
+    game_date TEXT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (opponent_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- playername, oppoentname, userscore, oppoentscore, gamedate
+
+SELECT ...
+FROM ...
+JOIN ...
+WHERE ...
+GROUP BY ...
+HAVING ...
+ORDER BY ...
+
+
+SELECT users.id, users.avatar_url, users.username, 
+COUNT (users.id) 
+FROM users 
+JOIN games ON games.user_id = users.id OR games.opponent_id = users.id
+WHERE 
+GROUP BY users.id;
+
+
+SELECT users.id, users.avatar_url, users.username,
+COUNT (*) AS number_winns
+FROM games
+JOIN users  ON games.user_id = users.id OR games.opponent_id = users.id
+WHERE (games.user_id = users.id AND games.user_score > games.opponent_score) OR
+    (games.opponent_id = users.id AND games.opponent_score > games.user_score)
+GROUP BY users.id
+ORDER BY number_winns;
+
+SELECT users.id, users.username, users.avatar_url, games.winner_id
+COUNT (*) AS winns
+FROM games
+JOIN users ON users.id = winner_id
+GROUP BY users.id
+ORDER BY winns DESC
+
+
+
+
+
+SELECT users.id  , users.username, Pongs.opponent_id  , Pongs.user_score, Pongs.opponent_score, Pongs.game_date
+FROM Pongs 
+JOIN users ON  users.id = Pongs.user_id OR users.id = Pongs.opponent_id
+WHERE users.id = 1;
+
+
+//-------------------- GET /api/pong/history/:user
+SELECT
+  player.id AS user_id,
+  player.username AS user_username,
+  player.avatar_url AS player_avatar_url,
+  opponent.username AS opponent_username,
+  opponent.avatar_url AS opponent_avatar_url,
+  p.user_score,
+  p.opponent_score,
+  p.game_date
+FROM Pongs p
+JOIN users player ON player.id = p.user_id OR player.id = p.opponent_id
+JOIN users opponent 
+  ON (opponent.id = CASE 
+                      WHEN player.id = p.user_id THEN p.opponent_id
+                      ELSE p.user_id
+                    END)
+WHERE player.id = 1;
+
+--------------- GET /api/pong/summary/:user
+
+{
+	"games_played": 100, ---> Pongs
+	"games_won": 100, ----> Pongs
+
+	"tournaments_played": 100, ---> tournament
+	"tournaments_won": 100, -----> Contestants
+}
+
+SELECT COUNT (*) FROM Pongs WHERE Pongs.user_id = 1 OR  Pongs.opponent_id = 1;
+SELECT COUNT (*) FROM Pongs WHERE Pongs.winner_id = 1;
+SELECT COUNT (*) FROM Contestants WHERE Contestants.user_id = 1;
+SELECT COUNT (*) FROM Tournaments WHERE Tournaments.winner_id = 1;
+
+
+------------------  GET /api/doom/summary/:user
+{
+    {
+	    "games_played": 100, -------> dooms
+	    "games_won": 100, ------> dooms
+    }
+
+    SELECT COUNT (*) FROM Dooms WHERE Dooms.winner_id = 1;
+    SELECT COUNT (*) FROM Dooms WHERE Dooms.user_id = 1;
+}
+
+------------------  GET /api/doom/history/:user
+
+
+SELECT
+  player.id AS user_id,
+  player.username AS player_username,
+  player.avatar_url AS player_avatar_url,
+  opponent.username AS opponent_username,
+  opponent.avatar_url AS opponent_avatar_url,
+  p.game_date,
+  CASE
+      WHEN player.id = p.winner_id THEN TRUE
+      ELSE FALSE
+  END AS is_winnner
+FROM dooms p
+JOIN users player ON player.id = p.user_id OR player.id = p.opponent_id
+JOIN users opponent 
+  ON (opponent.id = CASE 
+                      WHEN player.id = p.user_id THEN p.opponent_id
+                      ELSE p.user_id
+                    END)
+WHERE player.id = 1;
+
+--------------- GET /api/tournament/history
+
+SELECT tournament_name, tournament_date, winner_id FROM Tournaments;
+
+--------------------  GET /api/tournament/:name
+
+first findTournamentByName (name) -- > id
+SELECT tournament_name, tournament_date, winner_id FROM Tournaments WHERE id = 1;
+
+ -- contestants:/
+
+SELECT  users.username, users.avatar_url, Contestants.round_level
+FROM Contestants
+JOIN users ON users.id = Contestants.user_id
+WHERE Contestants.tournament_id = 1;
+ 
+ --- matches
+ 
+SELECT  users.username, users.avatar_url, Contestants.round_level
+FROM Contestants
+JOIN users ON users.id = Contestants.user_id
+WHERE Contestants.tournament_id = 1;
+
+-------------------------------------

@@ -1,9 +1,13 @@
-#!bin/sh
+#!/bin/sh
 
-# ? developement
-mkdir -p /debug
-
-echo "backend script init" >> /debug/debug.log
-
-cd /app
-npm install
+if [[ $ENVIREMENT == "production" ]]; then
+	echo "Production"
+	cd /app
+	npm ci --omit-dev
+	node ./dist/server.js
+elif [[ $ENVIREMENT == "developement" ]]; then
+	echo "Developement"
+	cd /app
+	npm install
+	npm run dev
+fi

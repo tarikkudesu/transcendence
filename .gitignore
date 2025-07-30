@@ -1,6 +1,8 @@
 *.prettierrc
 *.vscode/settings.json
 
+*node_modules
+
 # Logs
 logs
 *.log

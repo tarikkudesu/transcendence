@@ -1,28 +1,28 @@
 services:
-    pong:
-        container_name: pong
-        build: ./pong
-        image: pong:pong
-        env_file:
-            - .env
-        volumes:
-            - database:/database
-        networks:
-            - transcendance
-        expose:
-            - 3000
-        develop:
-            watch:
-                - action: sync
-                  path: ./pong/sourcecode
-                  target: /app
-        restart: on-failure
-        healthcheck:
-            test: ['CMD', 'curl', '-f', 'http://127.0.0.1:3000/ws/ping']
-            interval: 5s
-            timeout: 5s
-            retries: 5
-            start_period: 30s
+    # pong:
+    #     container_name: pong
+    #     build: ./pong
+    #     image: pong:pong
+    #     env_file:
+    #         - .env
+    #     volumes:
+    #         - database:/database
+    #     networks:
+    #         - transcendance
+    #     expose:
+    #         - 3000
+    #     develop:
+    #         watch:
+    #             - action: sync
+    #               path: ./pong/sourcecode
+    #               target: /app
+    #     restart: on-failure
+    #     healthcheck:
+    #         test: ['CMD', 'curl', '-f', 'http://127.0.0.1:3000/ws/ping']
+    #         interval: 5s
+    #         timeout: 5s
+    #         retries: 5
+    #         start_period: 30s
     backend:
         container_name: backend
         build: ./backend/
@@ -42,7 +42,7 @@ services:
                   target: /app
         restart: on-failure
         healthcheck:
-            test: ['CMD', 'curl', '-f', 'http://127.0.0.1:3000/api/auth/pang']
+            test: ['CMD', 'curl', '-f', 'http://127.0.0.1:3000/ping']
             interval: 5s
             timeout: 5s
             retries: 5
@@ -56,8 +56,8 @@ services:
         networks:
             - transcendance
         ports:
-            - target: 7443
-              published: 7443
+            - target: 3000
+              published: 3000
         volumes:
             - ./nginx/certs:/etc/nginx/certs:ro
         develop:
@@ -66,9 +66,9 @@ services:
                   path: ./nginx/conf
                   target: /etc/nginx
         depends_on:
-            pong:
-                condition: service_healthy
-                restart: true
+            # pong:
+            #     condition: service_healthy
+            #     restart: true
             backend:
                 condition: service_healthy
                 restart: true
