@@ -45,7 +45,8 @@ class TournamentRepository {
 				`
 			SELECT tournament_name, tournament_date, winner_id
 			FROM Tournaments 
-			WHERE winner_id IS NOT NULL`
+			WHERE winner_id IS NOT NULL
+			ORDER BY tournament_date DESC`
 			)
 			.all();
 	}

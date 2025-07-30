@@ -28,7 +28,7 @@ class GameService {
 		if (!user || !opponent) throw new AppError('createGamePong(): this user not found', 404);
 		const winner_id = userScore > opponentScore ? user.id : opponent.id;
 		const tournament = tournamentName ? this.tournaments.findTournamentByName(tournamentName) : undefined;
-		this.games.addGamePong(user.id, opponent.id, userScore, opponentScore, winner_id, tournament?.id, gameDate, '\n');
+		this.games.addGamePong(user.id, opponent.id, userScore, opponentScore, winner_id, tournament?.id, gameDate);
 		return { success: true };
 	}
 
@@ -65,7 +65,6 @@ class GameService {
 		const user = this.users.findUserByUsername(username);
 		if (!user) throw new AppError('this user not found', 404);
 		const history = this.games.getHistoryUserPong(user.id);
-		console.log(history);
 		return { success: true, history: history };
 	}
 

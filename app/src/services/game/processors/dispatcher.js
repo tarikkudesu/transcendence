@@ -16,8 +16,8 @@ export function sendGame() {
 						won: winner === player.username,
 						stop: roomState === 'disconnected',
 						lost: winner !== '' && winner !== player.username,
-						playerScore: player.username === opponent ? playerScore : opponentScore,
-						opponentScore: player.username === opponent ? opponentScore : playerScore,
+						playerScore: player.username === opponent ? opponentScore : playerScore,
+						opponentScore: player.username === opponent ? playerScore : opponentScore,
 						tinychat: player.username === opponent ? playerTinyChat : opponentTinyChat,
 						start: roomState !== 'connecting' && roomState !== 'player-1-connected' && roomState !== 'player-2-connected',
 					});

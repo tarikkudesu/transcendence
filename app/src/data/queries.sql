@@ -45,22 +45,3 @@ CREATE TABLE Dooms (
     FOREIGN KEY (winner_id) REFERENCES Users(id) ON DELETE CASCADE,
     FOREIGN KEY (opponent_id) REFERENCES Users(id) ON DELETE CASCADE
 );
-
-INSERT INTO Tournaments (winner_id, tournament_date, tournament_name) VALUES
-(7, '2025-07-13', 'Tournament_1'),
-(1, '2025-07-08', 'Tournament_2'),
-(4, '2025-07-19', 'Tournament_3'),
-(7, '2025-07-13', 'Tournament_4');
-
-INSERT INTO Pongs (user_id, opponent_id, tournament_id, user_score, opponent_score, winner_id, game_date) VALUES
-(8, 4, 2, 2, 7, 4, '2025-07-11'),
-(9, 2, 1, 1, 7, 10, '2025-07-21'),
-(5, 2, 3, 4, 7, 7, '2025-07-14'),
-(2, 2, 3, 1, 7, 10, '2025-06-27'),
-(1, 7, 2, 7, 5, 1, '2025-07-24'),
-(7, 2, 4, 0, 7, 8, '2025-07-08'),
-(2, 1, 2, 4, 7, 1, '2025-07-08'),
-(4, 2, 1, 5, 7, 4, '2025-07-13'),
-(10, 6, 2, 3, 7, 6, '2025-07-23'),
-(8, 6, 2, 1, 7, 6, '2025-07-17');
-

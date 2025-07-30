@@ -8,6 +8,7 @@ CREATE TABLE Users (
 );
 
 INSERT INTO Users (username, avatar_url, bio) VALUES
+('furina', 'https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar197.png', 'Furina is not considered an Archon, as she neither had access to the Hydro Archons Divine Throne nor disappeared when the current Hydro Dragons full elemental authority was returned. However, as far as Teyvat is concerned, Furina is considered to have served as Fontaines Archon and abdicated that role upon the prophecys resolution.'),
 ('ayoub', 'https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar17.png', 'Expert strategist in Kingdoms of Valor.'),
 ('fatima', 'https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar15.png', 'Master of puzzles in Brain Quest.'),
 ('youssef', 'https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar75.png', 'Champion racer in Speed Legends.'),

@@ -78,17 +78,19 @@ class GameRepository {
 	getHistoryUserPong(id) {
 		return this.db
 			.prepare(
-				`SELECT
-        			player.id AS user_id,
-        			player.username AS player_username,
-        			player.avatar_url AS player_avatar_url,
-        			opponent.username AS opponent_username,
-        			opponent.avatar_url AS opponent_avatar_url,
-        			p.game_date,
-        			FROM Pongs p
-        			JOIN users player ON player.id = p.user_id
-        			JOIN users opponent ON player.id = p.opponent_id
-        			WHERE player.id = ? OR opponent.id = ?`
+				`SELECT u1.id AS user_id,
+						u1.username AS player_username,
+						u1.avatar_url AS player_avatar_url,
+						u2.id AS user_id,
+						u2.username AS opponent_username,
+						u2.avatar_url AS opponent_avatar_url,
+						pongs.user_score,
+						pongs.opponent_score
+						FROM pongs
+						JOIN users u1 ON u1.id = pongs.user_id
+						JOIN users u2 ON u2.id = pongs.opponent_id
+						WHERE u1.id = ? OR u2.id = ?
+						ORDER BY game_date DESC`
 			)
 			.all(id, id);
 	}
