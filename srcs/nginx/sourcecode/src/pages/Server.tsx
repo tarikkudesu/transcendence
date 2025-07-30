@@ -1,7 +1,9 @@
 import { useContext, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Box, Button, Card, Flex, Spinner, Text } from '@radix-ui/themes';
-import { ClientPong, EngageMessage, HookMessage, rescaleFrame, WSC, wsContext } from '../Hooks/ws-client';
+import { ClientPong, EngageMessage, HookMessage, rescaleFrame, wsContext } from '../Hooks/ws-client';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../Redux/Store';
 
 export const Lost: React.FC<unknown> = () => {
 	const navigate = useNavigate();
@@ -101,21 +103,21 @@ const GameFrameElement: React.FC<GameFrameElementProps> = ({ f }) => {
 			<div className="bg-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-80" style={{ width: 2, height: '100%' }}></div>
 			<div className="border-2 border-white rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-80" style={{ height: 100, width: 100 }}></div>
 			<Box
-				className="bg-teal-600 absolute rounded-tr-md rounded-br-md border-l-1 border-white"
-				style={{
-					width: f.paddleRadius * 2,
-					height: f.paddleHeight,
-					top: f.leftPaddlePosY - f.paddleHeight / 2,
-					left: f.leftPaddlePosX - f.paddleRadius,
-				}}
-			></Box>
-			<Box
 				className="bg-white absolute rounded-full"
 				style={{
 					width: f.ballRadius * 2,
 					height: f.ballRadius * 2,
 					top: f.ballY - f.ballRadius,
 					left: f.ballX - f.ballRadius,
+				}}
+			></Box>
+			<Box
+				className="bg-teal-600 absolute rounded-tr-md rounded-br-md border-l-1 border-white"
+				style={{
+					width: f.paddleRadius * 2,
+					height: f.paddleHeight,
+					top: f.leftPaddlePosY - f.paddleHeight / 2,
+					left: f.leftPaddlePosX - f.paddleRadius,
 				}}
 			></Box>
 			<Box
@@ -132,9 +134,9 @@ const GameFrameElement: React.FC<GameFrameElementProps> = ({ f }) => {
 };
 
 const Server: React.FC<unknown> = () => {
+	const username: string = useSelector((state: RootState) => state.user.username);
 	const { send, hash, pong } = useContext(wsContext);
 	const navigate = useNavigate();
-	if (WSC.username === '') navigate('/signin');
 
 	const { game } = useParams();
 	const ref = useRef<HTMLDivElement>(null);
@@ -142,20 +144,20 @@ const Server: React.FC<unknown> = () => {
 	function keyUp(e: KeyboardEvent) {
 		e.preventDefault();
 		if (e.code === 'ArrowDown' || e.code === 'ArrowUp') {
-			send(HookMessage(WSC.username, hash, 'pong', game ? game : '', false, false));
+			send(HookMessage(username, hash, 'pong', game ? game : '', false, false));
 		}
 	}
 	function keyDown(e: KeyboardEvent) {
 		e.preventDefault();
 		if (e.code === 'ArrowUp') {
-			send(HookMessage(WSC.username, hash, 'pong', game ? game : '', true, false));
+			send(HookMessage(username, hash, 'pong', game ? game : '', true, false));
 		} else if (e.code === 'ArrowDown') {
-			send(HookMessage(WSC.username, hash, 'pong', game ? game : '', false, true));
+			send(HookMessage(username, hash, 'pong', game ? game : '', false, true));
 		}
 	}
 
 	useEffect(function () {
-		if (game) send(EngageMessage(WSC.username, hash, 'pong', game ? game : '')); // ! needs more thinking
+		if (game) send(EngageMessage(username, hash, 'pong', game ? game : '')); // ! needs more thinking
 		else navigate(-1);
 		document.addEventListener('keyup', keyUp);
 		document.addEventListener('keydown', keyDown);

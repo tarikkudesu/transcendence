@@ -1,0 +1,198 @@
+
+###
+GET /api/pong/summary/:user
+{
+	"games_played": 100,
+	"games_won": 100,
+	"tournaments_played": 100,
+	"tournaments_won": 100,
+}
+
+###
+GET /api/pong/history/:user
+[
+	{
+		"opponent": "username",
+		"avatar_url": "https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar121.png",
+		"user_score": 3,
+		"opponent_score": 2,
+		"date": "00-00-0000"
+	},
+	{
+		"opponent": "username",
+		"avatar_url": "https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar121.png",
+		"user_score": 3,
+		"opponent_score": 2,
+		"date": "00-00-0000"
+	},
+	{
+		"opponent": "username",
+		"avatar_url": "https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar121.png",
+		"user_score": 3,
+		"opponent_score": 2,
+		"date": "00-00-0000"
+	},
+	{
+		"opponent": "username",
+		"avatar_url": "https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar121.png",
+		"user_score": 3,
+		"opponent_score": 2,
+		"date": "00-00-0000"
+	}
+]
+
+###
+GET /api/pong/leaderboard
+[
+	{
+		"username": "user1",
+		"avatar_url": "https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar121.png",
+		"winns": 2
+	},
+	{
+		"username": "user1",
+		"avatar_url": "https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar121.png",
+		"winns": 2
+	},
+	{
+		"username": "user1",
+		"avatar_url": "https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar121.png",
+		"winns": 2
+	},
+	{
+		"username": "user1",
+		"avatar_url": "https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar121.png",
+		"winns": 2
+	},
+	{
+		"username": "user1",
+		"avatar_url": "https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar121.png",
+		"winns": 2
+	},
+]
+
+###
+GET /api/pong/tournaments/:username
+[
+	{
+
+	},
+]
+
+
+###
+GET /api/doom/summary/:user
+{
+	"games_played": 100,
+	"games_won": 100,
+}
+
+###
+GET /api/doom/history/:user
+[
+	{
+		"opponent": "username",
+		"avatar_url": "https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar121.png",
+		"date": "00-00-0000",
+		"won": true
+	},
+	{
+		"opponent": "username",
+		"avatar_url": "https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar121.png",
+		"date": "00-00-0000",
+		"won": true
+	},
+	{
+		"opponent": "username",
+		"avatar_url": "https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar121.png",
+		"date": "00-00-0000",
+		"won": true
+	},
+	{
+		"opponent": "username",
+		"avatar_url": "https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar121.png",
+		"date": "00-00-0000",
+		"won": true
+	}
+]
+
+###
+GET /api/doom/leaderboard
+[
+	{
+		"username": "user1",
+		"avatar_url": "https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar121.png",
+		"winns": 2
+	},
+	{
+		"username": "user1",
+		"avatar_url": "https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar121.png",
+		"winns": 2
+	},
+	{
+		"username": "user1",
+		"avatar_url": "https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar121.png",
+		"winns": 2
+	},
+	{
+		"username": "user1",
+		"avatar_url": "https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar121.png",
+		"winns": 2
+	},
+	{
+		"username": "user1",
+		"avatar_url": "https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar121.png",
+		"winns": 2
+	},
+]
+
+###
+GET /api/tournament/history
+[
+	{
+		"name": "the water bottle",
+		"date": "00-00-0000"
+	},
+	{
+		"name": "the water bottle",
+		"date": "00-00-0000"
+	},
+	{
+		"name": "the water bottle",
+		"date": "00-00-0000"
+	},
+	{
+		"name": "the water bottle",
+		"date": "00-00-0000"
+	},
+	{
+		"name": "the water bottle",
+		"date": "00-00-0000"
+	},
+]
+
+###
+GET /api/tournament/:name
+{
+	"name": "the water bottle",
+	"date": "00-00-0000",
+	"winner": "username",
+	"contestants": [
+		{
+			"username": "username",
+			"avatar": "https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar121.png",
+			"level": 1
+		},
+		{
+			"username": "username",
+			"avatar": "https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar121.png",
+			"level": 1
+		},
+		{
+			"username": "username",
+			"avatar": "https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar121.png",
+			"level": 1
+		},
+	]
+}
+

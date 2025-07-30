@@ -1,8 +1,10 @@
 import { Box, Grid, Text } from '@radix-ui/themes';
 import { useContext, useEffect } from 'react';
-import { EngageMessage, FlipMessage, WSC, wsContext } from '../Hooks/ws-client';
+import { EngageMessage, FlipMessage, wsContext } from '../Hooks/ws-client';
 import { Lost, Start, Stop, Won } from './Server';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../Redux/Store';
 
 interface DiamondProps {
 	state: string;
@@ -10,6 +12,7 @@ interface DiamondProps {
 }
 
 const Diamond: React.FC<DiamondProps> = ({ state, index }) => {
+	const username: string = useSelector((state: RootState) => state.user.username);
 	const { send, hash } = useContext(wsContext);
 	const { game } = useParams();
 	const className: string = 'aspect-square bg-amber-700 hover:bg-amber-500 rounded-md xl:rounded-xl hover:border-b-8 duration-100 demo-box cursor-pointer';
@@ -20,7 +23,7 @@ const Diamond: React.FC<DiamondProps> = ({ state, index }) => {
 			className={state !== 'C' ? classNameActive : className}
 			style={{ borderColor: state === 'C' ? 'var(--accent-10)' : '' }}
 			onClick={() => {
-				if (state === 'C') send(FlipMessage(WSC.username, hash, 'card of doom', game ? game : '', index));
+				if (state === 'C') send(FlipMessage(username, hash, 'card of doom', game ? game : '', index));
 			}}
 		>
 			{state !== 'C' ? <img src={state === 'B' ? '/assets/bomb_b.png' : '/assets/d.png'} className="p-8 zoom-bounce" draggable="false" /> : ''}
@@ -44,10 +47,10 @@ const GameFrameElement: React.FC<GameFrameElementProps> = ({ cards }) => {
 };
 
 const Extra: React.FC<unknown> = () => {
+	const username: string = useSelector((state: RootState) => state.user.username);
 	const { send, hash, doom } = useContext(wsContext);
 	const { game } = useParams();
 	const navigate = useNavigate();
-	if (WSC.username === '') navigate('/signin');
 
 	function Content(): React.ReactNode {
 		if (doom.stop) return <Stop />;
@@ -70,7 +73,7 @@ const Extra: React.FC<unknown> = () => {
 	}
 
 	useEffect(function () {
-		if (game) send(EngageMessage(WSC.username, hash, 'card of doom', game ? game : '')); // ! needs more thinking
+		if (game) send(EngageMessage(username, hash, 'card of doom', game ? game : '')); // ! needs more thinking
 		else navigate(-1);
 	}, []);
 

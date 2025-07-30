@@ -1,16 +1,21 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useNotification } from './useNotification';
 
-import { Pool, Play, Hash, Message, wsContext, Invitations, ClientPlayer, ClientInvitation, WSError, ClientPong, ClientCardOfDoom, Json, ClientTournament } from './ws-client';
+import { Pool, Play, Hash, Message, wsContext, Invitations, ClientPlayer, ClientInvitation, WSError, ClientPong, ClientCardOfDoom, Json, ClientTournament, ConnectMessage } from './ws-client';
+import { useDispatch, useSelector } from 'react-redux';
+import type { RootState } from '../Redux/Store';
+import { useNavigate } from 'react-router-dom';
+import { setUser } from '../Redux/userSlice';
 
 interface WSProviderProps {
 	url?: string;
 	children: React.ReactNode;
 }
 const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
-	const navigate = useNavigate();
+	const username: string = useSelector((state: RootState) => state.user.username);
 	const { notify } = useNotification();
+	const navigate = useNavigate();
+	const dispatch = useDispatch();
 	const socketRef = useRef<WebSocket | null>(null);
 	const [error, setError] = useState<boolean>(false);
 	const [close, setClose] = useState<boolean>(false);
@@ -27,7 +32,6 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 	const [doom, setDoom] = useState<ClientCardOfDoom>(ClientCardOfDoom.instance);
 
 	function onerror() {
-		console.error('WebSocket error');
 		setOpen(false);
 		setClose(true);
 		setError(true);
@@ -39,11 +43,15 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 	}
 
 	function send(message: string) {
-		if (socketRef.current?.OPEN) socketRef.current?.send(message);
+		if (socketRef.current?.OPEN && hash) socketRef.current?.send(message);
+		else notify({ message: "connection hasn't been established", error: true });
 	}
+
 	useEffect(
 		function () {
+			// ? HASH, POOL, INVITATIONS, PLAY, PONG, DOOM, TOURNAMENT, ERROR
 			function parse(event: string, message: string, game: 'pong' | 'card of doom') {
+				// console.log(event);
 				switch (event) {
 					// ? Pool
 					case 'HASH': {
@@ -63,8 +71,8 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 					}
 					case 'PLAY': {
 						const p: Play = Json({ message, target: Play.instance });
-						if (game === 'pong') navigate('/server/' + p.gid);
-						else navigate('/extra/' + p.gid);
+						if (game === 'pong') navigate('/dashboard/server/' + p.gid);
+						else navigate('/dashboard/extra/' + p.gid);
 						break;
 					}
 					// ? Game
@@ -75,13 +83,13 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 					}
 					case 'DOOM': {
 						const d: ClientCardOfDoom = Json({ message, target: ClientCardOfDoom.instance });
+						console.log(d);
 						setDoom(d);
 						break;
 					}
 					case 'TOURNAMENT': {
 						const t: ClientTournament = Json({ message, target: ClientTournament.instance });
 						setTournament(t);
-						console.log(t);
 						break;
 					}
 					case 'ERROR': {
@@ -94,8 +102,8 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 				}
 			}
 			function onmessage(e: MessageEvent) {
-				setData(e.data);
 				try {
+					setData(e.data);
 					const m: Message = Json({ message: e.data, target: Message.instance });
 					parse(m.message, m.data, m.game);
 					// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -106,6 +114,16 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 			function onopen() {
 				console.log('WebSocket connection opened');
 				setOpen(true);
+				dispatch(
+					setUser({
+						username,
+						email: '',
+						bio: '',
+						created_at: '',
+						avatar: '',
+					})
+				);
+				socketRef.current?.send(ConnectMessage(username));
 			}
 			function onclose() {
 				console.log('WebSocket connection closed');
@@ -114,7 +132,6 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, children }) => {
 			}
 			if (url) {
 				try {
-					// * 'ws://localhost:3000/api/game/'
 					socketRef.current = new WebSocket(url);
 					socketRef.current.onmessage = onmessage;
 					socketRef.current.onerror = onerror;

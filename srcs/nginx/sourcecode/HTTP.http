@@ -1,0 +1,89 @@
+
+###
+POST http://10.13.100.159:3000/api/signup HTTP/1.1
+Content-Type: application/json
+
+{
+	"email": "amehritarik@gmail.com",
+	"username": "tarikkudesu",
+	"password": "#Pass1234"
+}
+
+
+###
+POST http://10.13.100.159:3000/api/login HTTP/1.1
+Content-Type: application/json
+
+{
+	"username": "filar",
+	"password": "123456789"
+}
+
+###
+POST /logout
+
+###
+POST /forgot-password
+{
+	"email": ""
+}
+
+###
+POST /reset-password
+{
+	"email" : "",
+	"password": "",
+	"verificationCode": ""
+}
+
+###
+POST http://10.13.100.159:3000/api/verify-user HTTP/1.1
+Content-Type: application/json
+
+{
+	"email": "amehritarik@gmail.com",
+	"verificationCode": "353743"
+}
+
+###
+POST /resend-code
+{
+	"email": ""
+}
+
+###
+POST /complite-profile/:username
+{
+	"bio": "",
+	"avatar": {
+		"filename": "",
+		"mimetype": ""
+	}
+}
+
+
+
+
+
+
+
+###
+GET http://10.13.100.159:3000/api/me/profile/filar HTTP/1.1
+Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJ0YXJpa2t1ZGVzdSIsImVtYWlsIjoiYW1laHJpdGFyaWtAZ21haWwuY29tIiwiaWF0IjoxNzUzMjgzNTYxLCJleHAiOjE3NTMyODQ0NjF9.EjeIvz5Th5eplZrkKpyUpn8V6ftYx5mTWH1WOIUr6A0
+
+
+###
+PUT /me/profile/update/avatar/:username
+
+###
+PUT /me/profile/update/username-bio/:username
+{
+	"newusername": "",
+	"bio": "",
+}
+
+###
+PUT /me/profile/update/password/:username
+{
+	"newpassword": ""
+}

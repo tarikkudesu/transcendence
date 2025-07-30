@@ -1,0 +1,22 @@
+{
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "explicit"
+    },
+	"files.exclude": {
+		"**/*.o": true,
+		"**/*.gitignore": true,
+		"**/.vscode": true,
+		"**/.prettierrc": true
+	},
+	"editor.fontWeight": "bold",
+	"workbench.sideBar.location": "left",
+	"workbench.statusBar.visible": false,
+	"editor.minimap.enabled": false,
+	"breadcrumbs.enabled": false,
+	"explorer.decorations.colors": false,
+	"editor.guides.indentation": false,
+	"editor.glyphMargin": false,
+	"workbench.layoutControl.type": "menu",
+	"window.title": " "
+}

@@ -240,17 +240,6 @@ interface JsonProps {
 	target: any;
 }
 
-export class WSC {
-	private static instance: WSC | null;
-	public static username: string = '';
-	// public static img: string = generator.generateRandomAvatar(WSC.username);
-	constructor() {
-		if (WSC.instance) return WSC.instance;
-		WSC.instance = this;
-	}
-}
-// * connect, invite, play, hook
-
 // ? Comminication Helpers
 export function Json({ message, target }: JsonProps) {
 	const json = JSON.parse(message);
@@ -266,8 +255,11 @@ export function ErrorMessage(error: string) {
 	return JSON.stringify(new Message({ username: '', hash: '', message: 'ERROR', game: 'pong', data: new WSError(error) }));
 }
 
-export function ConnectMessage(username: string, hash: string): string {
-	return JSON.stringify(new Message({ username, hash, message: 'CONNECT', game: 'pong', data: {} }));
+// ? CONNECT, ENGAGE, INVITE, ACCEPT, REJECT, DELETE, HOOK, FLIP, REGISTER
+// * HASH, POOL, INVITATIONS, PLAY, PONG, DOOM, TOURNAMENT, ERROR
+
+export function ConnectMessage(username: string): string {
+	return JSON.stringify(new Message({ username, hash: '', message: 'CONNECT', game: 'pong', data: {} }));
 }
 export function EngageMessage(username: string, hash: string, game: 'pong' | 'card of doom', gid: string): string {
 	return JSON.stringify(new Message({ username, hash, message: 'ENGAGE', game, data: new Engage(gid) }));
@@ -294,8 +286,6 @@ export function FlipMessage(username: string, hash: string, game: 'pong' | 'card
 export function RegisterMessage(username: string, hash: string, game: 'pong' | 'card of doom', name: string): string {
 	return JSON.stringify(new Message({ username, hash, message: 'REGISTER', game, data: new Register(name) }));
 }
-
-export const WS = new WSC();
 
 class initialState {
 	// * Websocket vars
