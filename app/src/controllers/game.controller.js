@@ -49,7 +49,7 @@ class GameController {
 		return reply.code(200).send({ message: 'pong' });
 	}
 	async game_socket(connection, req) {
-		console.log(req);
+		void req;
 		connection.on('message', (message) => this.games.eventEntry(message.toString(), connection));
 		connection.on('close', () => this.games.closeSocket(connection));
 		connection.on('error', () => this.games.closeSocket(connection));
