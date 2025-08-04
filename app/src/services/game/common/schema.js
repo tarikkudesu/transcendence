@@ -1,26 +1,17 @@
 export class Message {
-    constructor({ username, hash, message, data, game }) {
+    constructor({ message, data, game }) {
         this.data = JSON.stringify(data);
-        this.username = username;
         this.message = message;
-        this.hash = hash;
         this.game = game;
     }
 }
-Message.instance = new Message({ username: '', hash: '', message: '', data: {}, game: 'pong' });
+Message.instance = new Message({ message: '', data: {}, game: 'pong' });
 export class WSError {
     constructor(error) {
         this.message = error;
     }
 }
 WSError.instance = new WSError('');
-export class Hash {
-    constructor(username, hash) {
-        this.username = username;
-        this.hash = hash;
-    }
-}
-Hash.instance = new Hash('', '');
 export class ClientPlayer {
     constructor(username, game, playerStatus, inviteStatus) {
         this.inviteStatus = inviteStatus;
@@ -72,10 +63,10 @@ export class Invitations {
 Invitations.instance = new Invitations([]);
 export class ClientPong {
     constructor({ playerScore, opponentScore, ball, rightPaddle, leftPaddle, start, stop, won, lost, tinychat, sound }) {
-        this.start = false;
-        this.stop = false;
-        this.lost = false;
-        this.won = false;
+        this.start = start;
+        this.stop = stop;
+        this.lost = lost;
+        this.won = won;
         this.sound = sound;
         this.tinychat = tinychat;
         this.playerScore = playerScore;
@@ -89,18 +80,10 @@ export class ClientPong {
         this.leftPaddlePosX = Math.ceil(leftPaddle.pos.x);
         this.leftPaddlePosY = Math.ceil(leftPaddle.pos.y);
         this.paddleHeight = Math.ceil(rightPaddle.length);
-        this.start = start !== undefined ? start : false;
-        this.stop = stop !== undefined ? stop : false;
-        this.lost = lost !== undefined ? lost : false;
-        this.won = won !== undefined ? won : false;
     }
 }
 export class ClientCardOfDoom {
     constructor({ cards, myturn, timer, start, stop, lost, won, tinychat }) {
-        this.start = false;
-        this.stop = false;
-        this.lost = false;
-        this.won = false;
         this.tinychat = tinychat;
         this.myturn = myturn;
         this.timer = timer;

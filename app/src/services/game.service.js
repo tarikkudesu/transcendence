@@ -1,5 +1,5 @@
 import AppError from '../utils/AppError.js';
-import { main, useParser, ErrorMessage, Message, Json, getRoom, cancelAllPlayerInvitations, removePlayer } from './game/index.js';
+import * as Main from './game/index.js';
 
 class GameService {
 	constructor(userRepo, gameRepo, playerRepo, tournamentRepo) {
@@ -7,7 +7,7 @@ class GameService {
 		this.games = gameRepo;
 		this.contestants = playerRepo;
 		this.tournaments = tournamentRepo;
-		main(
+		Main.main(
 			this.createGamePong.bind(this),
 			this.createGameDoom.bind(this),
 			this.createTournament.bind(this),
@@ -123,44 +123,42 @@ class GameService {
 		return { success: true, stats: stats };
 	}
 
+	verifyUser(username, socket) {
+		if (!this.users.findUserByUsername(username)) {
+			socket.send(Main.ErrorMessage('You are not registered'));
+			socket.close();
+			return false;
+		}
+		if (Main.checkPlayer(username)) {
+			socket.send(Main.ErrorMessage('You are aleady connected'));
+			socket.close();
+			return false;
+		}
+		Main.addPlayer(Main.createPlayer(username, socket));
+		return true;
+	}
+
 	async closeSocket(socket) {
 		if (socket.username) {
-			if (socket.PLAYFREE === false) {
-				try {
-					const room = getRoom(socket.gid);
-					room.roomState = 'disconnected';
-					room.date_at = Date.now();
-				} catch (err) {
-					console.error(err.message ?? 'closeSocket err');
-				}
+			try {
+				const room = Main.getRoom(socket.gid);
+				room.roomState = 'disconnected';
+				room.date_at = Date.now();
+			} catch (err) {
+				console.error(err.message ?? 'closeSocket err');
 			}
-			cancelAllPlayerInvitations(socket.username);
-			removePlayer(socket.username);
-		}
-	}
-	async eventEntry(message, socket) {
-		try {
-			const { username } = Json({ message, target: Message.instance });
-			const user = this.users.findUserByUsername(username);
-			if (!user) throw new Error("user doesn' exist");
-			useParser(message, socket);
-		} catch (err) {
-			socket.send(ErrorMessage(err?.message || "you didn't pong good enough"));
-			console.error('Error', err.message);
+			Main.cancelAllPlayerInvitations(socket.username);
+			Main.removePlayer(socket.username);
 		}
 	}
 
-	// ! remove later
-	async getUserProfile({ username }) {
-		const user = this.users.findUserByUsername(username);
-		const userProfile = {
-			username: user.username,
-			email: user.email,
-			bio: user.bio,
-			created_at: user.created_at,
-			avatar: user.avatar_url,
-		};
-		return userProfile;
+	async eventEntry(socket, message) {
+		try {
+			Main.useParser(socket.username, message);
+		} catch (err) {
+			socket.send(Main.ErrorMessage(err?.message ?? "you didn't pong good enough"));
+			console.error('Error', err.message);
+		}
 	}
 }
 

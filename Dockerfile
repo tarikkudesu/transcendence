@@ -1,4 +1,4 @@
-FROM node:22.15-slim
+FROM node:22-alpine
 WORKDIR /app
 COPY app/ .
 RUN npm i

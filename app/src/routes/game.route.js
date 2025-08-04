@@ -5,9 +5,6 @@ import GameController from '../controllers/game.controller.js';
 export default fp(async (fastify) => {
 	const gameController = new GameController(fastify.gameService);
 
-	// ! remove later
-	fastify.get('/api/:username', gameController.getUserProfile.bind(gameController));
-
 	fastify.get('/api/pong/history/:username', gameController.getHistoryUserPong.bind(gameController));
 	fastify.get('/api/pong/summary/:username', gameController.getUserPongSummary.bind(gameController));
 	fastify.get('/api/pong/leaderboard', gameController.getLeaderBoardPong.bind(gameController));

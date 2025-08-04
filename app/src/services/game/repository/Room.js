@@ -19,8 +19,8 @@ export class Room {
 export function addRoom(player, opponent, game, GID) {
 	const sen = Main.getPlayer(player);
 	const rec = Main.getPlayer(opponent);
-	sen.socket.send(Main.PlayMessage(sen.username, sen.socket.hash, game, GID));
-	rec.socket.send(Main.PlayMessage(rec.username, rec.socket.hash, game, GID));
+	sen.socket.send(Main.PlayMessage(game, GID));
+	rec.socket.send(Main.PlayMessage(game, GID));
 	Main.repository.rooms.set(GID, new Room(player, opponent));
 }
 

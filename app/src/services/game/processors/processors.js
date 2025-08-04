@@ -12,15 +12,12 @@ export function Json({ message, target }) {
 /************************************************************************************************************************
  *                                                        PARSER                                                        *
  ************************************************************************************************************************/
-export function useParser(json, socket) {
-	const { username, message, hash, game, data } = Json({ message: json, target: Main.Message.instance });
-	if (message !== 'CONNECT' && hash !== Main.getPlayerHash(username)) throw new Error('hash mismatch');
-	console.log(username, message);
+export function connectPlayer(username, socket) {
+	Main.addPlayer(Main.createPlayer(username, socket));
+}
+export function useParser(username, json) {
+	const { message, game, data } = Json({ message: json, target: Main.Message.instance });
 	switch (message) {
-		case 'CONNECT': {
-			Main.addPlayer(Main.createPlayer(username, socket));
-			break;
-		}
 		case 'REGISTER': {
 			Main.register(username, Json({ message: data, target: Main.Register.instance }).alias);
 			break;

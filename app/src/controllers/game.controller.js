@@ -46,19 +46,18 @@ class GameController {
 	}
 
 	async pong(req, reply) {
+		void req;
 		return reply.code(200).send({ message: 'pong' });
 	}
-	async game_socket(connection, req) {
-		void req;
-		connection.on('message', (message) => this.games.eventEntry(message.toString(), connection));
-		connection.on('close', () => this.games.closeSocket(connection));
-		connection.on('error', () => this.games.closeSocket(connection));
-	}
 
-	// ! remove later
-	async getUserProfile(req, reply) {
-		const result = await this.games.getUserProfile(req.params);
-		return reply.status(200).send(result);
+	async game_socket(socket, req) {
+		const username = req?.query?.username ?? '';
+		console.log(username, ' just connected');
+		if (this.games.verifyUser(username, socket)) {
+			socket.on('message', (message) => this.games.eventEntry(socket, message.toString()));
+			socket.on('close', () => this.games.closeSocket(socket));
+			socket.on('error', () => this.games.closeSocket(socket));
+		}
 	}
 }
 

@@ -22,7 +22,7 @@ export function sendGame() {
 						start: roomState !== 'connecting' && roomState !== 'player-1-connected' && roomState !== 'player-2-connected',
 					});
 					if (player.username !== opponent) clientPong = Main.transformFrame(clientPong);
-					player.socket.send(Main.PongMessage(player.username, player.socket.hash, 'pong', clientPong));
+					player.socket.send(Main.PongMessage('pong', clientPong));
 					if (clientPong.won || clientPong.lost || clientPong.stop) Main.disconnectPlayer(player);
 				} else if (game && game instanceof Main.Doom) {
 					const { winner, myturn, timer } = game;
@@ -36,7 +36,7 @@ export function sendGame() {
 						tinychat: player.username === opponent ? playerTinyChat : opponentTinyChat,
 						start: roomState !== 'connecting' && roomState !== 'player-1-connected' && roomState !== 'player-2-connected',
 					});
-					player.socket.send(Main.DoomMessage(player.username, player.socket.hash, 'doom', clientDoom));
+					player.socket.send(Main.DoomMessage('doom', clientDoom));
 					if (clientDoom.won || clientDoom.lost || clientDoom.stop) Main.disconnectPlayer(player);
 				}
 			}
@@ -59,8 +59,6 @@ export function sendTournament() {
 				clientMatches.add({ player: e.player, opponent: e.opponent, finished: e.finished });
 			});
 			const m = Main.TournamentMessage(
-				player.username,
-				player.socket.hash,
 				'pong',
 				new Main.ClientTournament({
 					gid,
@@ -85,7 +83,7 @@ export function sendTournament() {
 export function sendInvitations() {
 	Main.repository.players.forEach((player) => {
 		if (player.socket.OPEN && player.socket.PLAYFREE === true) {
-			const m = Main.InvitationMessage(player.username, player.socket.hash, 'pong', () =>
+			const m = Main.InvitationMessage('pong', () =>
 				Main.getAllPlayerInvitations(player.username)
 			);
 			if (m !== player.prevInvitations) {
@@ -99,7 +97,7 @@ export function sendInvitations() {
 export function sendPool() {
 	Main.repository.players.forEach((player) => {
 		if (player.socket.OPEN && player.socket.PLAYFREE === true) {
-			const m = Main.PoolMessage(player.username, player.socket.hash, 'pong', () => Main.getPool(player.username));
+			const m = Main.PoolMessage('pong', () => Main.getPool(player.username));
 			if (m !== player.prevPool) {
 				player.socket.send(m);
 				player.prevPool = m;
