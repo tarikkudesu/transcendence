@@ -19,7 +19,7 @@
 - **Major module**: Use a framework to build the backend.
 - **Minor module**: Use a database for the backend.
 - **Major module**: Standard user management, authentication, users across tournaments.
-- **Major module**: Infrastructure setup for log management.
+- **Major module**: Designing the backend as microservices.
 - **Major module**: Implement Two-Factor Authentication (2FA) and JWT.
 - **Major module**: Implementing a remote authentication.
 - **Minor module**: Support on all devices.
@@ -27,9 +27,9 @@
 
 ## Bonus + 25%
 
-- **Major module**: Introduce an AI opponent.
+- **Major module**: Remote players
 - **Major module**: Add another game with user history and matchmaking.
-- **Minor module**: Game customization options.
+- **Minor module**: Monitoring system.
 
 ## Available Modules
 
@@ -42,22 +42,22 @@
     - **Major module**: Standard user management, authentication, users across tournaments. ✅
     - **Major module**: Implementing a remote authentication. ✅
 - **Gameplay and user experience**
-    - **Major module**: Remote players
+    - **Major module**: Remote players ✅
     - **Major module**: Multiplayer (more than 2 players in the same game).
     - **Major module**: Add another game with user history and matchmaking. ✅
     - **Minor module**: Game customization options. ✅
     - **Major module**: Live chat. ✅
 - **AI-Algo**
-    - **Major module**: Introduce an AI opponent. ✅
+    - **Major module**: Introduce an AI opponent.
     - **Minor module**: User and game stats dashboards
 - **Cybersecurity**
     - **Major module**: Implement WAF/ModSecurity with a hardened configura-tion and HashiCorp Vault for secrets management.
     - **Minor module**: GDPR compliance options with user anonymization, local data management, and Account Deletion.
     - **Major module**: Implement Two-Factor Authentication (2FA) and JWT. ✅
 - **Devops**
-    - **Major module**: Infrastructure setup for log management. ✅
-    - **Minor module**: Monitoring system.
-    - **Major module**: Designing the backend as microservices.
+    - **Major module**: Infrastructure setup for log management.
+    - **Minor module**: Monitoring system. ✅
+    - **Major module**: Designing the backend as microservices. ✅
 - **Graphics**
     - **Major module**: Use advanced 3D techniques.
 - **Accessibility**
