@@ -1,0 +1,73 @@
+@import 'tailwindcss';
+@import '@radix-ui/themes/styles.css';
+
+.parent {
+	display: grid;
+	grid-template-columns: repeat(8, 1fr);
+	grid-template-rows: repeat(5, 1fr);
+	gap: 8px;
+}
+
+.div1 {
+	grid-row: span 5 / span 5;
+}
+
+.div2 {
+	grid-column: span 6 / span 6;
+	grid-row: span 5 / span 5;
+}
+
+.div3 {
+	grid-row: span 5 / span 5;
+	grid-column-start: 8;
+}
+
+.parentdash {
+	margin: 0px auto;
+	padding: 0px 36px;
+	max-width: 1200px;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	grid-template-rows: repeat(5, 1fr);
+	gap: 36px;
+}
+
+.div1dash {
+	grid-row: span 5 / span 5;
+}
+
+.div2dash {
+	grid-column: span 2 / span 2;
+	grid-row: span 5 / span 5;
+}
+
+
+@keyframes zoomInOutBounce {
+	0% {
+		transform: scale(0);
+		opacity: 0;
+	}
+	60% {
+		transform: scale(1.15);
+		opacity: 1;
+	}
+	80% {
+		transform: scale(0.95);
+	}
+	100% {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+
+.zoom-bounce {
+	animation: zoomInOutBounce 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+}
+
+.demo-box:hover {
+	transform: scale(1.05);
+}
