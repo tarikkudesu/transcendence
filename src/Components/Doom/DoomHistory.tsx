@@ -19,10 +19,7 @@ interface GameHistoryProps {
 const DoomGameHistory: React.FC<GameHistoryProps> = ({ username }) => {
 	const { isPending, error, data } = useQuery({
 		queryKey: ['doomHistory'],
-		queryFn: () =>
-			fetch(`${HTTP_API}/game/doom/history/${username}`, {
-				headers: { Authorization: 'Bearer ${token}', 'Content-Type': 'application/json' },
-			}).then((res) => res.json()),
+		queryFn: () => fetch(`${HTTP_API}/game/doom/history/${username}`, { credentials: 'include' }).then((res) => res.json()),
 	});
 
 	return (

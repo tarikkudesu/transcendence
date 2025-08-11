@@ -97,8 +97,9 @@ const WSProvider: React.FC<WSProviderProps> = ({ url, username, children }) => {
 		setError(true);
 	}, []);
 
-	const onclose = useCallback(() => {
-		console.log('WebSocket connection closed');
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const onclose = useCallback((event: any) => {
+		console.log(`WebSocket connection closed: ${event?.reason ?? ''}`);
 		setOpen(false);
 		setClose(true);
 	}, []);
