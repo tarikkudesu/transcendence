@@ -1,71 +1,36 @@
-# transcendence
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## **Minimal technical requirement + 25%**
+## Getting Started
 
-- The frontend should be developed using `Typescript` as base code
-- Your website must be a SPA, The user should be able to use the Back and Forward buttons of the browser.
-- Your website must be compatible with the **latest stable up-to-date version** of `Mozilla Firefox`.
-- The user should encounter no unhandled errors or warnings when browsing the website.
-- You must use Docker to run your website. Everything must be launched with a single command line to run an autonomous container.
-- Any password stored in your database must be **hashed**.
-- Protection against SQL injections/XSS attacks.
-- You must use secure Protocoles (HTTPS/WSS).
-- Server side form validation.
-- You must be able to play a live Ping Pong game.
-- Implement a Tournament system.
+First, run the development server:
 
-## Modules + 75%
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
-- **Major module**: Use a framework to build the backend.
-- **Minor module**: Use a database for the backend.
-- **Major module**: Standard user management, authentication, users across tournaments.
-- **Major module**: Designing the backend as microservices.
-- **Major module**: Implement Two-Factor Authentication (2FA) and JWT.
-- **Major module**: Implementing a remote authentication.
-- **Minor module**: Support on all devices.
-- **Major module**: Live chat.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Bonus + 25%
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-- **Major module**: Remote players
-- **Major module**: Add another game with user history and matchmaking.
-- **Minor module**: Monitoring system.
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Available Modules
+## Learn More
 
-- **Web**
-    - **Major module**: Use a framework to build the backend. ✅
-    - **Minor module**: Use a framework or a toolkit to build the frontend.
-    - **Minor module**: Use a database for the backend. ✅
-    - **Major module**: Store the score of a tournament in the Blockchain.
-- **User Management**
-    - **Major module**: Standard user management, authentication, users across tournaments. ✅
-    - **Major module**: Implementing a remote authentication. ✅
-- **Gameplay and user experience**
-    - **Major module**: Remote players ✅
-    - **Major module**: Multiplayer (more than 2 players in the same game).
-    - **Major module**: Add another game with user history and matchmaking. ✅
-    - **Minor module**: Game customization options. ✅
-    - **Major module**: Live chat. ✅
-- **AI-Algo**
-    - **Major module**: Introduce an AI opponent.
-    - **Minor module**: User and game stats dashboards
-- **Cybersecurity**
-    - **Major module**: Implement WAF/ModSecurity with a hardened configura-tion and HashiCorp Vault for secrets management.
-    - **Minor module**: GDPR compliance options with user anonymization, local data management, and Account Deletion.
-    - **Major module**: Implement Two-Factor Authentication (2FA) and JWT. ✅
-- **Devops**
-    - **Major module**: Infrastructure setup for log management.
-    - **Minor module**: Monitoring system. ✅
-    - **Major module**: Designing the backend as microservices. ✅
-- **Graphics**
-    - **Major module**: Use advanced 3D techniques.
-- **Accessibility**
-    - **Minor module**: Support on all devices. ✅
-    - **Minor module**: Expanding browser compatibility.
-    - **Minor module**: Supports multiple languages.
-    - **Minor module**: Add accessibility features for visually impaired users.
-    - **Minor module**: Server-Side Rendering (SSR) integration.
-- **Server-Side Pong**
-    - **Major module**: Replace basic Pong with server-side Pong and implement an API.
-    - **Major module**: Enabling Pong gameplay via CLI against web users with API integration.
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
