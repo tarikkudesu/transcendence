@@ -22,6 +22,7 @@ async function postRequest<T>(endpoint: string, body: T): Promise<RequestResult>
 	try {
 		const res = await fetch(`${API_BASE}${endpoint}`, {
 			method: 'POST',
+			credentials: 'include',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(body),
 		});

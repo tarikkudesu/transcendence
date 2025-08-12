@@ -1,0 +1,58 @@
+'use client';
+
+import { Button, Card, Flex, Text, TextField } from '@radix-ui/themes';
+import React, { ChangeEvent, useCallback, useContext, useState } from 'react';
+import { RequestResult, updateUsername } from '../_service/user/calls';
+import { useNotification } from './useNotify';
+import UserProfileContext from '../_service/UserContext';
+
+const UpdateUsername: React.FC = () => {
+	const { user } = useContext(UserProfileContext);
+	const { notify } = useNotification();
+	const [newUsername, setNewUsername] = useState<string>('');
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+
+	const updateUsernameCall = useCallback(async () => {
+		if (!newUsername) return;
+		setIsLoading(true);
+		const result: RequestResult = await updateUsername(user.username, { newusername: newUsername });
+		if (result.message === 'success') notify({ message: 'Success', success: true });
+		else notify({ message: result.message, error: true });
+		setIsLoading(false);
+	}, [newUsername, user.username, notify]);
+
+	return (
+		<div className="my-[36px]">
+			<Text as="div" mb="2" mt="4" weight="bold" size="5">
+				Update your username
+			</Text>
+			<Text as="div" mb="4" mt="1" className="text-sm text-dark-200">
+				This action is irreversible. Once you delete your account, restoring your account or any associated data will be impossible.
+			</Text>
+			<Card>
+				<Flex justify="between" align="center" gap="9" p="2">
+					<TextField.Root
+						value={newUsername}
+						placeholder="Enter your new username…"
+						className="flex-grow outline-none"
+						onChange={(e: ChangeEvent<HTMLInputElement>) => setNewUsername(e.target.value)}
+					/>
+					<Button
+						disabled={!newUsername}
+						variant="outline"
+						radius="small"
+						color="gray"
+						size="3"
+						className="px-4 text-center bg-accent-300 text-sm text-black cursor-pointer disabled:bg-dark-600 disabled:text-dark-200"
+						onClick={updateUsernameCall}
+						loading={isLoading}
+					>
+						Save
+					</Button>
+				</Flex>
+			</Card>
+		</div>
+	);
+};
+
+export default UpdateUsername;

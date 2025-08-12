@@ -10,7 +10,6 @@ import { Box, Button, Text } from '@radix-ui/themes';
 const LoginVerify: React.FC<unknown> = () => {
 	const router = useRouter();
 	const searchParams = useSearchParams();
-
 	const [email, setEmail] = useState<string>('');
 	const [code, setCode] = useState<string>('');
 
@@ -47,46 +46,48 @@ const LoginVerify: React.FC<unknown> = () => {
 	}, [email, notify]);
 
 	return (
-		<main className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ">
-			<Logo />
-			<Box height="24px" />
-			<div className="p-12 bg-dark-700 w-[400px] md:w-[500px] mx-auto rounded-lg">
-				<Text as="div" mb="2" mt="4" weight="bold" size="6">
-					Two factor authentication
-				</Text>
-				<Text as="div" mb="4" mt="1" className="text-sm text-dark-200">
-					YingYangPong has sent a verification code to your email
-				</Text>
-				<Box height="12px" />
-				<label className="text-sm text-dark-200">
-					Verification Code
-					<input
-						required
-						minLength={6}
-						maxLength={6}
-						value={code}
-						className="w-full my-1 outline-none rounded-sm p-3 text-sm bg-dark-500"
-						onChange={(e: ChangeEvent<HTMLInputElement>) => setCode(e.target.value)}
-						type="text"
-						name="code"
-					></input>
-				</label>
-				<Box height="20px" />
-				<button onClick={resendCall} className="text-sm text-dark-200 hover:text-accent-300">
-					resend code?
-				</button>
-				<Box height="20px" />
-				<Button
-					radius="small"
-					size="3"
-					disabled={!code || !email || code.length !== 6}
-					className="w-full p-2.5 disabled:bg-dark-600 bg-accent-300 text-center"
-					onClick={verifyCall}
-					loading={isLoading}
-				>
-					Verify
-				</Button>
-				<Box height="20px" />
+		<main>
+			<div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+				<Logo />
+				<Box height="24px" />
+				<div className="p-12 bg-dark-700 w-[400px] md:w-[500px] mx-auto rounded-lg">
+					<Text as="div" mb="2" mt="4" weight="bold" size="6">
+						Two factor authentication
+					</Text>
+					<Text as="div" mb="4" mt="1" className="text-sm text-dark-200">
+						YingYangPong has sent a verification code to your email
+					</Text>
+					<Box height="12px" />
+					<label className="text-sm text-dark-200">
+						Verification Code
+						<input
+							required
+							minLength={6}
+							maxLength={6}
+							value={code}
+							className="w-full my-1 outline-none rounded-sm p-3 text-sm bg-dark-500"
+							onChange={(e: ChangeEvent<HTMLInputElement>) => setCode(e.target.value)}
+							type="text"
+							name="code"
+						></input>
+					</label>
+					<Box height="20px" />
+					<button onClick={resendCall} className="text-sm text-dark-200 hover:text-accent-300">
+						resend code?
+					</button>
+					<Box height="20px" />
+					<Button
+						radius="small"
+						size="3"
+						disabled={!code || !email || code.length !== 6}
+						className="w-full p-2.5 disabled:bg-dark-600 bg-accent-300 text-center"
+						onClick={verifyCall}
+						loading={isLoading}
+					>
+						Verify
+					</Button>
+					<Box height="20px" />
+				</div>
 			</div>
 		</main>
 	);

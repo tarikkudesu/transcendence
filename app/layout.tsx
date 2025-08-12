@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import { Josefin_Sans } from 'next/font/google';
 import './globals.css';
-import Link from 'next/link';
 import { Theme } from '@radix-ui/themes';
 import { Toaster } from 'react-hot-toast';
+import { UserProfileProvider } from './_service/UserContextProvider';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const josefin = Josefin_Sans({
 	subsets: ['latin'],
@@ -25,33 +26,16 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body className="antialiased">
-				<Theme appearance="dark" accentColor="lime" className={`${josefin.className} bg-dark-900 text-amber-50`}>
-					<Toaster />
-					<ul className="">
-						<li>
-							<Link href="/login">/login</Link>
-						</li>
-						<li>
-							<Link href="/signup">/signup</Link>
-						</li>
-						<li>
-							<Link href="/dash">/dash</Link>
-						</li>
-						<li>
-							<Link href="/verify-account">/verify-account</Link>
-						</li>
-						<li>
-							<Link href="/2fa-authentication">/2fa-authentication</Link>
-						</li>
-						<li>
-							<Link href="/forgot-password">/forgot-password</Link>
-						</li>
-						<li>
-							<Link href="/reset-password">/reset-password</Link>
-						</li>
-					</ul>
-					{children}
+			<body className="antialiased m-0 p-0">
+				<Theme
+					panelBackground="translucent"
+					appearance="dark"
+					accentColor="lime"
+					hasBackground={false}
+					className={`${josefin.className} bg-dark-900 text-amber-50 m-0`}
+				>
+					<Toaster position="bottom-right" reverseOrder={false} />
+					<UserProfileProvider>{children}</UserProfileProvider>
 				</Theme>
 			</body>
 		</html>

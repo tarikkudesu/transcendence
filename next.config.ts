@@ -1,7 +1,17 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
+	images: {
+		remotePatterns: [
+			{
+				protocol: 'https',
+				hostname: 'res.cloudinary.com',
+				port: '',
+				pathname: '/drpmyxx4c/image/upload/v1751976105/avatars/**',
+				search: '',
+			},
+		],
+	},
 };
 
 export default nextConfig;
