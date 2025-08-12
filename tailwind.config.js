@@ -1,7 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-import type { Config } from 'tailwindcss';
-
-const config: Config = {
+const config = {
 	content: ['./pages/**/*.{js,ts,jsx,tsx,mdx}', './components/**/*.{js,ts,jsx,tsx,mdx}', './app/**/*.{js,ts,jsx,tsx,mdx}'],
 	theme: {
 		extend: {
@@ -16,13 +14,13 @@ const config: Config = {
 					600: '#283349',
 					700: '#1f2938',
 					800: '#181f2b',
-					900: '#161d2a',
+					900: '#161d2a', // base
 				},
 				accent: {
 					50: '#f7fce6',
 					100: '#e9f7b8',
 					200: '#d4eb63',
-					300: '#b3ec4b',
+					300: '#b3ec4b', // base
 					400: '#8ec936',
 					500: '#6cb42a',
 					600: '#548c1f',
