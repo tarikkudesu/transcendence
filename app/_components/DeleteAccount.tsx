@@ -1,25 +1,25 @@
 'use client';
 
-import { Card, Flex, Button, Text } from '@radix-ui/themes';
-import React, { useCallback, useContext, useState } from 'react';
-import { useNotification } from './useNotify';
+import { Button, Card, Flex, Text } from '@radix-ui/themes';
+import React, { useCallback, useState } from 'react';
 import { RequestResult } from '../_service/auth/calls';
+import { useAuth } from '../_service/AuthContext';
 import { deleteUser } from '../_service/user/calls';
-import UserProfileContext from '../_service/UserContext';
+import { useNotification } from './useNotify';
 
 const DeleteAccount: React.FC = () => {
 	const { notify } = useNotification();
-	const { user } = useContext(UserProfileContext);
+	const { username } = useAuth();
 	const [isLoading, setIsLoading] = useState(false);
 
 	const handleAccountCall = useCallback(async () => {
 		if (!confirm('Are you sure you want to delete your account? This action is irreversible.')) return;
 		setIsLoading(true);
-		const result: RequestResult = await deleteUser(user.username);
+		const result: RequestResult = await deleteUser(username);
 		if (result.message === 'success') notify({ message: 'Account deleted successfully', success: true });
 		else notify({ message: result.message, error: true });
 		setIsLoading(false);
-	}, [notify, user.username]);
+	}, [notify, username]);
 
 	return (
 		<div className="my-[36px]">

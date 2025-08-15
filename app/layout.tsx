@@ -1,10 +1,8 @@
+import { Theme } from '@radix-ui/themes';
 import type { Metadata } from 'next';
 import { Josefin_Sans } from 'next/font/google';
-import './globals.css';
-import { Theme } from '@radix-ui/themes';
 import { Toaster } from 'react-hot-toast';
-import { UserProfileProvider } from './_service/UserContextProvider';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import './globals.css';
 
 const josefin = Josefin_Sans({
 	subsets: ['latin'],
@@ -26,6 +24,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
+			<meta name="viewport" content="width=1024" />
 			<body className="antialiased m-0 p-0">
 				<Theme
 					panelBackground="translucent"
@@ -34,8 +33,8 @@ export default function RootLayout({
 					hasBackground={false}
 					className={`${josefin.className} bg-dark-900 text-amber-50 m-0`}
 				>
-					<Toaster position="bottom-right" reverseOrder={false} />
-					<UserProfileProvider>{children}</UserProfileProvider>
+					<Toaster position="top-center" reverseOrder={false} />
+					{children}
 				</Theme>
 			</body>
 		</html>

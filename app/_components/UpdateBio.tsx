@@ -1,16 +1,14 @@
 'use client';
 
 import { Button, Card, Flex, Text, TextField } from '@radix-ui/themes';
-import React, { ChangeEvent, useCallback, useContext, useState } from 'react';
+import React, { ChangeEvent, useCallback, useState } from 'react';
 import { RequestResult } from '../_service/auth/calls';
+import { useAuth } from '../_service/AuthContext';
 import { updateBio } from '../_service/user/calls';
 import { useNotification } from './useNotify';
-import UserProfileContext from '../_service/UserContext';
-
-
 
 const UpdateBio: React.FC = () => {
-	const { user } = useContext(UserProfileContext);
+	const { username } = useAuth();
 	const { notify } = useNotification();
 	const [bio, setBio] = useState<string>('');
 	const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -18,11 +16,11 @@ const UpdateBio: React.FC = () => {
 	const updateBioCall = useCallback(async () => {
 		if (!bio) return;
 		setIsLoading(true);
-		const result: RequestResult = await updateBio(user.username, { bio });
+		const result: RequestResult = await updateBio(username, { bio });
 		if (result.message === 'success') notify({ message: 'Success', success: true });
 		else notify({ message: result.message, error: true });
 		setIsLoading(false);
-	}, [bio, user.username, notify]);
+	}, [bio, username, notify]);
 
 	return (
 		<div className="my-[36px]">

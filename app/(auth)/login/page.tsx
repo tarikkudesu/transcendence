@@ -3,17 +3,15 @@
 import Logo from '@/app/_components/Logo';
 import { useNotification } from '@/app/_components/useNotify';
 import { login, RequestResult } from '@/app/_service/auth/calls';
-import UserProfileContext from '@/app/_service/UserContext';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
 import { Box, Button, Flex, Text } from '@radix-ui/themes';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { ChangeEvent, useCallback, useContext, useState } from 'react';
+import React, { ChangeEvent, useCallback, useState } from 'react';
 
 const Login: React.FC<unknown> = () => {
 	const router = useRouter();
 	const { notify } = useNotification();
-	const { setUsername: setStorageUsername } = useContext(UserProfileContext);
 	const [type, setType] = useState<'password' | 'text'>('password');
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [username, setUsername] = useState<string>('');
@@ -30,12 +28,11 @@ const Login: React.FC<unknown> = () => {
 		const result: RequestResult = await login({ username, password });
 		if (result.message === 'success') {
 			notify({ message: 'Success', success: true });
-			setStorageUsername(username);
 			// router.push(`2fa-authentication?email=${result.result?.email ?? ''}`); // ! restore Later
 			router.push('/dash');
 		} else notify({ message: result.message, error: true });
 		setIsLoading(false);
-	}, [notify, password, router, setStorageUsername, username]);
+	}, [notify, password, username]);
 
 	return (
 		<main>
@@ -54,7 +51,7 @@ const Login: React.FC<unknown> = () => {
 							minLength={4}
 							maxLength={40}
 							value={username}
-							className="w-full my-1 outline-none rounded-sm p-3 text-sm bg-dark-500"
+							className="text-white w-full my-1 outline-none rounded-sm p-3 text-sm bg-dark-500"
 							onChange={(e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
 							type="text"
 							name="username"
@@ -68,7 +65,7 @@ const Login: React.FC<unknown> = () => {
 							minLength={4}
 							maxLength={40}
 							value={password}
-							className="w-full my-1 outline-none rounded-sm p-3 text-sm bg-dark-500"
+							className="text-white w-full my-1 outline-none rounded-sm p-3 text-sm bg-dark-500"
 							onChange={(e: ChangeEvent<HTMLInputElement>) => setPass(e.target.value)}
 							type={type}
 							name="password"

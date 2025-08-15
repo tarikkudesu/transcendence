@@ -3,18 +3,16 @@
 import Logo from '@/app/_components/Logo';
 import { useNotification } from '@/app/_components/useNotify';
 import { RequestResult, signup } from '@/app/_service/auth/calls';
-import UserProfileContext from '@/app/_service/UserContext';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
-import { Box, Flex, Button, Text } from '@radix-ui/themes';
+import { Box, Button, Flex, Text } from '@radix-ui/themes';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { ChangeEvent, useCallback, useContext, useState } from 'react';
+import React, { ChangeEvent, useCallback, useState } from 'react';
 
 const SignUp: React.FC<unknown> = () => {
 	const router = useRouter();
 	const { notify } = useNotification();
 	const [type, setType] = useState<'password' | 'text'>('password');
-	const { setUsername: setStorageUsername } = useContext(UserProfileContext);
 	const [password, setPass] = useState<string>('');
 	const [username, setUsername] = useState<string>('');
 	const [email, setEmail] = useState<string>('');
@@ -31,11 +29,10 @@ const SignUp: React.FC<unknown> = () => {
 		const result: RequestResult = await signup({ email, username, password });
 		if (result.message === 'success') {
 			notify({ message: 'Success', success: true });
-			setStorageUsername(username);
 			router.push(`verify-account?email=${result.result?.email ?? ''}`);
 		} else notify({ message: result.message, error: true });
 		setIsLoading(false);
-	}, [email, notify, password, router, setStorageUsername, username]);
+	}, [email, notify, password, router, username]);
 
 	return (
 		<main>

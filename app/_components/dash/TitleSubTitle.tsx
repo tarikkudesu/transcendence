@@ -8,10 +8,10 @@ interface TitleSubTitleProps {
 const TitleSubTitle: React.FC<TitleSubTitleProps> = ({ children, subtitle }) => {
 	return (
 		<>
-			<Text as="div" mb="2" mt="4" weight="bold" size="7">
+			<Text as="div" mb="2" mt="8" weight="bold" size="8">
 				{children}
 			</Text>
-			<Text as="div" mb="4" mt="1" className="text-sm text-dark-200">
+			<Text as="div" mb="4" mt="2" className="text-sm text-dark-200 mb-20">
 				{subtitle}
 			</Text>
 		</>

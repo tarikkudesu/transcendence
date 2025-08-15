@@ -1,17 +1,18 @@
 'use client';
 
-import UserProfileContext from '@/app/_service/UserContext';
-import React, { useContext } from 'react';
-import Image from 'next/image';
+import { useAuth } from '@/app/_service/AuthContext';
 import { Box, Text } from '@radix-ui/themes';
+import Image from 'next/image';
+import React from 'react';
 
 const MyDashboardProfile: React.FC = ({}) => {
-	const { user } = useContext(UserProfileContext);
+	const { avatar, username, bio, created_at } = useAuth();
 
 	return (
 		<div className="py-8">
 			<Image
-				src={user.avatar ?? 'https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar175.png'}
+				priority
+				src={avatar ? avatar : '/Logo.png'}
 				width={80}
 				height={80}
 				alt="My profile image"
@@ -19,15 +20,15 @@ const MyDashboardProfile: React.FC = ({}) => {
 			/>
 			<Box height="16px" />
 			<Text as="div" align="center" size="4" weight="bold" className="text-white">
-				{user.username}
+				{username}
 			</Text>
 			<Box height="4px" />
 			<Text as="div" align="center" size="2" className="text-dark-200">
-				{user.bio}
+				{bio}
 			</Text>
 			<Box height="4px" />
 			<Text as="div" align="center" size="2" className="text-dark-200">
-				Joined at {user.created_at.slice(0, 10)}
+				Joined at {created_at.slice(0, 10)}
 			</Text>
 		</div>
 	);

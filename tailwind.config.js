@@ -2,6 +2,12 @@
 const config = {
 	content: ['./pages/**/*.{js,ts,jsx,tsx,mdx}', './components/**/*.{js,ts,jsx,tsx,mdx}', './app/**/*.{js,ts,jsx,tsx,mdx}'],
 	theme: {
+		screens: {
+			sm: '1024px',
+			md: '1024px',
+			lg: '1024px',
+			xl: '1024px',
+		},
 		extend: {
 			colors: {
 				dark: {
@@ -40,6 +46,37 @@ const config = {
 					700: '#931f75',
 					800: '#70175a',
 					900: '#4e103f',
+				},
+				golden: {
+					50: '#FFF7E0',
+					100: '#FFEDB3',
+					200: '#FFE180',
+					300: '#FFD54D',
+					400: '#FFCA1A',
+					500: '#FFC000', // base
+					600: '#E0A900',
+					700: '#B88700',
+					800: '#755800',
+					900: '#473600',
+					900: '#1A1300',
+				},
+			},
+			animation: {
+				spin: 'spin 1s linear infinite',
+			},
+			keyframes: {
+				spin: {
+					from: { transform: 'rotate(0deg)' },
+					to: { transform: 'rotate(360deg)' },
+				},
+			},
+			animation: {
+				'spin-reverse': 'spin-reverse 1s linear infinite',
+			},
+			keyframes: {
+				'spin-reverse': {
+					from: { transform: 'rotate(360deg)' },
+					to: { transform: 'rotate(0deg)' },
 				},
 			},
 		},

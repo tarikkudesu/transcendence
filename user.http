@@ -1,0 +1,21 @@
+PUT http://localhost/api/v1/users/profile/avatar/username
+
+
+PUT http://localhost/api/v1/users/profile/password/username
+{
+    "newpassword": "salamkalam"
+}
+
+PUT http://localhost/api/v1/users/profile/username/username
+{
+    "newusername": "abdo"
+}
+
+PUT http://localhost/api/v1/users/profile/bio/ayoub
+{
+    "bio": "salam kalam"
+}
+
+DELETE http://localhost/api/v1/users/otman
+
+GET http://localhost/api/v1/users/ayoub

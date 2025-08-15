@@ -6,6 +6,7 @@ export interface PongHistoryEntry {
 	opponent_avatar_url: string;
 	player_score: number;
 	opponent_score: number;
+	game_date: string;
 }
 
 export interface DoomHistoryEntry {
@@ -51,7 +52,7 @@ export interface TournamentMatch {
 	date: string;
 }
 
-export interface TournamentDetails {
+export interface TournamentDetailsType {
 	Name: string;
 	Date: string;
 	Winner_username: string;

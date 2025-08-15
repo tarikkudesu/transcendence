@@ -1,15 +1,15 @@
 'use client';
 
+import { CheckCircledIcon } from '@radix-ui/react-icons';
 import { Box, Button, Card, Flex, Text } from '@radix-ui/themes';
-import React, { ChangeEvent, useCallback, useContext, useState } from 'react';
+import Link from 'next/link';
+import React, { ChangeEvent, useCallback, useState } from 'react';
+import { useAuth } from '../_service/AuthContext';
 import { RequestResult, updatePassword } from '../_service/user/calls';
 import { useNotification } from './useNotify';
-import Link from 'next/link';
-import { CheckCircledIcon } from '@radix-ui/react-icons';
-import UserProfileContext from '../_service/UserContext';
 
 const UpdatePassword: React.FC = () => {
-	const { user } = useContext(UserProfileContext);
+	const { username } = useAuth();
 	const { notify } = useNotification();
 	const [type, setType] = useState<'password' | 'text'>('password');
 	const [password, setPassword] = useState<string>('');
@@ -22,11 +22,11 @@ const UpdatePassword: React.FC = () => {
 	const updatePasswordCall = useCallback(async () => {
 		if (!password) return;
 		setIsLoading(true);
-		const result: RequestResult = await updatePassword(user.username, { newpassword: password });
+		const result: RequestResult = await updatePassword(username, { newpassword: password });
 		if (result.message === 'success') notify({ message: 'Success', success: true });
 		else notify({ message: result.message, error: true });
 		setIsLoading(false);
-	}, [password, user.username, notify]);
+	}, [password, username, notify]);
 
 	return (
 		<div className="my-[36px]">

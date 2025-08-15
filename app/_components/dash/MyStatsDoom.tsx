@@ -1,14 +1,14 @@
 'use client';
 
 import { RequestResult } from '@/app/_service/auth/calls';
+import { useAuth } from '@/app/_service/AuthContext';
 import { fetchDoomSummary } from '@/app/_service/game/calls';
 import { DoomSummary } from '@/app/_service/game/schemas';
-import UserProfileContext from '@/app/_service/UserContext';
 import { Flex, Text } from '@radix-ui/themes';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 const MyStatsDoom: React.FC = ({}) => {
-	const { user } = useContext(UserProfileContext);
+	const { username } = useAuth();
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isError, setError] = useState<boolean>(false);
 	const [stats, setStats] = useState<DoomSummary>({
@@ -20,8 +20,7 @@ const MyStatsDoom: React.FC = ({}) => {
 		async function fetchData() {
 			try {
 				setIsLoading(true);
-				const res: RequestResult = await fetchDoomSummary(user.username);
-				console.log(res);
+				const res: RequestResult = await fetchDoomSummary(username);
 				if (res.message === 'success') {
 					setStats(res.result);
 				} else {
@@ -34,7 +33,7 @@ const MyStatsDoom: React.FC = ({}) => {
 			setIsLoading(false);
 		}
 		fetchData();
-	}, [user.username]);
+	}, [username]);
 
 	const content = useCallback(() => {
 		if (isLoading)
@@ -50,44 +49,35 @@ const MyStatsDoom: React.FC = ({}) => {
 				</Text>
 			);
 		return (
-			<Flex justify="center" gap="9" align="center" className="px-[40px] py-[20px]">
-				<div className="">
-					<div className="h-[100px] w-[100px] rounded-full border-4 border-red-600 bg-dark-900 flex justify-center items-center text-xl font-black relative overflow-hidden">
-						{stats.total_games - stats.total_winns}
-						<div className="absolute -top-1/4 -left-1/4 w-full h-full rounded-full bg-dark-400 opacity-25"></div>
-					</div>
-					<Text as="div" size="4" align="center" weight="bold" className="mt-4">
-						Lost
-					</Text>
-				</div>
-				<div className="">
-					<div className="h-[100px] w-[100px] rounded-full border-4 border-slate-600 bg-dark-900 flex justify-center items-center text-xl font-black relative overflow-hidden">
-						{stats.total_games}
-						<div className="absolute -top-1/4 -left-1/4 w-full h-full rounded-full bg-dark-400 opacity-25"></div>
-					</div>
-					<Text as="div" size="4" align="center" weight="bold" className="mt-4">
-						Played
-					</Text>
-				</div>
-				<div className="">
-					<div className="h-[100px] w-[100px] rounded-full border-4 border-accent-300 bg-dark-900 flex justify-center items-center text-xl font-black relative overflow-hidden">
-						{stats.total_winns}
-						<div className="absolute -top-1/4 -left-1/4 w-full h-full rounded-full bg-dark-400 opacity-25"></div>
-					</div>
-					<Text as="div" size="4" align="center" weight="bold" className="mt-4">
+			<Flex justify="center" gap="6" direction={{ initial: 'column', lg: 'row' }} align="center" className="px-[40px] py-[20px]">
+				<Text size="8" weight="bold" as="div" className="text-accent-300">
+					{stats.total_winns}
+					<Text size="3" as="div" className="text-white">
 						winns
 					</Text>
-				</div>
+				</Text>
+				<Text size="8" weight="bold" as="div" className="text-dark-200">
+					{stats.total_games}
+					<Text size="3" as="div" className="text-white">
+						Played
+					</Text>
+				</Text>
+				<Text size="8" weight="bold" as="div" className="text-red-600">
+					{stats.total_games - stats.total_winns}
+					<Text size="3" as="div" className="text-white">
+						Losts
+					</Text>
+				</Text>
 			</Flex>
 		);
 	}, [isError, isLoading, stats]);
 
 	return (
-		<div className="my-8">
+		<div className="flex-grow p-4 rounded-md bg-dark-700 my-8">
 			<Text as="div" align="center" size="5" mb="2" weight="bold">
 				Doom Cards Statistics
 			</Text>
-			<div className="flex-grow p-4 rounded-md bg-dark-700">{content()}</div>
+			{content()}
 		</div>
 	);
 };

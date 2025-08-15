@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useContext } from 'react';
-import UserProfileContext from '../_service/UserContext';
+import React from 'react';
+import { useAuth } from '../_service/AuthContext';
 
 const Username: React.FC = () => {
-	const { user } = useContext(UserProfileContext);
-	return <span>{user.username}</span>;
+	const { username } = useAuth();
+	return <span>{username}</span>;
 };
 
 export default Username;

@@ -50,3 +50,7 @@ export async function deleteUser(username: string): Promise<RequestResult> {
 export async function getUser(username: string): Promise<RequestResult> {
 	return request('GET', `/users/${username}`);
 }
+
+export async function getMe(): Promise<RequestResult> {
+	return request('GET', '/auth/me');
+}

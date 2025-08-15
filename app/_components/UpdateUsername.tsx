@@ -1,13 +1,13 @@
 'use client';
 
 import { Button, Card, Flex, Text, TextField } from '@radix-ui/themes';
-import React, { ChangeEvent, useCallback, useContext, useState } from 'react';
+import React, { ChangeEvent, useCallback, useState } from 'react';
+import { useAuth } from '../_service/AuthContext';
 import { RequestResult, updateUsername } from '../_service/user/calls';
 import { useNotification } from './useNotify';
-import UserProfileContext from '../_service/UserContext';
 
 const UpdateUsername: React.FC = () => {
-	const { user } = useContext(UserProfileContext);
+	const { username } = useAuth();
 	const { notify } = useNotification();
 	const [newUsername, setNewUsername] = useState<string>('');
 	const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -15,11 +15,11 @@ const UpdateUsername: React.FC = () => {
 	const updateUsernameCall = useCallback(async () => {
 		if (!newUsername) return;
 		setIsLoading(true);
-		const result: RequestResult = await updateUsername(user.username, { newusername: newUsername });
+		const result: RequestResult = await updateUsername(username, { newusername: newUsername });
 		if (result.message === 'success') notify({ message: 'Success', success: true });
 		else notify({ message: result.message, error: true });
 		setIsLoading(false);
-	}, [newUsername, user.username, notify]);
+	}, [newUsername, notify, username]);
 
 	return (
 		<div className="my-[36px]">

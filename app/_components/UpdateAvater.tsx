@@ -1,15 +1,15 @@
 'use client';
 
 import { Button, Card, Flex, Text } from '@radix-ui/themes';
-import React, { useCallback, useContext, useRef, useState } from 'react';
+import Image from 'next/image';
+import React, { useCallback, useRef, useState } from 'react';
 import { RequestResult } from '../_service/auth/calls';
+import { useAuth } from '../_service/AuthContext';
 import { updateAvatar } from '../_service/user/calls';
 import { useNotification } from './useNotify';
-import Image from 'next/image';
-import UserProfileContext from '../_service/UserContext';
 
 const UpdateAvatar: React.FC = () => {
-	const { user } = useContext(UserProfileContext);
+	const { username } = useAuth();
 	const { notify } = useNotification();
 	const [file, setFile] = useState<File | null>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
@@ -22,13 +22,13 @@ const UpdateAvatar: React.FC = () => {
 	const updateAvatarCall = useCallback(async () => {
 		if (!file) return;
 		setIsLoading(true);
-		const result: RequestResult = await updateAvatar(user.username, { avatar: file });
+		const result: RequestResult = await updateAvatar(username, { avatar: file });
 		if (result.message === 'success') {
 			notify({ message: 'Success', success: true });
 			setFile(null);
 		} else notify({ message: result.message, error: true });
 		setIsLoading(false);
-	}, [file, user.username, notify]);
+	}, [file, notify, username]);
 
 	const triggerFileSelect = useCallback(() => {
 		fileInputRef.current?.click();
@@ -46,7 +46,7 @@ const UpdateAvatar: React.FC = () => {
 				<Flex justify="between" align="center" p="4" gap="9">
 					<Card onClick={triggerFileSelect} className="flex justify-start items-start gap-4 p-4 flex-grow cursor-pointer">
 						<Card>
-							<Image src="/Logo.png" height={40} width={40} alt="Logo as avatar" />
+							<Image priority src="/Logo.png" height={40} width={40} alt="Logo as avatar" />
 						</Card>
 						<Text as="div" weight="bold" size="1" className="text-white">
 							Upload your avatar

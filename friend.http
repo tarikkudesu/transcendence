@@ -1,0 +1,36 @@
+
+signup
+{
+    "username": "user",
+    "email": "test@gmail.com",
+    "password": "123456789"
+}
+verify account
+{
+    "verificationCode": "890801",
+    "email": "test@gmail.com"
+}
+forgot passord
+{
+    "email": "test@gmail.com"
+}
+reset password
+{
+    "email": "test@gmail.com",
+    "token":"3iCVIiWoX60asdtu",
+    "password": "ooulcaid123"
+}
+login
+{
+    "username": "furina",
+    "password": "pass0000"
+}
+verify 2fa
+{
+    "verificationCode": "531323",
+    "email": "test@gmail.com"
+}
+resend otp
+{
+    "email": "test@gmail.com"
+}

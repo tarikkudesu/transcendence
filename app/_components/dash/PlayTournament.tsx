@@ -8,6 +8,7 @@ const PlayTournament: React.FC = () => {
 			<Card className="relative overflow-hidden p-8 mb-[20px]">
 				<div className="h-[350px] w-[350px] bg-magenta-500 rounded-full absolute bottom-0 left-0 -translate-x-1/2 translate-y-1/2 blur-3xl opacity-45 -z-10"></div>
 				<Image
+					priority
 					draggable={false}
 					src="/Tournament.png"
 					height={150}
@@ -19,7 +20,7 @@ const PlayTournament: React.FC = () => {
 				<Text as="div" mb="2" mt="4" weight="bold" size="7" className="text-white">
 					Play Ping Pong Tournament
 				</Text>
-				<Text as="div" mb="4" mt="1" className="text-sm text-dark-200">
+				<Text as="div" mb="4" mt="1" className="text-sm text-dark-100">
 					Basic details that will be a representation of yourself across the YingYangPong playground.
 				</Text>
 				<Box height="20px" />

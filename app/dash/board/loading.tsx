@@ -1,12 +1,8 @@
+import LoadingIndicator from '@/app/_components/Loading';
 import React from 'react';
-import { Text } from '@radix-ui/themes';
 
 const Loading: React.FC = () => {
-	return (
-		<Text as="div" align="center" mt="5s">
-			Loading...
-		</Text>
-	);
+	return <LoadingIndicator size="md" />;
 };
 
 export default Loading;
