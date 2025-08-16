@@ -1,3 +1,5 @@
+'use client';
+
 import * as Main from './consts';
 
 function randInt(min: number, max: number): number {
@@ -62,8 +64,8 @@ class Ball {
 		this.direction = direction;
 	}
 
-	reposition(added: number): void {
-		this.pos = this.pos.add(this.direction.mult(Main.BallVelocity + added / 3));
+	reposition(): void {
+		this.pos = this.pos.add(this.direction.mult(Main.BallVelocity));
 	}
 }
 
@@ -100,8 +102,8 @@ class Paddle {
 		this.acc = this.acc.unit().mult(this.acceleration);
 		this.vel = this.vel.add(this.acc).mult(1 - Main.Friction);
 		const newPos = this.pos.add(this.vel);
-		if (newPos.y < 0) newPos.y = 0;
-		if (newPos.y > Main.PongHeight) newPos.y = Main.PongHeight;
+		if (newPos.y < Main.PaddleHeight) newPos.y = Main.PaddleHeight;
+		if (newPos.y > Main.PongHeight - Main.PaddleHeight) newPos.y = Main.PongHeight - Main.PaddleHeight;
 		this.pos = newPos;
 		const length = this.end.subtr(this.start).mag();
 		this.start = this.pos.add(this.dir.mult(-length / 2));
@@ -131,68 +133,80 @@ class Pong {
 	sound: number;
 	playerScore: number;
 	playerNoBan: number;
+	frameId: number = 0;
 	opponentScore: number;
 	intervalId: number = 0;
+	paused: boolean = false;
 	rightPaddle: Paddle;
 	leftPaddle: Paddle;
+	canvas: HTMLCanvasElement | null = null;
+	ctx: CanvasRenderingContext2D | null = null;
+	updateWinner: (w: 'Player 1' | 'Player 2' | 'None') => void = (w: 'Player 1' | 'Player 2' | 'None') => void w;
 
 	constructor() {
+		this.sound = 0;
+		this.wait = false;
+		this.playerNoBan = 1;
 		this.playerScore = 0;
 		this.opponentScore = 0;
-		this.playerNoBan = 1;
-		// * game data
-		this.wait = false;
-		this.sound = 0;
 		this.keys = new Keys();
 		this.ball = new Ball({ direction: new Vector(0, 0) });
-		this.rightPaddle = new Paddle({ center: new Vector(0, 0) });
-		this.leftPaddle = new Paddle({ center: new Vector(0, 0) });
-		// * Create Paddles
-		this.rightPaddle = new Paddle({ center: new Vector(Main.PongWidth - Main.PaddleDistance, Math.ceil(Main.PongHeight / 2)) });
 		this.leftPaddle = new Paddle({ center: new Vector(Main.PaddleDistance, Math.ceil(Main.PongHeight / 2)) });
-		this.setup();
+		this.rightPaddle = new Paddle({ center: new Vector(Main.PongWidth - Main.PaddleDistance, Math.ceil(Main.PongHeight / 2)) });
 	}
-
+	setup(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, updateWinner: (w: 'Player 1' | 'Player 2' | 'None') => void): void {
+		if (!canvas || !ctx) return;
+		this.ctx = ctx;
+		this.wait = false;
+		this.canvas = canvas;
+		this.playerScore = 0;
+		this.opponentScore = 0;
+		this.updateWinner = updateWinner;
+		this.canvas.addEventListener('keyup', this.keyUp.bind(this));
+		this.canvas.addEventListener('keydown', this.keyDown.bind(this));
+		this.reset();
+		this.draw();
+		this.frameId = requestAnimationFrame(this.mainLoop.bind(this));
+	}
 	reset(): void {
-		this.playerScore = 0;
-		this.opponentScore = 0;
-		this.playerNoBan = 1;
-		// * game data
-		this.wait = false;
 		this.sound = 0;
-		this.keys = new Keys();
+		this.wait = false;
+		this.playerNoBan = 1;
 		this.ball = new Ball({ direction: new Vector(0, 0) });
-		this.rightPaddle = new Paddle({ center: new Vector(0, 0) });
-		this.leftPaddle = new Paddle({ center: new Vector(0, 0) });
-		// * Create Paddles
-		this.rightPaddle = new Paddle({ center: new Vector(Main.PongWidth - Main.PaddleDistance, Math.ceil(Main.PongHeight / 2)) });
-		this.leftPaddle = new Paddle({ center: new Vector(Main.PaddleDistance, Math.ceil(Main.PongHeight / 2)) });
+		this.draw();
 		let angle = randInt((-Math.PI / 4) * 1000, (Math.PI / 4) * 1000) / 1000;
 		if (this.playerNoBan === 3 || this.playerNoBan === 4) angle += Math.PI;
-		this.ball = new Ball({ direction: new Vector(1 * Math.cos(angle), 1 * Math.sin(angle)).unit() });
+		setTimeout(() => (this.ball = new Ball({ direction: new Vector(1 * Math.cos(angle), 1 * Math.sin(angle)).unit() })), 500);
 		setTimeout(() => (this.wait = true), 1000);
 	}
-	setup(): void {
-		let angle = randInt((-Math.PI / 4) * 1000, (Math.PI / 4) * 1000) / 1000;
-		if (this.playerNoBan === 3 || this.playerNoBan === 4) angle += Math.PI;
-		this.ball = new Ball({ direction: new Vector(1 * Math.cos(angle), 1 * Math.sin(angle)).unit() });
-		setTimeout(() => (this.wait = true), 1000);
+	pause(state: boolean) {
+		this.paused = state;
+	}
+	clear() {
+		cancelAnimationFrame(this.frameId);
+		if (this.canvas) {
+			this.canvas.removeEventListener('keyup', this.keyUp.bind(this));
+			this.canvas.removeEventListener('keydown', this.keyDown.bind(this));
+		}
 	}
 
-	keyPressRight(up: boolean, down: boolean): void {
-		if (up) this.keys.UP_R = true;
-		else this.keys.UP_R = false;
-		if (down) this.keys.DOWN_R = true;
-		else this.keys.DOWN_R = false;
-		this.rightPaddle.move(up, down);
+	keyDown(e: KeyboardEvent) {
+		e.preventDefault();
+		if (e.code === 'ArrowUp') this.keys.UP_R = true;
+		if (e.code === 'ArrowDown') this.keys.DOWN_R = true;
+		if (e.code === 'KeyW') this.keys.UP_L = true;
+		if (e.code === 'KeyS') this.keys.DOWN_L = true;
+		this.rightPaddle.move(this.keys.UP_R, this.keys.DOWN_R);
+		this.leftPaddle.move(this.keys.UP_L, this.keys.DOWN_L);
 	}
-
-	keyPressLeft(up: boolean, down: boolean): void {
-		if (up) this.keys.UP_R = true;
-		else this.keys.UP_R = false;
-		if (down) this.keys.DOWN_R = true;
-		else this.keys.DOWN_R = false;
-		this.leftPaddle.move(up, down);
+	keyUp(e: KeyboardEvent) {
+		e.preventDefault();
+		if (e.code === 'ArrowUp') this.keys.UP_R = false;
+		if (e.code === 'ArrowDown') this.keys.DOWN_R = false;
+		if (e.code === 'KeyW') this.keys.UP_L = false;
+		if (e.code === 'KeyS') this.keys.DOWN_L = false;
+		this.rightPaddle.move(this.keys.UP_L, this.keys.DOWN_L);
+		this.leftPaddle.move(this.keys.UP_L, this.keys.DOWN_L);
 	}
 
 	collision_response(normal: Vector): void {
@@ -200,7 +214,8 @@ class Pong {
 	}
 
 	updateObjects(): void {
-		if (this.wait) this.ball.reposition(this.playerScore > this.opponentScore ? this.playerScore : this.opponentScore);
+		if (!this.wait || this.paused) return;
+		this.ball.reposition();
 		this.rightPaddle.reposition();
 		this.leftPaddle.reposition();
 		// * TOP
@@ -215,6 +230,18 @@ class Pong {
 			this.collision_response(new Vector(0, -1));
 			this.sound = 1;
 		}
+		// // * RIGHT
+		// if (this.ball.pos.x > Main.PongWidth - Main.BallRadius) {
+		// 	this.ball.pos.x = Main.PongWidth - Main.BallRadius;
+		// 	this.collision_response(new Vector(-1, 0));
+		// 	this.sound = 1;
+		// }
+		// // * LEFT
+		// if (this.ball.pos.x < Main.BallRadius) {
+		// 	this.ball.pos.x = Main.BallRadius;
+		// 	this.collision_response(new Vector(1, 0));
+		// 	this.sound = 1;
+		// }
 		// * RIGHT
 		if (this.ball.pos.x > Main.PongWidth - this.leftPaddle.start.x - Main.PaddleRadius - Main.BallRadius) {
 			if (
@@ -230,8 +257,7 @@ class Pong {
 				this.playerScore += 1;
 				this.playerNoBan += 1;
 				this.sound = 3;
-				this.wait = false;
-				this.setup();
+				this.reset();
 			}
 		}
 		// * LEFT
@@ -246,14 +272,96 @@ class Pong {
 				this.opponentScore += 1;
 				this.playerNoBan += 1;
 				this.sound = 3;
-				this.wait = false;
-				this.setup();
+				this.reset();
 			}
 		}
 	}
+	drawRightPaddles() {
+		if (this.ctx === null) return;
+		this.ctx.beginPath();
+		this.ctx.fillStyle = '#b3ec4b';
+		this.ctx.rect(
+			this.rightPaddle.pos.x - Main.PaddleRadius,
+			this.rightPaddle.pos.y - Main.PaddleHeight,
+			Main.PaddleRadius * 2,
+			Main.PaddleHeight * 2
+		);
+		this.ctx.fill();
+		this.ctx.beginPath();
+	}
+	drawLeftPaddles() {
+		if (this.ctx === null) return;
+		this.ctx.fillStyle = '#b3ec4b';
+		this.ctx.rect(
+			this.leftPaddle.pos.x - Main.PaddleRadius,
+			this.leftPaddle.pos.y - Main.PaddleHeight,
+			Main.PaddleRadius * 2,
+			Main.PaddleHeight * 2
+		);
+		this.ctx.fill();
+		this.ctx.beginPath();
+	}
+	drawBall() {
+		if (this.ctx === null) return;
+		this.ctx.beginPath();
+		this.ctx.arc(this.ball.pos.x, this.ball.pos.y, Main.BallRadius, 0, 2 * Math.PI);
+		this.ctx.strokeStyle = '#b3ec4b';
+		this.ctx.stroke();
+		this.ctx.fillStyle = '#b3ec4b';
+		this.ctx.fill();
+		this.ctx.closePath();
+	}
+	drawSep() {
+		if (this.ctx === null) return;
+		this.ctx.save();
+		this.ctx.setLineDash([5, 5]);
+		this.ctx.strokeStyle = '#b3ec4b';
+		this.ctx.lineWidth = 2;
+		this.ctx.beginPath();
+		this.ctx.moveTo(Main.PongWidth / 2, 0);
+		this.ctx.lineTo(Main.PongWidth / 2, Main.PongHeight);
+		this.ctx.stroke();
+		this.ctx.restore();
+	}
+	drawCircle() {
+		if (this.ctx === null) return;
+		this.ctx.save();
+		this.ctx.setLineDash([5, 5]);
+		this.ctx.strokeStyle = '#6cb42a';
+		this.ctx.lineWidth = 2;
+		this.ctx.beginPath();
+		this.ctx.arc(Main.PongWidth / 2, Main.PongHeight / 2, 50, 0, Math.PI * 2);
+		this.ctx.stroke();
+		this.ctx.restore();
+	}
+	drawScore() {
+		if (this.ctx === null) return;
+		this.ctx.font = 'bold 64px monospace';
+		this.ctx.fillStyle = '#ffffff'; // Your accent color
+		this.ctx.textAlign = 'center';
+		this.ctx.textBaseline = 'middle';
+		this.ctx.fillText(this.playerScore.toString(), Main.PongWidth / 2 - 100, 70);
+		this.ctx.fillText(this.opponentScore.toString(), Main.PongWidth / 2 + 100, 70);
+	}
+	draw() {
+		if (this.ctx === null || this.canvas === null) return;
+		this.ctx.clearRect(0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
+		this.drawCircle();
+		this.drawSep();
+		this.drawBall();
+		this.drawRightPaddles();
+		this.drawLeftPaddles();
+		this.drawScore();
+	}
+	mainLoop() {
+		if (this.ctx === null || this.canvas === null) return;
+		if (this.playerNoBan >= 5) this.playerNoBan = 1;
+		if (this.playerScore >= Main.FinalScore) this.updateWinner('Player 1');
+		else if (this.opponentScore >= Main.FinalScore) this.updateWinner('Player 2');
+		this.updateObjects();
+		this.draw();
+		this.frameId = requestAnimationFrame(this.mainLoop.bind(this));
+	}
 }
 
-// ! END
-const pong: Pong = new Pong();
-
-export default pong;
+export default Pong;

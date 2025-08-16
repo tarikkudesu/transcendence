@@ -63,17 +63,13 @@ const config = {
 			},
 			animation: {
 				spin: 'spin 1s linear infinite',
+				'spin-reverse': 'spin-reverse 1s linear infinite',
 			},
 			keyframes: {
 				spin: {
 					from: { transform: 'rotate(0deg)' },
 					to: { transform: 'rotate(360deg)' },
 				},
-			},
-			animation: {
-				'spin-reverse': 'spin-reverse 1s linear infinite',
-			},
-			keyframes: {
 				'spin-reverse': {
 					from: { transform: 'rotate(360deg)' },
 					to: { transform: 'rotate(0deg)' },
