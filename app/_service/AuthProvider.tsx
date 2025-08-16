@@ -17,28 +17,28 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	const router = useRouter();
 
 	useEffect(() => {
-		setUser({
-			avatar: '',
-			bio: '',
-			created_at: 'yesterday',
-			email: '',
-			username: 'rick',
-		});
-		return;
-		// setIsLoading(true);
-		// async function fetchMe() {
-		// 	try {
-		// 		const res: RequestResult = await getMe();
-		// 		if (res.message === 'success') setUser(res.result);
-		// 		else throw new Error('failed');
-		// 	} catch (err) {
-		// 		void err;
-		// 		router.push('/login');
-		// 	} finally {
-		// 		setIsLoading(false);
-		// 	}
-		// }
-		// fetchMe();
+		// setUser({
+		// 	avatar: '',
+		// 	bio: '',
+		// 	created_at: 'yesterday',
+		// 	email: '',
+		// 	username: 'rick',
+		// });
+		// return;
+		setIsLoading(true);
+		async function fetchMe() {
+			try {
+				const res: RequestResult = await getMe();
+				if (res.message === 'success') setUser(res.result);
+				else throw new Error('failed');
+			} catch (err) {
+				void err;
+				router.push('/login');
+			} finally {
+				setIsLoading(false);
+			}
+		}
+		fetchMe();
 	}, []);
 
 	if (isLoading || !user) return <LoadingIndicator size="md" />;

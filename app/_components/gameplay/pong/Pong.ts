@@ -130,7 +130,7 @@ class Pong {
 	keys: Keys;
 	ball: Ball;
 	wait: boolean;
-	sound: number;
+	sound: boolean;
 	playerScore: number;
 	playerNoBan: number;
 	frameId: number = 0;
@@ -144,7 +144,7 @@ class Pong {
 	updateWinner: (w: 'Player 1' | 'Player 2' | 'None') => void = (w: 'Player 1' | 'Player 2' | 'None') => void w;
 
 	constructor() {
-		this.sound = 0;
+		this.sound = false;
 		this.wait = false;
 		this.playerNoBan = 1;
 		this.playerScore = 0;
@@ -162,25 +162,33 @@ class Pong {
 		this.playerScore = 0;
 		this.opponentScore = 0;
 		this.updateWinner = updateWinner;
+		this.ball = new Ball({ direction: new Vector(0, 0) });
 		this.canvas.addEventListener('keyup', this.keyUp.bind(this));
 		this.canvas.addEventListener('keydown', this.keyDown.bind(this));
-		this.reset();
-		this.draw();
 		this.frameId = requestAnimationFrame(this.mainLoop.bind(this));
 	}
-	reset(): void {
-		this.sound = 0;
+	resetMatch(): void {
 		this.wait = false;
-		this.playerNoBan = 1;
-		this.ball = new Ball({ direction: new Vector(0, 0) });
-		this.draw();
+		setTimeout(() => (this.wait = true), 1000);
 		let angle = randInt((-Math.PI / 4) * 1000, (Math.PI / 4) * 1000) / 1000;
 		if (this.playerNoBan === 3 || this.playerNoBan === 4) angle += Math.PI;
 		setTimeout(() => (this.ball = new Ball({ direction: new Vector(1 * Math.cos(angle), 1 * Math.sin(angle)).unit() })), 500);
-		setTimeout(() => (this.wait = true), 1000);
+	}
+	reset(): void {
+		this.wait = false;
+		this.playerScore = 0;
+		this.opponentScore = 0;
+		this.ball = new Ball({ direction: new Vector(0, 0) });
+		this.leftPaddle = new Paddle({ center: new Vector(Main.PaddleDistance, Math.ceil(Main.PongHeight / 2)) });
+		this.rightPaddle = new Paddle({ center: new Vector(Main.PongWidth - Main.PaddleDistance, Math.ceil(Main.PongHeight / 2)) });
+		this.playerNoBan = 1;
+		this.draw();
 	}
 	pause(state: boolean) {
 		this.paused = state;
+	}
+	updateSound(state: boolean) {
+		this.sound = state;
 	}
 	clear() {
 		cancelAnimationFrame(this.frameId);
@@ -222,26 +230,20 @@ class Pong {
 		if (this.ball.pos.y < Main.BallRadius) {
 			this.ball.pos.y = Main.BallRadius;
 			this.collision_response(new Vector(0, 1));
-			this.sound = 1;
+			if (this.sound) {
+				const audio = new Audio('/audio/arena-hit.mp3');
+				audio.play();
+			}
 		}
 		// * BOTTOM
 		if (this.ball.pos.y > Main.PongHeight - Main.BallRadius) {
 			this.ball.pos.y = Main.PongHeight - Main.BallRadius;
 			this.collision_response(new Vector(0, -1));
-			this.sound = 1;
+			if (this.sound) {
+				const audio = new Audio('/audio/arena-hit.mp3');
+				audio.play();
+			}
 		}
-		// // * RIGHT
-		// if (this.ball.pos.x > Main.PongWidth - Main.BallRadius) {
-		// 	this.ball.pos.x = Main.PongWidth - Main.BallRadius;
-		// 	this.collision_response(new Vector(-1, 0));
-		// 	this.sound = 1;
-		// }
-		// // * LEFT
-		// if (this.ball.pos.x < Main.BallRadius) {
-		// 	this.ball.pos.x = Main.BallRadius;
-		// 	this.collision_response(new Vector(1, 0));
-		// 	this.sound = 1;
-		// }
 		// * RIGHT
 		if (this.ball.pos.x > Main.PongWidth - this.leftPaddle.start.x - Main.PaddleRadius - Main.BallRadius) {
 			if (
@@ -252,12 +254,18 @@ class Pong {
 				this.collision_response(new Vector(-1, 0));
 				this.ball.direction.y += this.rightPaddle.acc.y * 0.1;
 				this.ball.direction = this.ball.direction.unit();
-				this.sound = 2;
+				if (this.sound) {
+					const audio = new Audio('/audio/arena-hit.mp3');
+					audio.play();
+				}
 			} else {
+				this.resetMatch();
 				this.playerScore += 1;
 				this.playerNoBan += 1;
-				this.sound = 3;
-				this.reset();
+				if (this.sound) {
+					const audio = new Audio('/audio/arena-out.mp3');
+					audio.play();
+				}
 			}
 		}
 		// * LEFT
@@ -267,19 +275,25 @@ class Pong {
 				this.collision_response(new Vector(1, 0));
 				this.ball.direction.y += this.leftPaddle.acc.y * 0.1;
 				this.ball.direction = this.ball.direction.unit();
-				this.sound = 2;
+				if (this.sound) {
+					const audio = new Audio('/audio/arena-hit.mp3');
+					audio.play();
+				}
 			} else {
-				this.opponentScore += 1;
+				this.resetMatch();
 				this.playerNoBan += 1;
-				this.sound = 3;
-				this.reset();
+				this.opponentScore += 1;
+				if (this.sound) {
+					const audio = new Audio('/audio/arena-out.mp3');
+					audio.play();
+				}
 			}
 		}
 	}
 	drawRightPaddles() {
 		if (this.ctx === null) return;
 		this.ctx.beginPath();
-		this.ctx.fillStyle = '#b3ec4b';
+		this.ctx.fillStyle = '#FFC000';
 		this.ctx.rect(
 			this.rightPaddle.pos.x - Main.PaddleRadius,
 			this.rightPaddle.pos.y - Main.PaddleHeight,
@@ -291,7 +305,7 @@ class Pong {
 	}
 	drawLeftPaddles() {
 		if (this.ctx === null) return;
-		this.ctx.fillStyle = '#b3ec4b';
+		this.ctx.fillStyle = '#FFC000';
 		this.ctx.rect(
 			this.leftPaddle.pos.x - Main.PaddleRadius,
 			this.leftPaddle.pos.y - Main.PaddleHeight,
@@ -303,19 +317,16 @@ class Pong {
 	}
 	drawBall() {
 		if (this.ctx === null) return;
-		this.ctx.beginPath();
-		this.ctx.arc(this.ball.pos.x, this.ball.pos.y, Main.BallRadius, 0, 2 * Math.PI);
-		this.ctx.strokeStyle = '#b3ec4b';
-		this.ctx.stroke();
-		this.ctx.fillStyle = '#b3ec4b';
+		this.ctx.fillStyle = '#FFC000';
+		this.ctx.rect(this.ball.pos.x - Main.BallRadius, this.ball.pos.y - Main.BallRadius, Main.BallRadius * 2, Main.BallRadius * 2);
 		this.ctx.fill();
-		this.ctx.closePath();
+		this.ctx.beginPath();
 	}
 	drawSep() {
 		if (this.ctx === null) return;
 		this.ctx.save();
 		this.ctx.setLineDash([5, 5]);
-		this.ctx.strokeStyle = '#b3ec4b';
+		this.ctx.strokeStyle = '#FFC000';
 		this.ctx.lineWidth = 2;
 		this.ctx.beginPath();
 		this.ctx.moveTo(Main.PongWidth / 2, 0);
@@ -327,7 +338,7 @@ class Pong {
 		if (this.ctx === null) return;
 		this.ctx.save();
 		this.ctx.setLineDash([5, 5]);
-		this.ctx.strokeStyle = '#6cb42a';
+		this.ctx.strokeStyle = '#FFC000';
 		this.ctx.lineWidth = 2;
 		this.ctx.beginPath();
 		this.ctx.arc(Main.PongWidth / 2, Main.PongHeight / 2, 50, 0, Math.PI * 2);
@@ -337,7 +348,7 @@ class Pong {
 	drawScore() {
 		if (this.ctx === null) return;
 		this.ctx.font = 'bold 64px monospace';
-		this.ctx.fillStyle = '#ffffff'; // Your accent color
+		this.ctx.fillStyle = '#ffffff';
 		this.ctx.textAlign = 'center';
 		this.ctx.textBaseline = 'middle';
 		this.ctx.fillText(this.playerScore.toString(), Main.PongWidth / 2 - 100, 70);

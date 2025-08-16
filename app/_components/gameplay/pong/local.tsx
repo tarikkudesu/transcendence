@@ -4,40 +4,17 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { PauseButton, PlayButton, ResetButton, SoudButtonOff, SoudButtonOn, StartButton } from './Buttons';
 import GameInfo from './ExtraInfo';
 import Pong from './Pong';
-import WinnerCard from './Winner';
+import WinnerCard from './WinnerCard';
+import StartCard from './StartCard';
 
-const LocalPong: React.FC = ({}) => {
-	const [sound, setSound] = useState<boolean>(true);
-	const [pause, setPause] = useState<boolean>(false);
-	const [start, setStart] = useState<boolean>(false);
-	const [winner, setWinner] = useState<'Player 1' | 'Player 2' | 'None'>('None');
+const Ping: React.FC<{ updateWinner: (w: 'Player 1' | 'Player 2' | 'None') => void; pause: boolean; sound: boolean }> = ({
+	updateWinner,
+	pause,
+	sound,
+}) => {
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
 	const pong: Pong = useMemo(() => {
 		return new Pong();
-	}, []);
-
-	const switchSound = useCallback(() => {
-		setSound((state) => !state);
-	}, []);
-
-	const pauseGame = useCallback(() => {
-		canvasRef.current?.focus();
-		setPause((state) => !state);
-	}, []);
-
-	const startGame = useCallback(() => {
-		setStart(true);
-		const canvas: HTMLCanvasElement = canvasRef.current as HTMLCanvasElement;
-		const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d');
-		canvasRef.current?.focus();
-		if (ctx) pong.setup(canvas, ctx, updateWinner);
-	}, []);
-
-	const resetGame = useCallback(() => {
-		setWinner('None');
-		setStart(false);
-		pong.clear();
 	}, []);
 
 	useEffect(() => {
@@ -45,31 +22,76 @@ const LocalPong: React.FC = ({}) => {
 	}, [pause]);
 
 	useEffect(() => {
-		return () => pong.clear();
+		pong.updateSound(sound);
+	}, [sound]);
+
+	useEffect(() => {
+		const canvas: HTMLCanvasElement = canvasRef.current as HTMLCanvasElement;
+		const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d');
+		canvasRef.current?.focus();
+		if (ctx) {
+			pong.setup(canvas, ctx, updateWinner);
+			pong.resetMatch();
+		}
+		if (sound) {
+			const audio = new Audio('/audio/arena-start.mp3');
+			audio.play();
+		}
+		return () => {
+			if (sound) {
+				const audio = new Audio('/audio/arena-end.mp3');
+				audio.play();
+			}
+			pong.clear();
+		};
+	}, []);
+
+	return (
+		<canvas
+			width="800"
+			height="600"
+			tabIndex={0}
+			ref={canvasRef}
+			className="block focus:outline-none"
+			style={{ backgroundColor: 'transparent' }}
+		></canvas>
+	);
+};
+
+const LocalPong: React.FC = ({}) => {
+	const [sound, setSound] = useState<boolean>(true);
+	const [pause, setPause] = useState<boolean>(false);
+	const [start, setStart] = useState<boolean>(false);
+	const [winner, setWinner] = useState<'Player 1' | 'Player 2' | 'None'>('None');
+
+	const switchSound = useCallback(() => {
+		setSound((state) => !state);
+	}, []);
+
+	const pauseGame = useCallback(() => {
+		setPause((state) => !state);
+	}, []);
+
+	const startGame = useCallback(() => {
+		setStart(true);
+		setWinner('None');
+	}, []);
+
+	const resetGame = useCallback(() => {
+		setWinner('None');
+		setStart(false);
+		setPause(false);
 	}, []);
 
 	const updateWinner = useCallback((w: 'Player 1' | 'Player 2' | 'None') => {
-		if (w === 'None') return;
 		setWinner(w);
 		setStart(false);
-		pong.reset();
-		pong.clear();
 	}, []);
 
 	return (
 		<div>
-			<div
-				className="w-[800px] bg-black aspect-[4/3] relative overflow-hidden mx-auto rounded-md border border-dark-600 shadow-2xl mb-4"
-				onClick={pauseGame}
-			>
-				<canvas
-					width="800"
-					height="600"
-					tabIndex={0}
-					ref={canvasRef}
-					className="block focus:outline-none"
-					style={{ backgroundColor: 'transparent' }}
-				></canvas>
+			<div className="w-[812px] bg-dark-950 aspect-[4/3] relative overflow-hidden mx-auto rounded-md border-[6px] border-golden-500 shadow-xl mb-6">
+				{start && winner === 'None' && <Ping updateWinner={updateWinner} pause={pause} sound={sound} />}
 				{start && pause && (
 					<div className="absolute top-0 left-0 right-0 bottom-0 bg-dark-500/50 flex justify-center items-center flex-col text-xl">
 						<svg
@@ -77,7 +99,7 @@ const LocalPong: React.FC = ({}) => {
 							viewBox="0 0 640 640"
 							height={80}
 							width={80}
-							className="text-accent-300 translate-x-1"
+							className="text-golden-500 translate-x-1"
 						>
 							<path
 								fill="currentColor"
@@ -86,8 +108,13 @@ const LocalPong: React.FC = ({}) => {
 						</svg>
 					</div>
 				)}
-				{winner === 'Player 1' && <WinnerCard winner={winner} accent="accent-300" />}
-				{winner === 'Player 2' && <WinnerCard winner={winner} accent="accent-300" />}
+				{winner === 'Player 1' && <WinnerCard winner={winner} />}
+				{winner === 'Player 2' && <WinnerCard winner={winner} />}
+				{!start && winner === 'None' && (
+					<StartCard>
+						<StartButton onClick={startGame} />
+					</StartCard>
+				)}
 			</div>
 			<div className="flex justify-center items-center gap-4">
 				{!start ? (
@@ -106,31 +133,3 @@ const LocalPong: React.FC = ({}) => {
 };
 
 export default LocalPong;
-
-// <div
-// className="w-[15px] h-[80px] bg-accent-300 absolute top-1/2 left-0 -translate-y-1/2"
-// style={{
-// 	width: consts.PaddleRadius * 2,
-// 	height: consts.PaddleHeight,
-// 	top: pong.client.leftPaddlePosY - consts.PaddleHeight / 2,
-// 	left: pong.client.leftPaddlePosX - consts.PaddleRadius,
-// }}
-// ></div>
-// <div
-// className="w-[15px] h-[80px] bg-accent-300 absolute top-1/2 right-0 -translate-y-1/2"
-// style={{
-// 	width: consts.PaddleRadius * 2,
-// 	height: consts.PaddleHeight,
-// 	top: pong.client.rightPaddlePosY - consts.PaddleHeight / 2,
-// 	left: pong.client.rightPaddlePosX - consts.PaddleRadius,
-// }}
-// ></div>
-// <div
-// className="w-[20px] h-[20px] bg-accent-300 absolute top-1/3 right-1/4"
-// style={{
-// 	width: consts.BallRadius * 2,
-// 	height: consts.BallRadius * 2,
-// 	top: pong.client.ballY - consts.BallRadius,
-// 	left: pong.client.ballX - consts.BallRadius,
-// }}
-// ></div>

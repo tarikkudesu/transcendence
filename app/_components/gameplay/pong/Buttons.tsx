@@ -28,7 +28,7 @@ export function SoudButtonOff({ onClick }: { onClick: () => void }): React.React
 }
 export function PlayButton({ onClick }: { onClick: () => void }): React.ReactNode {
 	return (
-		<Button onClick={onClick} radius="small" size="3" className="px-4 py-2.5 bg-accent-300 text-center">
+		<Button onClick={onClick} radius="small" size="3" className="px-4 py-2.5 bg-golden-500 text-center">
 			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" height={18} width={18}>
 				<path
 					fill="currentColor"
@@ -41,7 +41,7 @@ export function PlayButton({ onClick }: { onClick: () => void }): React.ReactNod
 }
 export function StartButton({ onClick }: { onClick: () => void }): React.ReactNode {
 	return (
-		<Button onClick={onClick} radius="small" size="3" className="px-4 py-2.5 bg-accent-300 text-center">
+		<Button onClick={onClick} radius="small" size="3" className="px-4 py-2.5 bg-golden-500 text-center">
 			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" height={18} width={18}>
 				<path
 					fill="currentColor"
@@ -55,7 +55,7 @@ export function StartButton({ onClick }: { onClick: () => void }): React.ReactNo
 
 export function PauseButton({ onClick }: { onClick: () => void }): React.ReactNode {
 	return (
-		<Button onClick={onClick} radius="small" size="3" className="px-4 py-2.5 bg-accent-300 text-center">
+		<Button onClick={onClick} radius="small" size="3" className="px-4 py-2.5 bg-golden-500 text-center">
 			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" height={18} width={18}>
 				<path
 					fill="currentColor"

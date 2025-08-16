@@ -25,8 +25,11 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 	const [conversation, setConversation] = useState<Message[]>([]);
 
 	const parse = useCallback((json: OuterMessage[] | Message[]) => {
-		if (isMessageArray(json)) setConversation(json);
-		else setPanel(json);
+		// console.log(json);
+		if (!isMessageArray(json)) setPanel(json);
+		// else setPanel(json);
+		// if (isMessageArray(json)) setConversation(json);
+		// else setPanel(json);
 	}, []);
 
 	const send = useCallback(
@@ -54,8 +57,9 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 		(e: MessageEvent) => {
 			try {
 				const json: EventOut = Json({ message: e.data, target: new EventOut() });
-				// console.log(json);
-				parse(json.content);
+				if (json.event === 'UNREAD') setPanel(json.content as OuterMessage[]);
+				else setConversation(json.content as Message[]);
+				// parse(json.content);
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			} catch (err: any) {
 				notify({ message: err.message, error: true });

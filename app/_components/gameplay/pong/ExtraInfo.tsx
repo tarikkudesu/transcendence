@@ -4,13 +4,13 @@ import { Text } from '@radix-ui/themes';
 const GameInfo: React.FC = ({}) => {
 	return (
 		<>
-			<div className="flex justify-around gap-4 items-center p-[28px] bg-dark-600 max-w-[700px] mx-auto my-[20px] rounded-md">
+			<div className="flex justify-around gap-4 items-center p-[28px] bg-dark-700 max-w-[700px] mx-auto my-6 rounded-md">
 				<div className="">
-					<Text as="div" size="3" className="text-accent-300 font-bold mb-2 flex justify-center">
+					<Text as="div" size="3" className="text-golden-500 font-bold mb-2 flex justify-center">
 						Player 1 (Left)
 					</Text>
 					<Text as="div" align="center" size="2" className="text-dark-100 flex justify-center mb-2">
-						<div className="py-1 px-3 rounded-md bg-dark-500 text-white">
+						<div className="py-1 px-3 rounded-md bg-dark-600 text-white">
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" height={14} width={14} className="translate-y-1">
 								<path
 									fill="currentColor"
@@ -21,7 +21,7 @@ const GameInfo: React.FC = ({}) => {
 						<div className="py-1 px-3">Move Up</div>
 					</Text>
 					<Text as="div" align="center" size="2" className="text-dark-100 flex justify-center">
-						<div className="py-1 px-3 rounded-md bg-dark-500 text-white">
+						<div className="py-1 px-3 rounded-md bg-dark-600 text-white">
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" height={14} width={14} className="translate-y-1">
 								<path
 									fill="currentColor"
@@ -33,12 +33,12 @@ const GameInfo: React.FC = ({}) => {
 					</Text>
 				</div>
 				<div className="">
-					<Text as="div" size="3" className="text-accent-300 font-bold mb-2 flex justify-center">
+					<Text as="div" size="3" className="text-golden-500 font-bold mb-2 flex justify-center">
 						Player 1 (Right)
 					</Text>
 
 					<Text as="div" align="center" size="2" className="text-dark-100 flex justify-center mb-2">
-						<div className="py-1 px-3 rounded-md bg-dark-500 text-white">
+						<div className="py-1 px-3 rounded-md bg-dark-600 text-white">
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" height={14} width={14} className="translate-y-1">
 								<path
 									fill="currentColor"
@@ -49,7 +49,7 @@ const GameInfo: React.FC = ({}) => {
 						<div className="py-1 px-3">Move Up</div>
 					</Text>
 					<Text as="div" align="center" size="2" className="text-dark-100 flex justify-center">
-						<div className="py-1 px-3 rounded-md bg-dark-500 text-white">
+						<div className="py-1 px-3 rounded-md bg-dark-600 text-white">
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" height={14} width={14} className="translate-y-1">
 								<path
 									fill="currentColor"

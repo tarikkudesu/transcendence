@@ -5,7 +5,7 @@ export class Message {
 }
 
 export class OuterMessage {
-	reciever: string = '';
+	receiver: string = '';
 	sender: string = '';
 	avatar: string = '';
 	unread: number = 0;

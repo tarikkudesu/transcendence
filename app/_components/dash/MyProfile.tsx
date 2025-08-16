@@ -12,7 +12,7 @@ const MyDashboardProfile: React.FC = ({}) => {
 		<div className="py-8">
 			<Image
 				priority
-				src={avatar ? avatar : '/Logo.png'}
+				src={'/Logo.png'}
 				width={80}
 				height={80}
 				alt="My profile image"

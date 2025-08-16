@@ -1,48 +1,36 @@
 'use client';
 
 import { useAuth } from '@/app/_service/AuthContext';
-import { Message } from '@/app/_service/ws/chat/schemas';
+import { useChatSocket } from '@/app/_service/ws/chat/chatContext';
+import { ChatMessage } from '@/app/_service/ws/chat/composer';
 import { ScrollArea, Text } from '@radix-ui/themes';
 import Image from 'next/image';
 import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
 import UserCallout from '../game/UserCallout';
 import { ChatMyMessage, ChatOtherMessage } from './ChatMessage';
-import { useChatSocket } from '@/app/_service/ws/chat/chatContext';
-import { ChatMessage } from '@/app/_service/ws/chat/composer';
-import { useSearchParams } from 'next/navigation';
 
-const ChatConversation: React.FC = () => {
+interface ChatConversationProps {
+	chatmate?: string;
+}
+
+const ChatConversation: React.FC<ChatConversationProps> = ({ chatmate }) => {
 	const chatScroller = useRef<HTMLDivElement | null>(null);
 	const [scrollToBottom, setScrollToBottom] = useState<boolean>(false);
-	const [pendMessage, setPendMessage] = useState<string[]>([]);
-	const [mateAvatar, setMateAvatar] = useState<string>('');
 	const [message, setMessage] = useState<string>('');
 	const { conversation, send } = useChatSocket();
-	const [mate, setMate] = useState<string>('');
-	const { username: myusername } = useAuth();
-	const searchParams = useSearchParams();
-
-	useEffect(() => {
-		const m = searchParams.get('chatmate');
-		const a = searchParams.get('chatmateavatar');
-		if (m && a) {
-			setMate(m);
-			setMateAvatar(a);
-		}
-	}, [searchParams]);
+	const { username } = useAuth();
 
 	const updateScroll = useCallback(() => {
 		setScrollToBottom((state) => !state);
 	}, []);
 
 	const sendMessage = useCallback(() => {
-		if (message && mate) {
+		if (message && chatmate) {
 			send(ChatMessage('NEWMESSAGE', { to: '', message }));
-			setPendMessage([...pendMessage, message]);
 			setMessage('');
 			updateScroll();
 		}
-	}, [message, mate]);
+	}, [message, chatmate]);
 
 	useEffect(() => {
 		if (chatScroller && chatScroller.current) chatScroller.current.scrollTop = chatScroller.current.scrollHeight;
@@ -51,11 +39,11 @@ const ChatConversation: React.FC = () => {
 	return (
 		<div className="h-full flex flex-col justify-between items-center">
 			<div className="p-4 h-[80px] bg-dark-700 border-b-[1px] border-dark-500 w-full flex gap-4 justify-start items-center">
-				<UserCallout username={myusername}>
+				<UserCallout username={username}>
 					<Image
 						priority
 						className={`rounded-full cursor-pointer bg-accent-300`}
-						src={mateAvatar ? mateAvatar : '/ChatAvatar.png'}
+						src={'/ChatAvatar.png'}
 						alt="player card"
 						width={46}
 						height={46}
@@ -63,7 +51,7 @@ const ChatConversation: React.FC = () => {
 				</UserCallout>
 				<div className="">
 					<Text as="div" size="3" weight="bold" className="text-white">
-						{mate ? mate : 'Unknown'}
+						{chatmate ? chatmate : 'Unknown'}
 					</Text>
 					{/* <Text as="div" className={'text-xs ' + (playing ? 'text-orange-500' : 'text-accent-300')}>
 						{playing ? 'Playing' : 'Online'}
@@ -72,21 +60,20 @@ const ChatConversation: React.FC = () => {
 			</div>
 			<div className="flex-grow w-full bg-dark-950">
 				<ScrollArea type="always" scrollbars="vertical" style={{ height: 660 }} ref={chatScroller}>
-					{(!mate || !mateAvatar) && (
+					{!chatmate && (
 						<Text as="div" align="center" className="h-full flex justify-center items-center">
 							You&apos;re Not texting any one
 						</Text>
 					)}
-					{mate &&
-						mateAvatar &&
+					{chatmate &&
 						conversation.map((ele, index) => {
 							return (
 								<div key={index}>
-									{ele.sender === myusername ? <ChatMyMessage data={ele} /> : <ChatOtherMessage data={ele} />}
+									{ele.sender === username ? <ChatMyMessage data={ele} /> : <ChatOtherMessage data={ele} />}
 								</div>
 							);
 						})}
-					{pendMessage.length !== 0 && (
+					{/* {pendMessage.length !== 0 && (
 						<>
 							<Text as="div" align="center" size="1" className="my-1 text-dark-200">
 								Pending Message
@@ -99,7 +86,7 @@ const ChatConversation: React.FC = () => {
 								);
 							})}
 						</>
-					)}
+					)} */}
 				</ScrollArea>
 			</div>
 			<div className="h-[60px] bg-dark-700  border-t-[1px] border-dark-500 w-full flex justify-between items-center">

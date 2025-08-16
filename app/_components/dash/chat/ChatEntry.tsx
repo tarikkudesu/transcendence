@@ -1,52 +1,27 @@
 'use client';
 
+import { useAuth } from '@/app/_service/AuthContext';
 import { OuterMessage } from '@/app/_service/ws/chat/schemas';
 import { ClientPlayer, useGameSocket } from '@/app/_service/ws/game';
 import { Text } from '@radix-ui/themes';
 import Image from 'next/image';
-import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import UserCallout from '../game/UserCallout';
-import { ChatMessage } from '@/app/_service/ws/chat/composer';
-import { useChatSocket } from '@/app/_service/ws/chat/chatContext';
 
 interface ChatEntryProps {
 	data: OuterMessage;
+	active: boolean;
 }
 
-const ChatEntry: React.FC<ChatEntryProps> = ({ data }) => {
-
-	console.log(data);
-	
-	const searchParams = useSearchParams();
-	const [active, setActive] = useState<boolean>(false);
+const ChatEntry: React.FC<ChatEntryProps> = ({ data, active }) => {
+	const { username } = useAuth();
 	const { pool } = useGameSocket();
-	const { send } = useChatSocket();
-	const router = useRouter();
 	const online: boolean = pool.some((pool: ClientPlayer) => pool.username === data.sender);
 	const playing: boolean = pool.some((pool: ClientPlayer) => online && pool.playerStatus === 'playing');
-	
-	useEffect(() => {
-		const chatmate = searchParams.get('chatmate');
-		if (chatmate && chatmate === data.sender) setActive(true);
-		else setActive(false);
-	}, [data]);
-	
-	const updateQuery = useCallback(() => {
-		console.log('------------------------------');
-		console.log(data.lastMessage.sender);
-		console.log('------------------------------');
-		const params = new URLSearchParams(searchParams.toString());
-		send(ChatMessage('REQUESTUSER', { user: data.sender }));
-		params.set('chatmate', data.sender);
-		params.set('chatmateavatar', data.avatar);
-		router.push(`?${params.toString()}`);
-	}, [data]);
-	
+
 	return (
 		<div
 			role="button"
-			onClick={updateQuery}
 			className={`h-[80px] hover:bg-dark-600 border-b-[1px] border-b-dark-600 flex justify-start items-center px-6 cursor-pointer ${
 				active ? 'bg-dark-600' : ''
 			}`}
@@ -73,7 +48,7 @@ const ChatEntry: React.FC<ChatEntryProps> = ({ data }) => {
 			<div className="flex flex-col justify-center items-center w-full gap-1 ml-4">
 				<div className="flex justify-between items-center w-full">
 					<Text size="3" weight="bold" className="text-white">
-						{data.sender}
+						{data.sender === username ? data.receiver : data.sender}
 					</Text>
 					<Text size="1" className="text-dark-200">
 						{data.lastMessage.date}

@@ -3,7 +3,7 @@ import React from 'react';
 
 const Chat: React.FC<unknown> = () => {
 	return (
-		<div className="rounded-md border border-dark-600 shadow-xl p-[20px]">
+		<div className="rounded-md p-[20px]">
 			<LocalPong />
 		</div>
 	);
