@@ -2,7 +2,8 @@
 
 import { NotificationType } from '@/app/_service/ws/notification/notificationContext';
 import { Badge, Link, ScrollArea, Separator, Text } from '@radix-ui/themes';
-import Image from 'next/image';
+
+import SafeImage from '@/app/_components/SafeImage';
 import { useState } from 'react';
 import UserCallout from '../game/UserCallout';
 
@@ -50,9 +51,9 @@ const NotificationCenter = () => {
 	return (
 		<>
 			{active && <div className="fixed top-0 left-0 bottom-0 right-0 z-10" onClick={() => setActive((state) => !state)}></div>}
-			<button className="p-[4px] text-dark-200 hover:text-accent-300 relative z-[11]" onClick={() => setActive((state) => !state)}>
+			<button className="p-[4px] text-dark-200 hover:text-accent-300 relative" onClick={() => setActive((state) => !state)}>
 				{active && (
-					<div className="p-5 rounded-md bg-dark-950 absolute top-0 right-0 translate-y-[28px] min-w-[380px] text-white shadow-lg">
+					<div className="p-5 rounded-md bg-dark-950 absolute top-0 right-0 translate-y-[60px] min-w-[380px] text-white shadow-lg z-10">
 						<Link href="">
 							<Text as="div" size="2" align="right" mb="4" className="text-dark-200 hover:text-accent-300">
 								See all notifications
@@ -74,14 +75,15 @@ const NotificationCenter = () => {
 													<div className="flex items-center justify-between space-x-2 mb-1">
 														<div className="flex">
 															<UserCallout username={notification.sender}>
-																<Image
+																<SafeImage
+																	fallbackSrc="/Logo.png"
 																	priority
 																	className="rounded-full cursor-pointer border-2 border-accent-300"
 																	src={notification.senderAvatarUrl}
 																	alt="player card"
 																	width={18}
 																	height={18}
-																></Image>
+																></SafeImage>
 															</UserCallout>
 															<Text className="ml-4 text-sm font-medium ">{notification.sender}</Text>
 														</div>

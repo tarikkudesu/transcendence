@@ -15,9 +15,9 @@ export interface UpdateAvatarRequest {
 }
 
 export interface UserProfile {
+	created_at: string;
 	username: string;
+	avatar: string;
 	email: string;
 	bio: string;
-	created_at: string;
-	avatar: string;
 }

@@ -260,8 +260,8 @@ class Pong {
 				}
 			} else {
 				this.resetMatch();
-				this.playerScore += 1;
 				this.playerNoBan += 1;
+				this.opponentScore += 1;
 				if (this.sound) {
 					const audio = new Audio('/audio/arena-out.mp3');
 					audio.play();
@@ -282,7 +282,7 @@ class Pong {
 			} else {
 				this.resetMatch();
 				this.playerNoBan += 1;
-				this.opponentScore += 1;
+				this.playerScore += 1;
 				if (this.sound) {
 					const audio = new Audio('/audio/arena-out.mp3');
 					audio.play();
@@ -351,8 +351,8 @@ class Pong {
 		this.ctx.fillStyle = '#ffffff';
 		this.ctx.textAlign = 'center';
 		this.ctx.textBaseline = 'middle';
-		this.ctx.fillText(this.playerScore.toString(), Main.PongWidth / 2 - 100, 70);
-		this.ctx.fillText(this.opponentScore.toString(), Main.PongWidth / 2 + 100, 70);
+		this.ctx.fillText(this.opponentScore.toString(), Main.PongWidth / 2 - 100, 70);
+		this.ctx.fillText(this.playerScore.toString(), Main.PongWidth / 2 + 100, 70);
 	}
 	draw() {
 		if (this.ctx === null || this.canvas === null) return;

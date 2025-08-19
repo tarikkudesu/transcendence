@@ -1,7 +1,7 @@
-import LocalPong from '@/app/_components/gameplay/pong/local';
+import LocalPong from '@/app/_components/gameplay/pong/local/local';
 import React from 'react';
 
-const Chat: React.FC<unknown> = () => {
+const Page: React.FC<unknown> = () => {
 	return (
 		<div className="rounded-md p-[20px]">
 			<LocalPong />
@@ -9,4 +9,4 @@ const Chat: React.FC<unknown> = () => {
 	);
 };
 
-export default Chat;
+export default Page;

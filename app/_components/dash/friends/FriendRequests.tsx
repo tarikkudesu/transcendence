@@ -1,29 +1,50 @@
 'use client';
 
-import { ClientInvitation, useGameSocket } from '@/app/_service/ws/game';
-import { Flex, Text } from '@radix-ui/themes';
-import { useSearchParams } from 'next/navigation';
-import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
-import User from './User';
-import { AcceptChallange, DeclineChallange } from './Buttons';
+import { Friend } from '@/app/_service/friends/schema';
+import { useGET } from '@/app/_service/useFetcher';
+import { Box, Text } from '@radix-ui/themes';
+import React, { ChangeEvent, useCallback, useState } from 'react';
+import LoadingIndicator from '../../Loading';
+import User from '../game/User';
+import { AcceptButton, DeclineButton } from './Buttons';
 
-const ReceivedInvitations: React.FC = ({}) => {
+const API_BASE = process.env.API_BASE_URL ?? 'http://localhost:80/api/v1';
+
+const FriendRequests: React.FC = ({}) => {
+	const { data, isLoading, error, refetch } = useGET<Friend[]>({ url: `${API_BASE}/friends/request`, revalidate: 0 });
 	const [search, setSearch] = useState<string>('');
-	const searchParams = useSearchParams();
-	const { invitations } = useGameSocket();
 
-	useEffect(() => {
-		const profile = searchParams.get('playersearch');
-		if (profile) setSearch(profile);
-	}, [searchParams]);
-
-	const filterPool = useCallback(
-		(pooler: ClientInvitation): boolean => {
+	const filterArray = useCallback(
+		(mate: Friend): boolean => {
 			if (!search) return true;
-			return pooler.sender.toLowerCase().includes(search.toLowerCase());
+			return mate.username.toLowerCase().includes(search.toLowerCase());
 		},
 		[search]
 	);
+
+	function content() {
+		if (isLoading) return <LoadingIndicator size="md" />;
+		if (error) return <>Error....</>;
+		if (!data || (search && data.filter(filterArray).length === 0))
+			return (
+				<Text as="div" align="center" className="text-dark-200">
+					No Friend Requests
+				</Text>
+			);
+		return (
+			<>
+				{data.filter(filterArray).map((ele, index: number) => (
+					<div key={index} className="flex justify-between items-center">
+						<User username={ele.username} extra={ele.stat} />
+						<div className="flex items-center gap-2">
+							<AcceptButton username={ele.username} />
+							<DeclineButton username={ele.username} />
+						</div>
+					</div>
+				))}
+			</>
+		);
+	}
 
 	return (
 		<div className="flex-grow p-6 rounded-md bg-dark-700 my-8 shadow-lg">
@@ -36,10 +57,10 @@ const ReceivedInvitations: React.FC = ({}) => {
 				</svg>
 
 				<Text as="div" size="5" weight="bold">
-					Received Invitations ({invitations.length})
+					Friend Requests (9)
 				</Text>
 			</div>
-			<Text as="div" size="3" mb="8" className="text-dark-200">
+			<Text as="div" size="3" mb="4" className="text-dark-200">
 				View all friend or game invitations you’ve received, with details and options to accept or decline.
 			</Text>
 			<div className="relative">
@@ -67,24 +88,10 @@ const ReceivedInvitations: React.FC = ({}) => {
 					name="text"
 				/>
 			</div>
-			{invitations.filter(filterPool).map((invite, index) => {
-				return (
-					<div key={index} className="flex justify-between items-center px-2">
-						<User username={invite.sender} />
-						<div className="flex items-center gap-2">
-							<DeclineChallange invite={invite} />
-							<AcceptChallange invite={invite} />
-						</div>
-					</div>
-				);
-			})}
-			{search && invitations.filter(filterPool).length === 0 && (
-				<Text as="div" align="center" className="text-dark-200">
-					No Invitation Found
-				</Text>
-			)}
+			<Box height="12px" />
+			{content()}
 		</div>
 	);
 };
 
-export default ReceivedInvitations;
+export default FriendRequests;

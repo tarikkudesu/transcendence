@@ -93,7 +93,7 @@ const LocalPong: React.FC = ({}) => {
 			<div className="w-[812px] bg-dark-950 aspect-[4/3] relative overflow-hidden mx-auto rounded-md border-[6px] border-golden-500 shadow-xl mb-6">
 				{start && winner === 'None' && <Ping updateWinner={updateWinner} pause={pause} sound={sound} />}
 				{start && pause && (
-					<div className="absolute top-0 left-0 right-0 bottom-0 bg-dark-500/50 flex justify-center items-center flex-col text-xl">
+					<div className="absolute top-0 left-0 right-0 bottom-0 bg-golden-700/20 flex justify-center items-center flex-col text-xl">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							viewBox="0 0 640 640"

@@ -46,45 +46,6 @@ const CurrentMatches: React.FC = ({}) => {
 			</Text>
 			<div className="p-4 rounded-md bg-dark-950">
 				{content()}
-				{/* <Text as="div" align="center" size="7" my="8" weight="bold">
-					ROUND <span className="text-accent-300">{tournament.round}</span>
-				</Text>
-				<div className="my-2 flex justify-center">
-					<Text size="4" className="text-dark-50 col-span-2 row-span-5">
-						zineb
-						<Text weight="bold" className="text-accent-300 mx-2">
-							:
-						</Text>
-						aymen
-					</Text>
-				</div>
-				<div className="my-2 flex justify-center">
-					<Text size="4" className="text-dark-50 col-span-2 row-span-5">
-						zineb
-						<Text weight="bold" className="text-accent-300 mx-2">
-							:
-						</Text>
-						aymen
-					</Text>
-				</div>
-				<div className="my-2 flex justify-center">
-					<Text size="4" className="text-dark-50 col-span-2 row-span-5">
-						zineb
-						<Text weight="bold" className="text-accent-300 mx-2">
-							:
-						</Text>
-						aymen
-					</Text>
-				</div>
-				<div className="my-2 flex justify-center">
-					<Text size="4" className="text-dark-50 col-span-2 row-span-5">
-						zineb
-						<Text weight="bold" className="text-accent-300 mx-2">
-							:
-						</Text>
-						aymen
-					</Text>
-				</div> */}
 			</div>
 		</div>
 	);

@@ -18,11 +18,11 @@ function LoadingIndicator({ size = 'md', className = '' }: LoadingIndicatorProps
 
 	return (
 		<div className={`${sizeClasses[size]} ${className} absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`}>
-			<div className="relative w-full h-full animate-spin">
-				<div className={`animate-spin-reverse absolute top-0 left-0 ${dotSizes[size]} bg-lime-400`}></div>
-				<div className={`animate-spin-reverse absolute top-0 right-0 ${dotSizes[size]} bg-lime-400 opacity-75`}></div>
-				<div className={`animate-spin-reverse absolute bottom-0 right-0 ${dotSizes[size]} bg-lime-400 opacity-50`}></div>
-				<div className={`animate-spin-reverse absolute bottom-0 left-0 ${dotSizes[size]} bg-lime-400 opacity-25`}></div>
+			<div className="relative w-full h-full animate-spin-reverse">
+				<div className={`animate-spin absolute bottom-0 left-0 ${dotSizes[size]} bg-accent-400 opacity-25`}></div>
+				<div className={`animate-spin absolute bottom-0 right-0 ${dotSizes[size]} bg-accent-400 opacity-50`}></div>
+				<div className={`animate-spin absolute top-0 right-0 ${dotSizes[size]} bg-accent-400 opacity-75`}></div>
+				<div className={`animate-spin absolute top-0 left-0 ${dotSizes[size]} bg-accent-400`}></div>
 			</div>
 		</div>
 	);

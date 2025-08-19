@@ -1,5 +1,6 @@
 import { Box, Card, Text } from '@radix-ui/themes';
-import Image from 'next/image';
+
+import SafeImage from '@/app/_components/SafeImage';
 import Link from 'next/link';
 import React from 'react';
 
@@ -8,7 +9,8 @@ const PlayPong: React.FC = () => {
 		<>
 			<Card className="relative overflow-hidden p-8 mb-[20px]">
 				<div className="h-[350px] w-[350px] bg-accent-300 rounded-full absolute bottom-0 left-0 -translate-x-1/2 translate-y-1/2 blur-3xl opacity-45 -z-10"></div>
-				<Image
+				<SafeImage
+					fallbackSrc="/Logo.png"
 					priority
 					draggable={false}
 					src="/Logo.png"

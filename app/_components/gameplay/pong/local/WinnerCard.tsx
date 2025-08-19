@@ -39,7 +39,7 @@ const WinnerCard: React.FC<WinnerCardProps> = ({ winner }) => {
 								<Trophy size={24} />
 							</div>
 						</div>
-						<h2 className="text-2xl font-bold text-gray-100 mb-2">Winner</h2>
+						<h2 className="text-2xl font-bold text-gray-100 mb-2">Victory!</h2>
 						<div className="bg-dark-950 rounded-md p-2 border border-dark-500">
 							<p className="text-md font-bold text-white break-words">{winner}</p>
 						</div>

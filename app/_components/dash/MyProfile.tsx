@@ -2,7 +2,8 @@
 
 import { useAuth } from '@/app/_service/AuthContext';
 import { Box, Text } from '@radix-ui/themes';
-import Image from 'next/image';
+
+import SafeImage from '@/app/_components/SafeImage';
 import React from 'react';
 
 const MyDashboardProfile: React.FC = ({}) => {
@@ -10,9 +11,10 @@ const MyDashboardProfile: React.FC = ({}) => {
 
 	return (
 		<div className="py-8">
-			<Image
+			<SafeImage
+				fallbackSrc="/Logo.png"
 				priority
-				src={'/Logo.png'}
+				src={avatar}
 				width={80}
 				height={80}
 				alt="My profile image"

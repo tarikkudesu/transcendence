@@ -1,12 +1,12 @@
 'use client';
 
+import SafeImage from '@/app/_components/SafeImage';
 import { RequestResult } from '@/app/_service/auth/calls';
 import { fetchDoomLeaderboard } from '@/app/_service/game/calls';
 import { LeaderboardEntry } from '@/app/_service/game/schemas';
 import { Text } from '@radix-ui/themes';
 import { useCallback, useEffect, useState } from 'react';
 import UserCallout from '../game/UserCallout';
-import Image from 'next/image';
 
 const PongLeaderBoard: React.FC = ({}) => {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -55,14 +55,15 @@ const PongLeaderBoard: React.FC = ({}) => {
 									<div className="translate-y-0.5">{index}</div>
 								</div>
 								<UserCallout username={ele.username}>
-									<Image
+									<SafeImage
+										fallbackSrc="/Logo.png"
 										priority
 										className="rounded-full cursor-pointer"
 										src={ele.avatar_url}
 										alt="player card"
 										width={42}
 										height={42}
-									></Image>
+									></SafeImage>
 								</UserCallout>
 								<div className="">
 									<Text as="div" size="5" weight="bold" className="text-white">

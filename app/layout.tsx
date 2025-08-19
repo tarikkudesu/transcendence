@@ -1,5 +1,5 @@
 import { Theme } from '@radix-ui/themes';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Josefin_Sans } from 'next/font/google';
 import { Toaster } from 'react-hot-toast';
 import './globals.css';
@@ -8,6 +8,13 @@ const josefin = Josefin_Sans({
 	subsets: ['latin'],
 	display: 'swap',
 });
+
+export const viewport: Viewport = {
+	width: 'device-width',
+	initialScale: 1,
+	maximumScale: 1,
+	userScalable: false,
+};
 
 export const metadata: Metadata = {
 	title: 'YingYangPong',
@@ -24,7 +31,6 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<meta name="viewport" content="width=1024" />
 			<body className="antialiased m-0 p-0">
 				<Theme
 					panelBackground="translucent"

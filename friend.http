@@ -1,36 +1,72 @@
 
-signup
+GET http://localhost/api/v1/friends/zineb
+[
+    {
+        "username": "zineb",
+        "avatar_url": "https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar179.png",
+        "stat": "accepted"
+    },
+    {
+        "username": "ayoub",
+        "avatar_url": "https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar175.png",
+        "stat": "accepted"
+    },
+    {
+        "username": "khalid",
+        "avatar_url": "https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar115.png",
+        "stat": "accepted"
+    }
+]
+
+GET http://localhost/api/v1/friends/u/oub
+[
+    {
+        "username": "ayoub",
+        "avatar_url": "https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar175.png"
+    }
+]
+
+POST http://localhost/api/v1/friends/add
 {
-    "username": "user",
-    "email": "test@gmail.com",
-    "password": "123456789"
+    "to": "fatima"
 }
-verify account
+
+
 {
-    "verificationCode": "890801",
-    "email": "test@gmail.com"
+    "message": "added successfully"
 }
-forgot passord
+
+
+POST http://localhost/api/v1/friends/check
 {
-    "email": "test@gmail.com"
+    "to": "fatima"
 }
-reset password
+
 {
-    "email": "test@gmail.com",
-    "token":"3iCVIiWoX60asdtu",
-    "password": "ooulcaid123"
+    "message": "you are friends with benifits"
 }
-login
+
+PUT http://localhost/api/v1/friends/accept
 {
-    "username": "furina",
-    "password": "pass0000"
+    "to": "youssef"
 }
-verify 2fa
+
 {
-    "verificationCode": "531323",
-    "email": "test@gmail.com"
+    "message": "accepted successfully"
 }
-resend otp
+
+
+PUT http://localhost/api/v1/friends/accept
 {
-    "email": "test@gmail.com"
+    "to": "ayoub"
 }
+
+{
+    "message": "blocked successfully"
+}
+
+DELETE http://localhost/api/v1/friends/remove
+{
+    "to": "youssef"
+}
+

@@ -4,7 +4,8 @@ import { getUser } from '@/app/_service/user/calls';
 import { UserProfile } from '@/app/_service/user/schema';
 import { ClientPlayer } from '@/app/_service/ws/game/schema';
 import { Spinner } from '@radix-ui/themes';
-import Image from 'next/image';
+
+import SafeImage from '@/app/_components/SafeImage';
 import React, { useEffect, useState } from 'react';
 import UserCallout from './UserCallout';
 
@@ -43,7 +44,8 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ pooler }) => {
 	return (
 		<>
 			<UserCallout username={player.username}>
-				<Image
+				<SafeImage
+					fallbackSrc="/Logo.png"
 					priority
 					className={`rounded-full cursor-pointer border-2 ${
 						pooler.playerStatus === 'free' ? 'border-accent-300' : 'border-magenta-500'
@@ -52,7 +54,7 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ pooler }) => {
 					alt="player card"
 					width={42}
 					height={42}
-				></Image>
+				></SafeImage>
 			</UserCallout>
 		</>
 	);

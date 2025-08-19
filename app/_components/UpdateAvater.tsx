@@ -1,7 +1,8 @@
 'use client';
 
 import { Button, Card, Flex, Text } from '@radix-ui/themes';
-import Image from 'next/image';
+
+import SafeImage from '@/app/_components/SafeImage';
 import React, { useCallback, useRef, useState } from 'react';
 import { RequestResult } from '../_service/auth/calls';
 import { useAuth } from '../_service/AuthContext';
@@ -46,7 +47,7 @@ const UpdateAvatar: React.FC = () => {
 				<Flex justify="between" align="center" p="4" gap="9">
 					<Card onClick={triggerFileSelect} className="flex justify-start items-start gap-4 p-4 flex-grow cursor-pointer">
 						<Card>
-							<Image priority src="/Logo.png" height={40} width={40} alt="Logo as avatar" />
+							<SafeImage fallbackSrc="/Logo.png" priority src="/Logo.png" height={40} width={40} alt="Logo as avatar" />
 						</Card>
 						<Text as="div" weight="bold" size="1" className="text-white">
 							Upload your avatar

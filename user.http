@@ -1,21 +1,22 @@
-PUT http://localhost/api/v1/users/profile/avatar/username
+/dash
+	/
+	/board
+		/
+		/chat
+		/friends
+		/leaderboard
+		/playground
+		/gameplay
+			/local
+			/remote
+		/tournament
+			/
+			/[tournamentname]
 
-
-PUT http://localhost/api/v1/users/profile/password/username
-{
-    "newpassword": "salamkalam"
-}
-
-PUT http://localhost/api/v1/users/profile/username/username
-{
-    "newusername": "abdo"
-}
-
-PUT http://localhost/api/v1/users/profile/bio/ayoub
-{
-    "bio": "salam kalam"
-}
-
-DELETE http://localhost/api/v1/users/otman
-
-GET http://localhost/api/v1/users/ayoub
+GET │ /api/v1/friends/:username
+PUT │ /api/v1/friends/accept
+POST │ /api/v1/friends/add
+PUT │ /api/v1/friends/block
+POST │ /api/v1/friends/check
+DELETE │ /api/v1/friends/remove
+GET │ /api/v1/friends/u/:keyword

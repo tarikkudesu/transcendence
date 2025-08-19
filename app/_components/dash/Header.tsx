@@ -3,15 +3,15 @@
 import { RequestResult, logout } from '@/app/_service/auth/calls';
 import { Button, Flex, Text } from '@radix-ui/themes';
 import { usePathname, useRouter } from 'next/navigation';
-import React, { useCallback, useState } from 'react';
+import React, { ChangeEvent, useCallback, useState } from 'react';
 import Logo from '../Logo';
 import { useNotification } from '../useNotify';
 import NotificationCenter from './notification/NotificationCenter';
+import MainSearch from './friends/MainSearch';
 
 const Header: React.FC = ({}) => {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const { notify } = useNotification();
-	const pathname = usePathname();
 	const router = useRouter();
 
 	const logoutCall = useCallback(async () => {
@@ -25,9 +25,13 @@ const Header: React.FC = ({}) => {
 	}, []);
 
 	return (
-		<header className="w-full h-[150px] absolute top-0 left-0 right-0 bg-dark-700 shadow-lg">
-			<Flex justify="between" align="center" height="80px" mx="100px">
-				<Logo />
+		<header className="w-full h-[150px] absolute top-0 left-0 right-0g">
+			<div className="w-full h-[150px] absolute top-0 left-0 right-0 bg-dark-700 -z-10 shadow-l"></div>
+			<Flex justify="between" align="center" height="80px" mx="100px" className="z-10">
+				<Flex justify="start" align="center" gap="4">
+					<Logo />
+					<MainSearch />
+				</Flex>
 				<Flex gap="8" align="center">
 					<NotificationCenter />
 					<Button
@@ -40,9 +44,6 @@ const Header: React.FC = ({}) => {
 					</Button>
 				</Flex>
 			</Flex>
-			<Text as="div" align="center" className="text-dark-200 z-10">
-				{pathname}
-			</Text>
 		</header>
 	);
 };

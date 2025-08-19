@@ -1,7 +1,8 @@
 'use client';
 
 import { Box, Card, Link, Text } from '@radix-ui/themes';
-import Image from 'next/image';
+
+import SafeImage from '@/app/_components/SafeImage';
 import React from 'react';
 
 const PlayLocal: React.FC = () => {
@@ -9,7 +10,8 @@ const PlayLocal: React.FC = () => {
 		<>
 			<Card className="relative overflow-hidden p-8 mb-[20px]">
 				<div className="h-[350px] w-[350px] bg-golden-500 rounded-full absolute bottom-0 left-0 -translate-x-1/2 translate-y-1/2 blur-3xl opacity-45 -z-10"></div>
-				<Image
+				<SafeImage
+					fallbackSrc="/Logo.png"
 					priority
 					draggable={false}
 					src="/LogoYellow.png"
@@ -26,7 +28,7 @@ const PlayLocal: React.FC = () => {
 					Basic details that will be a representation of yourself across the YingYangPong playground.
 				</Text>
 				<Box height="20px" />
-				<Link href={`/dash/board/localplay`}>
+				<Link href="/dash/board/gameplay/local">
 					<button className="py-3 px-4 text-center bg-golden-500 text-xs text-black rounded-sm cursor-pointer font-bold">
 						Play Now
 					</button>

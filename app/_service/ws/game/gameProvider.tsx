@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNotification } from '@/app/_components/useNotify';
 import * as Main from './index';
 import { Badge } from '@radix-ui/themes';
+import { useRouter } from 'next/navigation';
 
 interface GameProviderProps {
 	children: React.ReactNode;
@@ -12,6 +13,7 @@ interface GameProviderProps {
 const API_BASE = process.env.NEXT_PUBLIC_WS_GAME_URL;
 
 const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
+	const router = useRouter();
 	const { notify } = useNotification();
 	const socketRef = useRef<WebSocket | null>(null);
 	const [error, setError] = useState<boolean>(false);
@@ -47,7 +49,7 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 				}
 				case 'PLAY': {
 					const p: Main.Play = Main.Json({ message, target: Main.Play.instance });
-					// if (game === 'pong') router.push('/dashboard/server/' + p.gid);
+					if (game === 'pong') router.push('/dash/board/gameplay/' + p.gid);
 					// else router.push('/dashboard/extra/' + p.gid);
 					break;
 				}

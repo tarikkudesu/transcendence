@@ -4,7 +4,7 @@ import React from 'react';
 
 const Playground: React.FC<unknown> = () => {
 	return (
-		<div className="relative">
+		<div className="grid grid-cols-1 xl:grid-cols-2 gap-4 xl:gap-12">
 			<ReceivedInvitations />
 			<OnlinePlayers />
 		</div>

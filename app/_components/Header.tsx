@@ -8,6 +8,7 @@ import { useNotification } from './useNotify';
 
 const Header: React.FC = ({}) => {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+
 	const { notify } = useNotification();
 	const router = useRouter();
 

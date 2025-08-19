@@ -1,29 +1,50 @@
 'use client';
 
-import { ClientPlayer, useGameSocket } from '@/app/_service/ws/game';
-import { Flex, Text } from '@radix-ui/themes';
-import { useSearchParams } from 'next/navigation';
-import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
-import User from './User';
-import { ChallangeDoom, ChallangePong } from './Buttons';
+import { Friend } from '@/app/_service/friends/schema';
+import { useGET } from '@/app/_service/useFetcher';
+import { Text } from '@radix-ui/themes';
+import React, { ChangeEvent, useCallback, useState } from 'react';
+import LoadingIndicator from '../../Loading';
+import User from '../game/User';
+import { BlockButton, ChatButton } from './Buttons';
 
-const OnlinePlayers: React.FC = ({}) => {
+const API_BASE = process.env.API_BASE_URL ?? 'http://localhost:80/api/v1';
+
+const FriendsList: React.FC = ({}) => {
+	const { data, error, isLoading } = useGET<Friend[]>({ url: `${API_BASE}/friends` });
 	const [search, setSearch] = useState<string>('');
-	const searchParams = useSearchParams();
-	const { pool } = useGameSocket();
 
-	useEffect(() => {
-		const player = searchParams.get('playersearch');
-		if (player) setSearch(player);
-	}, [searchParams]);
-
-	const filterPool = useCallback(
-		(pooler: ClientPlayer): boolean => {
+	const filterArray = useCallback(
+		(mate: Friend): boolean => {
 			if (!search) return true;
-			return pooler.username.toLowerCase().includes(search.toLowerCase());
+			return mate.username.toLowerCase().includes(search.toLowerCase());
 		},
 		[search]
 	);
+
+	function content() {
+		if (isLoading) return <LoadingIndicator size="md" />;
+		if (error) return <>Error....</>;
+		if (!data)
+			return (
+				<Text as="div" align="center" className="text-dark-200">
+					No Friends
+				</Text>
+			);
+		return (
+			<>
+				{data.filter(filterArray).map((ele: Friend, index: number) => (
+					<div key={index} className="flex justify-between items-center px-2">
+						<User username={ele.username} />
+						<div className="flex items-center gap-2">
+							<ChatButton username={ele.username} />
+							<BlockButton username={ele.username} />
+						</div>
+					</div>
+				))}
+			</>
+		);
+	}
 
 	return (
 		<div className="flex-grow p-6 rounded-md bg-dark-700 my-8 shadow-lg">
@@ -35,11 +56,11 @@ const OnlinePlayers: React.FC = ({}) => {
 					/>
 				</svg>
 				<Text as="div" size="5" weight="bold">
-					Online Players ({pool.length})
+					Friends (9)
 				</Text>
 			</div>
-			<Text as="div" size="3" mb="8" className="text-dark-200">
-				Browse a live list of players currently online, ready to join matches or challenges.
+			<Text as="div" size="3" mb="4" className="text-dark-200">
+				View all friend or game invitations you’ve received, with details and options to accept or decline.
 			</Text>
 			<div className="relative">
 				<svg
@@ -66,22 +87,9 @@ const OnlinePlayers: React.FC = ({}) => {
 					name="text"
 				/>
 			</div>
-			{pool.filter(filterPool).map((pooler, index) => (
-				<div key={index} className="flex justify-between items-center px-2">
-					<User username={pooler.username} />
-					<div className="flex items-center gap-2">
-						<ChallangePong pooler={pooler} />
-						<ChallangeDoom pooler={pooler} />
-					</div>
-				</div>
-			))}
-			{search && pool.filter(filterPool).length === 0 && (
-				<Text as="div" align="center" className="text-dark-200">
-					No Player Found
-				</Text>
-			)}
+			<div className="mt-[12px] relative">{content()}</div>
 		</div>
 	);
 };
 
-export default OnlinePlayers;
+export default FriendsList;

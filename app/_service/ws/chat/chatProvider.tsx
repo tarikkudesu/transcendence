@@ -5,7 +5,7 @@ import { Badge } from '@radix-ui/themes';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Json } from '../game/common';
 import { chatContext } from './chatContext';
-import { EventOut, isMessageArray, Message, OuterMessage } from './schemas';
+import { EventOut, Message, OuterMessage } from './schemas';
 
 interface ChatProviderProps {
 	children: React.ReactNode;
@@ -23,14 +23,6 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 	// * Data Holders
 	const [panel, setPanel] = useState<OuterMessage[]>([]);
 	const [conversation, setConversation] = useState<Message[]>([]);
-
-	const parse = useCallback((json: OuterMessage[] | Message[]) => {
-		// console.log(json);
-		if (!isMessageArray(json)) setPanel(json);
-		// else setPanel(json);
-		// if (isMessageArray(json)) setConversation(json);
-		// else setPanel(json);
-	}, []);
 
 	const send = useCallback(
 		(message: string) => {
@@ -59,13 +51,12 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 				const json: EventOut = Json({ message: e.data, target: new EventOut() });
 				if (json.event === 'UNREAD') setPanel(json.content as OuterMessage[]);
 				else setConversation(json.content as Message[]);
-				// parse(json.content);
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			} catch (err: any) {
 				notify({ message: err.message, error: true });
 			}
 		},
-		[notify, parse]
+		[notify]
 	);
 
 	const onopen = useCallback(() => {

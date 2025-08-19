@@ -1,14 +1,13 @@
 export class Message {
 	message: string = '';
 	sender: string = '';
+	receiver: string = '';
 	date: string = '';
 }
 
 export class OuterMessage {
-	receiver: string = '';
-	sender: string = '';
+	friend: string = '';
 	avatar: string = '';
-	unread: number = 0;
 	lastMessage: Message = new Message();
 }
 
