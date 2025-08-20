@@ -3,10 +3,10 @@
 import { RequestResult } from '@/app/_service/auth/calls';
 import { fetchPongLeaderboard } from '@/app/_service/game/calls';
 import { LeaderboardEntry } from '@/app/_service/game/schemas';
-import { Flex, Text } from '@radix-ui/themes';
-import { useState, useEffect, useCallback } from 'react';
+import { Text } from '@radix-ui/themes';
+import { useCallback, useEffect, useState } from 'react';
 
-const PongLeaderBoard: React.FC = ({}) => {
+const DoomLeaderBoard: React.FC = ({}) => {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isError, setError] = useState<boolean>(false);
 	const [leaderBoard, setLeaderBoard] = useState<LeaderboardEntry[]>([]);
@@ -55,4 +55,4 @@ const PongLeaderBoard: React.FC = ({}) => {
 	return <>{content()}</>;
 };
 
-export default PongLeaderBoard;
+export default DoomLeaderBoard;

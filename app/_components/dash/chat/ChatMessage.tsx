@@ -1,9 +1,9 @@
 import { Message } from '@/app/_service/ws/chat/schemas';
 
-import SafeImage from '@/app/_components/SafeImage';
 import { format } from 'date-fns';
 import React from 'react';
 import UserCallout from '../game/UserCallout';
+import SafeImage from '../../mini/SafeImage';
 
 interface ChatMyMessageProps {
 	data: Message;

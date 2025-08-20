@@ -22,5 +22,5 @@ export interface FriendActionResponse {
 }
 
 export interface CheckResponse {
-	state: "pending" | "blocked" | "accepted";
+	state: 'pending' | 'blocked' | 'accepted';
 }

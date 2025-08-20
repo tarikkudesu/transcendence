@@ -2,12 +2,10 @@
 
 import { OuterMessage } from '@/app/_service/ws/chat/schemas';
 import { Text } from '@radix-ui/themes';
-import { format } from 'date-fns';
 
-import SafeImage from '@/app/_components/SafeImage';
-import { useChatSocket } from '@/app/_service/ws/chat/chatContext';
-import { ChatMessage } from '@/app/_service/ws/chat/composer';
+
 import React from 'react';
+import SafeImage from '../../mini/SafeImage';
 
 interface ChatEntryProps {
 	setActive: (e: string) => void;
@@ -16,15 +14,12 @@ interface ChatEntryProps {
 }
 
 const ChatEntry: React.FC<ChatEntryProps> = ({ data, active, setActive }) => {
-	const { send } = useChatSocket();
-
 	return (
 		<div
 			className={`h-[80px] hover:bg-dark-600 border-b-[1px] border-b-dark-600 flex justify-start items-center px-6 cursor-pointer duration-200 ${
 				active ? 'bg-dark-600' : ''
 			}`}
 			onClick={() => {
-				send(ChatMessage('REQUESTUSER', { user: data.friend }));
 				setActive(data.friend);
 			}}
 		>
@@ -45,7 +40,7 @@ const ChatEntry: React.FC<ChatEntryProps> = ({ data, active, setActive }) => {
 						{data.friend}
 					</Text>
 					<Text size="1" className="text-dark-200">
-						{format(Date.now(), 'HH:mm')}
+						{data.lastMessage.date}
 						{/* {Date.now() - Number(data.lastMessage.date) < 3600 * 1000
 							? format(data.lastMessage.date, 'HH:mm')
 							: format(data.lastMessage.date, 'yyyy-MM-dd')} */}

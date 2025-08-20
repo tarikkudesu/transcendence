@@ -5,18 +5,19 @@ import { OuterMessage } from '@/app/_service/ws/chat/schemas';
 import { Box, ScrollArea, Text } from '@radix-ui/themes';
 import { useSearchParams } from 'next/navigation';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
-import ChatConversation from './ChatConversation';
+import ChatConversation, { EmptyConversation } from './ChatConversation';
 import ChatEntry from './ChatEntry';
+import ConversationProvider from '@/app/_service/ws/chat/conversationProvider';
 
 const ChatList: React.FC = ({}) => {
-	const [currentBox, setCurrentBox] = useState<string>('');
-	const [search, setSearch] = useState<string>('');
-	const searchParams = useSearchParams();
 	const { panel } = useChatSocket();
+	const searchParams = useSearchParams();
+	const [box, setBox] = useState<string>('');
+	const [search, setSearch] = useState<string>('');
 
 	useEffect(() => {
-		const chat = searchParams.get('chatsearch');
-		if (chat) setSearch(chat);
+		const chat = searchParams.get('chatemate');
+		if (chat) setBox(chat);
 	}, [searchParams]);
 
 	const filterPanel = useCallback(
@@ -27,7 +28,7 @@ const ChatList: React.FC = ({}) => {
 		[search]
 	);
 
-	const setActive = useCallback((a: string) => setCurrentBox(a), []);
+	const setActive = useCallback((a: string) => setBox(a), []);
 
 	return (
 		<>
@@ -78,13 +79,19 @@ const ChatList: React.FC = ({}) => {
 							.sort((a, b) => a.lastMessage.date.localeCompare(b.lastMessage.date))
 							.map((ele, index) => (
 								<div key={index}>
-									<ChatEntry data={ele} active={currentBox === ele.friend} setActive={setActive} />
+									<ChatEntry data={ele} active={box === ele.friend} setActive={setActive} />
 								</div>
 							))}
 				</ScrollArea>
 			</div>
 			<div className="row-span-5 h-full min-w-[300px]">
-				<ChatConversation chatmate={currentBox} />
+				{box ? (
+					<ConversationProvider friend={box}>
+						<ChatConversation chatemate={box} />
+					</ConversationProvider>
+				) : (
+					<EmptyConversation />
+				)}
 			</div>
 		</>
 	);

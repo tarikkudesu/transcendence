@@ -12,7 +12,10 @@ export function useFriendshipCheck(username: string) {
 	useEffect(() => {
 		refresh();
 	}, []);
-	return { check: data ? data.state : 'none', refresh } as { check: 'accepted' | 'blocked' | 'pending' | 'none' | 'loading'; refresh: () => void };
+	return { check: data ? data.state : 'none', refresh } as {
+		check: 'accepted' | 'blocked' | 'pending' | 'none' | 'loading';
+		refresh: () => void;
+	};
 }
 
 export default useFriendshipCheck;

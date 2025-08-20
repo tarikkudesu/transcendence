@@ -4,14 +4,13 @@ import { Friend } from '@/app/_service/friends/schema';
 import { useGET } from '@/app/_service/useFetcher';
 import { Box, Text } from '@radix-ui/themes';
 import React, { ChangeEvent, useCallback, useState } from 'react';
-import LoadingIndicator from '../../Loading';
+import LoadingIndicator from '../../mini/Loading';
 import User from '../game/User';
-import { AcceptButton, DeclineButton } from './Buttons';
 
 const API_BASE = process.env.API_BASE_URL ?? 'http://localhost:80/api/v1';
 
 const FriendRequests: React.FC = ({}) => {
-	const { data, isLoading, error, refetch } = useGET<Friend[]>({ url: `${API_BASE}/friends/request`, revalidate: 0 });
+	const { data, isLoading, error } = useGET<Friend[]>({ url: `${API_BASE}/friends/request`, revalidate: 0 });
 	const [search, setSearch] = useState<string>('');
 
 	const filterArray = useCallback(
@@ -37,8 +36,8 @@ const FriendRequests: React.FC = ({}) => {
 					<div key={index} className="flex justify-between items-center">
 						<User username={ele.username} extra={ele.stat} />
 						<div className="flex items-center gap-2">
-							<AcceptButton username={ele.username} />
-							<DeclineButton username={ele.username} />
+							{/* <AcceptButton username={ele.username} />
+							<DeclineButton username={ele.username} /> */}
 						</div>
 					</div>
 				))}

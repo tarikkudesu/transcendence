@@ -2,10 +2,10 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import LoadingIndicator from '../_components/mini/Loading';
 import { authContext } from './AuthContext';
 import { getMe, RequestResult } from './user/calls';
 import { UserProfile } from './user/schema';
-import LoadingIndicator from '../_components/Loading';
 
 interface AuthProviderProps {
 	children: React.ReactNode;
@@ -17,14 +17,6 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	const router = useRouter();
 
 	useEffect(() => {
-		// setUser({
-		// 	avatar: '',
-		// 	bio: '',
-		// 	created_at: 'yesterday',
-		// 	email: '',
-		// 	username: 'rick',
-		// });
-		// return;
 		setIsLoading(true);
 		async function fetchMe() {
 			try {

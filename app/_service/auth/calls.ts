@@ -1,18 +1,13 @@
 'use client';
 
-// const API_BASE = process.env.API_BASE_URL ?? 'http://localhost:80/api/v1';
-
-// export const fetcher = (url: string) =>
-// 	fetch(API_BASE + url, { credentials: 'include' }).then((res) => res.json());
-
 import type {
+	ForgotPasswordRequest,
 	LoginRequest,
-	SignupRequest,
 	ResendOtpRequest,
+	ResetPasswordRequest,
+	SignupRequest,
 	Verify2FARequest,
 	VerifyAccountRequest,
-	ForgotPasswordRequest,
-	ResetPasswordRequest,
 } from './schema';
 
 const API_BASE = process.env.API_BASE_URL ?? 'http://localhost:80/api/v1';

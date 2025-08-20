@@ -1,16 +1,16 @@
 'use client';
 
-import { ClientInvitation, useGameSocket } from '@/app/_service/ws/game';
-import { Flex, Text } from '@radix-ui/themes';
+import { AcceptMessage, ClientInvitation, RejectMessage, useGameSocket } from '@/app/_service/ws/game';
+import { Text } from '@radix-ui/themes';
 import { useSearchParams } from 'next/navigation';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { PongButton } from '../../buttons/ServerButtons';
 import User from './User';
-import { AcceptChallange, DeclineChallange } from './Buttons';
 
 const ReceivedInvitations: React.FC = ({}) => {
 	const [search, setSearch] = useState<string>('');
 	const searchParams = useSearchParams();
-	const { invitations } = useGameSocket();
+	const { invitations, send } = useGameSocket();
 
 	useEffect(() => {
 		const profile = searchParams.get('playersearch');
@@ -72,8 +72,18 @@ const ReceivedInvitations: React.FC = ({}) => {
 					<div key={index} className="flex justify-between items-center px-2">
 						<User username={invite.sender} />
 						<div className="flex items-center gap-2">
-							<DeclineChallange invite={invite} />
-							<AcceptChallange invite={invite} />
+							<PongButton
+								onClick={() => send(AcceptMessage(invite.game, invite.sender))}
+								className="bg-dark-700 hover:bg-accent-300 hover:text-black"
+							>
+								Accept
+							</PongButton>
+							<PongButton
+								onClick={() => () => send(RejectMessage(invite.game, invite.sender))}
+								className="bg-dark-700 hover:bg-golden-500 hover:text-black"
+							>
+								Reject
+							</PongButton>
 						</div>
 					</div>
 				);

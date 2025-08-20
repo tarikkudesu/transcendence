@@ -4,9 +4,8 @@ import { Friend } from '@/app/_service/friends/schema';
 import { useGET } from '@/app/_service/useFetcher';
 import { Text } from '@radix-ui/themes';
 import React, { ChangeEvent, useCallback, useState } from 'react';
-import LoadingIndicator from '../../Loading';
+import LoadingIndicator from '../../mini/Loading';
 import User from '../game/User';
-import { BlockButton, ChatButton } from './Buttons';
 
 const API_BASE = process.env.API_BASE_URL ?? 'http://localhost:80/api/v1';
 
@@ -37,8 +36,8 @@ const FriendsList: React.FC = ({}) => {
 					<div key={index} className="flex justify-between items-center px-2">
 						<User username={ele.username} />
 						<div className="flex items-center gap-2">
-							<ChatButton username={ele.username} />
-							<BlockButton username={ele.username} />
+							{/* <ChatButton username={ele.username} />
+							<BlockButton username={ele.username} /> */}
 						</div>
 					</div>
 				))}

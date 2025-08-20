@@ -1,16 +1,16 @@
 'use client';
 
-import { ClientPlayer, useGameSocket } from '@/app/_service/ws/game';
-import { Flex, Text } from '@radix-ui/themes';
+import { ClientPlayer, InviteMessage, useGameSocket } from '@/app/_service/ws/game';
+import { Text } from '@radix-ui/themes';
 import { useSearchParams } from 'next/navigation';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import User from './User';
-import { ChallangeDoom, ChallangePong } from './Buttons';
+import { PongButton } from '../../buttons/ServerButtons';
 
 const OnlinePlayers: React.FC = ({}) => {
 	const [search, setSearch] = useState<string>('');
 	const searchParams = useSearchParams();
-	const { pool } = useGameSocket();
+	const { pool, send } = useGameSocket();
 
 	useEffect(() => {
 		const player = searchParams.get('playersearch');
@@ -68,10 +68,20 @@ const OnlinePlayers: React.FC = ({}) => {
 			</div>
 			{pool.filter(filterPool).map((pooler, index) => (
 				<div key={index} className="flex justify-between items-center px-2">
-					<User username={pooler.username} />
+					<User username={pooler.username} extra={pooler.inviteStatus} />
 					<div className="flex items-center gap-2">
-						<ChallangePong pooler={pooler} />
-						<ChallangeDoom pooler={pooler} />
+						<PongButton
+							onClick={() => send(InviteMessage('pong', pooler.username))}
+							className="bg-dark-700 hover:bg-accent-300 hover:text-black"
+						>
+							Pong
+						</PongButton>
+						<PongButton
+							onClick={() => send(InviteMessage('card of doom', pooler.username))}
+							className="bg-dark-700 hover:bg-golden-500 hover:text-black"
+						>
+							Doom
+						</PongButton>
 					</div>
 				</div>
 			))}

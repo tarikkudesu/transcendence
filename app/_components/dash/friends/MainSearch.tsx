@@ -5,8 +5,8 @@ import { useGET } from '@/app/_service/useFetcher';
 import { ScrollArea, Text } from '@radix-ui/themes';
 import Link from 'next/link';
 import React, { ChangeEvent, memo, useCallback, useEffect, useMemo, useState } from 'react';
-import LoadingIndicator from '../../Loading';
 import User from '../game/User';
+import LoadingIndicator from '../../mini/Loading';
 
 const API_BASE = process.env.API_BASE_URL ?? 'http://localhost:80/api/v1';
 

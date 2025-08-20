@@ -1,11 +1,11 @@
 'use client';
 
-import SafeImage from '@/app/_components/SafeImage';
 import { RequestResult } from '@/app/_service/auth/calls';
 import { fetchDoomLeaderboard } from '@/app/_service/game/calls';
 import { LeaderboardEntry } from '@/app/_service/game/schemas';
 import { Text } from '@radix-ui/themes';
 import { useCallback, useEffect, useState } from 'react';
+import SafeImage from '../../mini/SafeImage';
 import UserCallout from '../game/UserCallout';
 
 const PongLeaderBoard: React.FC = ({}) => {

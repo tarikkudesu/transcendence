@@ -5,8 +5,8 @@ import { UserProfile } from '@/app/_service/user/schema';
 import { ClientPlayer } from '@/app/_service/ws/game/schema';
 import { Spinner } from '@radix-ui/themes';
 
-import SafeImage from '@/app/_components/SafeImage';
 import React, { useEffect, useState } from 'react';
+import SafeImage from '../../mini/SafeImage';
 import UserCallout from './UserCallout';
 
 interface PlayerCardProps {

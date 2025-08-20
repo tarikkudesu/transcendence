@@ -1,5 +1,5 @@
-import DoomLeaderBoard from '@/app/_components/dash/DoomLeaderBoard';
-import PongLeaderBoard from '@/app/_components/dash/PongLeaderBoard';
+import DoomLeaderBoard from '@/app/_components/dash/fetchall/DoomLeaderBoard';
+import PongLeaderBoard from '@/app/_components/dash/fetchall/PongLeaderBoard';
 import { Flex, Text, Tooltip } from '@radix-ui/themes';
 import Link from 'next/link';
 import React from 'react';

@@ -63,10 +63,16 @@ const config = {
 				},
 			},
 			animation: {
+				cardenter: 'cardenter 0.1s ease-out forwards',
 				spin: 'spin 1s linear infinite',
 				'spin-reverse': 'spin-reverse 1s linear infinite',
+				zoomBounce: 'zoomInOutBounce 0.5s cubic-bezier(0.68,-0.55,0.265,1.55)',
 			},
 			keyframes: {
+				cardenter: {
+					'0%': { opacity: 0, transform: 'translate(-50%, calc(-50% + 50px))' },
+					'100%': { opacity: 1, transform: 'translate(-50%, -50%)' },
+				},
 				spin: {
 					from: { transform: 'rotate(0deg)' },
 					to: { transform: 'rotate(360deg)' },
@@ -74,6 +80,12 @@ const config = {
 				'spin-reverse': {
 					from: { transform: 'rotate(360deg)' },
 					to: { transform: 'rotate(0deg)' },
+				},
+				zoomInOutBounce: {
+					'0%': { transform: 'scale(0)', opacity: '0' },
+					'60%': { transform: 'scale(1.15)', opacity: '1' },
+					'80%': { transform: 'scale(0.95)' },
+					'100%': { transform: 'scale(1)', opacity: '1' },
 				},
 			},
 		},

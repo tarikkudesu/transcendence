@@ -1,11 +1,20 @@
 import { createContext, useContext } from 'react';
 
 export interface NotificationType {
-	senderAvatarUrl: string;
-	reciever: string;
+	event:
+		| 'NEWTOURNAMENTDATE'
+		| 'REGESTRATIONOPEN'
+		| 'TOURNAMENTMATCHUP'
+		| 'TOURNAMENTWON'
+		| 'PONGGAMEINVITATION'
+		| 'DOOMGAMEINVITATION'
+		| 'FRIENDREQUEST'
+		| 'FRIENDACCEPTEDYOURREQUEST'
+		| 'CHATMESSAGE';
+	date: number;
 	sender: string;
-	event: string;
-	date: string;
+	service: string;
+	receiver: string;
 }
 
 class SocketState {

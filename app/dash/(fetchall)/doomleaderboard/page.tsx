@@ -1,6 +1,6 @@
-import Footer from '@/app/_components/Footer';
+import Footer from '@/app/_components/mini/Footer';
+import Header from '@/app/_components/mini/Header';
 import { Text } from '@radix-ui/themes';
-import Header from '@/app/_components/Header';
 import React from 'react';
 
 const Dashboard: React.FC<unknown> = () => {

@@ -2,8 +2,8 @@ import { useGET } from '@/app/_service/useFetcher';
 import { UserProfile } from '@/app/_service/user/schema';
 import { Text } from '@radix-ui/themes';
 import React from 'react';
-import LoadingIndicator from '../../Loading';
-import SafeImage from '../../SafeImage';
+import LoadingIndicator from '../../mini/Loading';
+import SafeImage from '../../mini/SafeImage';
 import UserCallout from './UserCallout';
 
 interface UserProps {

@@ -1,8 +1,7 @@
-import SideProfile from '@/app/_components/dash/friends/SideProfile';
-import Header from '@/app/_components/dash/Header';
-import MiniNavigation from '@/app/_components/dash/MiniNavigation';
-import MyDashboardProfile from '@/app/_components/dash/MyProfile';
-import Navigation from '@/app/_components/dash/Navigation';
+import MyDashboardProfile from '@/app/_components/dash/profile/MyProfile';
+import Header from '@/app/_components/dash/shared/Header';
+import MiniNavigation from '@/app/_components/dash/shared/MiniNavigation';
+import Navigation from '@/app/_components/dash/shared/Navigation';
 import GameProvider from '@/app/_service/ws/game/gameProvider';
 import NotificationProvider from '@/app/_service/ws/notification/NotificationProvider';
 import { Box } from '@radix-ui/themes';

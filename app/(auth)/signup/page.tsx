@@ -1,7 +1,7 @@
 'use client';
 
-import Logo from '@/app/_components/Logo';
-import { useNotification } from '@/app/_components/useNotify';
+import Logo from '@/app/_components/mini/Logo';
+import { useNotification } from '@/app/_components/mini/useNotify';
 import { RequestResult, signup } from '@/app/_service/auth/calls';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
 import { Box, Button, Flex, Text } from '@radix-ui/themes';

@@ -1,10 +1,10 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useNotification } from '@/app/_components/useNotify';
-import * as Main from './index';
+import { useNotification } from '@/app/_components/mini/useNotify';
 import { Badge } from '@radix-ui/themes';
 import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import * as Main from './index';
 
 interface GameProviderProps {
 	children: React.ReactNode;
@@ -56,6 +56,7 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 				// ? Game
 				case 'PONG': {
 					const p: Main.ClientPong = Main.Json({ message, target: Main.ClientPong.instance });
+					console.log(p);
 					setPong(p);
 					break;
 				}
@@ -83,6 +84,7 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 
 	const send = useCallback(
 		(message: string) => {
+			console.log(message);
 			if (socketRef.current?.OPEN && message) socketRef.current?.send(message);
 			else notify({ message: "connection hasn't been established", error: true });
 		},
@@ -137,30 +139,30 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 				setError(true);
 			}
 		},
-		[error, close]
+		[error, close, onmessage, onerror, onclose, onopen]
 	);
 
 	function content() {
 		if (error)
 			return (
-				<Badge color="red" variant="soft" radius="full" className="fixed bottom-4 z-100 right-4">
+				<Badge color="red" variant="soft" radius="full" className="fixed top-20 z-100 right-4">
 					Game: Error
 				</Badge>
 			);
 		if (close)
 			return (
-				<Badge color="yellow" variant="soft" radius="full" className="fixed bottom-4 z-100 right-4">
+				<Badge color="yellow" variant="soft" radius="full" className="fixed top-20 z-100 right-4">
 					Game: Closed
 				</Badge>
 			);
 		if (open)
 			return (
-				<Badge color="jade" variant="soft" radius="full" className="fixed bottom-4 z-100 right-4">
+				<Badge color="jade" variant="soft" radius="full" className="fixed top-20 z-100 right-4">
 					Game: Open
 				</Badge>
 			);
 		return (
-			<Badge color="red" variant="soft" radius="full" className="fixed bottom-4 z-100 right-4">
+			<Badge color="red" variant="soft" radius="full" className="fixed top-20 z-100 right-4">
 				Game: Disconnected
 			</Badge>
 		);

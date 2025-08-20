@@ -1,7 +1,7 @@
 'use client';
 
-import Logo from '@/app/_components/Logo';
-import { useNotification } from '@/app/_components/useNotify';
+import Logo from '@/app/_components/mini/Logo';
+import { useNotification } from '@/app/_components/mini/useNotify';
 import { forgotPassword, RequestResult } from '@/app/_service/auth/calls';
 import { Box, Button, Text } from '@radix-ui/themes';
 import Link from 'next/link';

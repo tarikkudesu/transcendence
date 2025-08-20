@@ -1,19 +1,20 @@
 import { Box, Grid, Tabs } from '@radix-ui/themes';
 import React from 'react';
-import PlayDoom from '../_components/dash/PlayDoom';
-import PlayLocal from '../_components/dash/PlayLocal';
-import PlayPong from '../_components/dash/PlayPong';
-import PlayTournament from '../_components/dash/PlayTournament';
-import TitleSubTitle from '../_components/dash/TitleSubTitle';
-import DeleteAccount from '../_components/DeleteAccount';
-import UpdateAvatar from '../_components/UpdateAvater';
-import UpdateBio from '../_components/UpdateBio';
-import UpdatePassword from '../_components/UpdatePassword';
-import UpdateUsername from '../_components/UpdateUsername';
-import Username from '../_components/Username';
-import Header from '../_components/Header';
-import Footer from '../_components/Footer';
+
 import { Text } from '@radix-ui/themes';
+import DeleteAccount from '../_components/dash/settings/DeleteAccount';
+import UpdateAvatar from '../_components/dash/settings/UpdateAvater';
+import UpdateBio from '../_components/dash/settings/UpdateBio';
+import UpdatePassword from '../_components/dash/settings/UpdatePassword';
+import UpdateUsername from '../_components/dash/settings/UpdateUsername';
+import PlayDoom from '../_components/main/PlayDoom';
+import PlayLocal from '../_components/main/PlayLocal';
+import PlayPong from '../_components/main/PlayPong';
+import PlayTournament from '../_components/main/PlayTournament';
+import Footer from '../_components/mini/Footer';
+import Header from '../_components/mini/Header';
+import TitleSubTitle from '../_components/mini/TitleSubTitle';
+import Username from '../_components/mini/Username';
 
 const Dashboard: React.FC<unknown> = () => {
 	return (

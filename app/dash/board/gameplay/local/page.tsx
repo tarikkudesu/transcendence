@@ -1,4 +1,4 @@
-import LocalPong from '@/app/_components/gameplay/pong/local/local';
+import LocalPong from '@/app/_components/gameplay/local/local';
 import React from 'react';
 
 const Page: React.FC<unknown> = () => {

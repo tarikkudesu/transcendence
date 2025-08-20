@@ -44,9 +44,7 @@ const CurrentMatches: React.FC = ({}) => {
 			<Text as="div" size="3" mb="8" align="center" className="text-dark-200">
 				Watch ongoing tournament games in real time and track their progress from start to finish.
 			</Text>
-			<div className="p-4 rounded-md bg-dark-950">
-				{content()}
-			</div>
+			<div className="p-4 rounded-md bg-dark-950">{content()}</div>
 		</div>
 	);
 };

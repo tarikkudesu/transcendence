@@ -1,9 +1,9 @@
 'use client';
 
-import { useNotification } from '@/app/_components/useNotify';
 import { Badge } from '@radix-ui/themes';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { notificationContext, NotificationType } from './notificationContext';
+import { useNotification } from '@/app/_components/mini/useNotify';
 
 interface NotificationProviderProps {
 	children: React.ReactNode;
@@ -14,10 +14,10 @@ const API_BASE = process.env.NEXT_PUBLIC_WS_NOTIFICATION_URL;
 const NotificationProvider: React.FC<NotificationProviderProps> = ({ children }) => {
 	const { notify } = useNotification();
 	const socketRef = useRef<WebSocket | null>(null);
+	const [open, setOpen] = useState<boolean>(false);
 	const [error, setError] = useState<boolean>(false);
 	const [close, setClose] = useState<boolean>(false);
 	const [notifications, setNotifications] = useState<NotificationType[]>([]);
-	const [open, setOpen] = useState<boolean>(false);
 
 	const send = useCallback(
 		(message: string) => {
@@ -95,7 +95,7 @@ const NotificationProvider: React.FC<NotificationProviderProps> = ({ children })
 				setError(true);
 			}
 		},
-		[error, close]
+		[error, close, onmessage, onerror, onclose, onopen, close, error]
 	);
 
 	return (

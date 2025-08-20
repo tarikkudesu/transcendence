@@ -1,12 +1,12 @@
 'use client';
 
-import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { useRouter } from 'next/navigation';
-import { useNotification } from '@/app/_components/useNotify';
-import Logo from '@/app/_components/Logo';
+import Logo from '@/app/_components/mini/Logo';
+import { useNotification } from '@/app/_components/mini/useNotify';
 import { RequestResult, resendOtp, verify2FA } from '@/app/_service/auth/calls';
 import { Box, Button, Text } from '@radix-ui/themes';
+import { useRouter, useSearchParams } from 'next/navigation';
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
+
 const LoginVerify: React.FC<unknown> = () => {
 	const router = useRouter();
 	const searchParams = useSearchParams();

@@ -1,6 +1,6 @@
 'use client';
 
-import type { UpdatePasswordRequest, UpdateUsernameRequest, UpdateBioRequest, UpdateAvatarRequest } from './schema';
+import type { UpdateAvatarRequest, UpdateBioRequest, UpdatePasswordRequest, UpdateUsernameRequest } from './schema';
 
 const API_BASE = process.env.API_BASE_URL ?? 'http://localhost/api/v1';
 

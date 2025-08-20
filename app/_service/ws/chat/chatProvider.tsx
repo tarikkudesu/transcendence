@@ -1,11 +1,10 @@
 'use client';
 
-import { useNotification } from '@/app/_components/useNotify';
+import { useNotification } from '@/app/_components/mini/useNotify';
 import { Badge } from '@radix-ui/themes';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Json } from '../game/common';
 import { chatContext } from './chatContext';
-import { EventOut, Message, OuterMessage } from './schemas';
+import { OuterMessage } from './schemas';
 
 interface ChatProviderProps {
 	children: React.ReactNode;
@@ -22,15 +21,14 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 
 	// * Data Holders
 	const [panel, setPanel] = useState<OuterMessage[]>([]);
-	const [conversation, setConversation] = useState<Message[]>([]);
 
-	const send = useCallback(
-		(message: string) => {
-			if (socketRef.current?.OPEN && message) socketRef.current?.send(message);
-			else notify({ message: "connection hasn't been established", error: true });
-		},
-		[notify]
-	);
+	// const send = useCallback(
+	// 	(message: string) => {
+	// 		if (socketRef.current?.OPEN && message) socketRef.current?.send(message);
+	// 		else notify({ message: "Chat connection hasn't been established", error: true });
+	// 	},
+	// 	[notify]
+	// );
 
 	const onerror = useCallback(() => {
 		setOpen(false);
@@ -40,7 +38,7 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const onclose = useCallback((event: any) => {
-		console.log(`Game WebSocket connection closed: ${event?.reason ?? ''}`);
+		console.log(`Chat WebSocket connection closed: ${event?.reason ?? ''}`);
 		setOpen(false);
 		setClose(true);
 	}, []);
@@ -48,9 +46,8 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 	const onmessage = useCallback(
 		(e: MessageEvent) => {
 			try {
-				const json: EventOut = Json({ message: e.data, target: new EventOut() });
-				if (json.event === 'UNREAD') setPanel(json.content as OuterMessage[]);
-				else setConversation(json.content as Message[]);
+				const json: OuterMessage[] = JSON.parse(e.data);
+				setPanel(json as OuterMessage[]);
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			} catch (err: any) {
 				notify({ message: err.message, error: true });
@@ -60,7 +57,7 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 	);
 
 	const onopen = useCallback(() => {
-		console.log('Game WebSocket connection opened');
+		console.log('Chat WebSocket connection opened');
 		setOpen(true);
 	}, []);
 
@@ -68,7 +65,7 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 		function () {
 			if (socketRef.current && !error && !close) return;
 			try {
-				console.log('creating Game WebSocket connection ' + API_BASE);
+				console.log('creating Chat WebSocket connection ' + API_BASE);
 				if (API_BASE) {
 					socketRef.current = new WebSocket(API_BASE);
 					socketRef.current.onmessage = onmessage;
@@ -77,41 +74,41 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 					socketRef.current.onopen = onopen;
 				} else setError(true);
 			} catch (err: unknown) {
-				console.log('Error creating Game WebSocket connection:', err);
+				console.log('Error creating Chat WebSocket connection:', err);
 				setError(true);
 			}
 		},
-		[error, close]
+		[error, close, onmessage, onerror, onclose, onopen]
 	);
 
 	function content() {
 		if (error)
 			return (
-				<Badge color="red" variant="soft" radius="full" className="absolute top-1 right-1">
+				<Badge color="red" variant="soft" radius="full" className="fixed top-28 right-4">
 					Chat: Error
 				</Badge>
 			);
 		if (close)
 			return (
-				<Badge color="yellow" variant="soft" radius="full" className="absolute top-1 right-1">
+				<Badge color="yellow" variant="soft" radius="full" className="fixed top-28 right-4">
 					Chat: Closed
 				</Badge>
 			);
 		if (open)
 			return (
-				<Badge color="jade" variant="soft" radius="full" className="absolute top-1 right-1">
+				<Badge color="jade" variant="soft" radius="full" className="fixed top-28 right-4">
 					Chat: Open
 				</Badge>
 			);
 		return (
-			<Badge color="red" variant="soft" radius="full" className="absolute top-1 right-1">
+			<Badge color="red" variant="soft" radius="full" className="fixed top-28 right-4">
 				Chat: Disconnected
 			</Badge>
 		);
 	}
 
 	return (
-		<chatContext.Provider value={{ error, close, open, send, panel, conversation }}>
+		<chatContext.Provider value={{ error, close, open, panel }}>
 			{children}
 			{content()}
 		</chatContext.Provider>

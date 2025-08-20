@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import AuthProvider from '../_service/AuthProvider';
-import GameProvider from '../_service/ws/game/gameProvider';
 
 export const metadata: Metadata = {
 	title: 'YingYangPong',

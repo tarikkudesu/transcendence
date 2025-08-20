@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import { Message, OuterMessage } from './schemas';
+import { OuterMessage } from './schemas';
 
 class SocketState {
 	// * Websocket vars
@@ -8,9 +8,6 @@ class SocketState {
 	open: boolean = false;
 
 	panel: OuterMessage[] = [];
-	conversation: Message[] = [];
-
-	send: (message: string) => void = () => {};
 }
 
 export const chatContext = createContext(new SocketState());

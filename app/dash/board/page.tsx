@@ -1,8 +1,9 @@
-import MyDoomHistory from '@/app/_components/dash/MyDoomHistory';
-import MyPongHistory from '@/app/_components/dash/MyPongHistory';
-import MyStatsDoom from '@/app/_components/dash/MyStatsDoom';
-import MyStatsPong from '@/app/_components/dash/MyStatsPong';
-import MyStatsTournament from '@/app/_components/dash/MyStatsTournament';
+import MyDoomHistory from "@/app/_components/dash/profile/MyDoomHistory";
+import MyPongHistory from "@/app/_components/dash/profile/MyPongHistory";
+import MyStatsDoom from "@/app/_components/dash/profile/MyStatsDoom";
+import MyStatsPong from "@/app/_components/dash/profile/MyStatsPong";
+import MyStatsTournament from "@/app/_components/dash/profile/MyStatsTournament";
+
 
 async function Dashboard() {
 	return (

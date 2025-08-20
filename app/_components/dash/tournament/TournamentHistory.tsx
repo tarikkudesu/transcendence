@@ -52,7 +52,7 @@ const TournamentHistory: React.FC = ({}) => {
 									{ele.tournament_date}
 								</Text>
 							</Text>
-							<Link href={"/dash/board/tournament/" + ele.tournament_name}>
+							<Link href={'/dash/board/tournament/' + ele.tournament_name}>
 								<button className="py-3 px-6 text-center bg-accent-300 text-xs text-black rounded-sm cursor-pointer font-bold">
 									See Details
 								</button>
