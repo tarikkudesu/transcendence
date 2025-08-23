@@ -1,41 +1,22 @@
 'use client';
 
-import { RequestResult } from '@/app/_service/auth/calls';
-import { fetchTournament } from '@/app/_service/game/calls';
 import { TournamentDetailsType } from '@/app/_service/game/schemas';
-import { Spinner } from '@radix-ui/themes';
-import React, { useEffect, useState } from 'react';
+import { useGET } from '@/app/_service/useFetcher';
+import React from 'react';
+import LoadingIndicator from '../../mini/Loading';
 
 interface TournamentDetailsProps {
 	name: string;
 }
 
+const API_BASE = process.env.API_BASE_URL ?? 'http://localhost:80/api/v1';
+
 const TournamentDetails: React.FC<TournamentDetailsProps> = ({ name }) => {
-	const [isError, setError] = useState<boolean>(false);
-	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const [details, setDetails] = useState<TournamentDetailsType | null>(null);
+	const { isLoading, error, data: details } = useGET<TournamentDetailsType>({ url: `${API_BASE}/game/tournament/${name}` });
 
-	useEffect(() => {
-		async function fetchData() {
-			try {
-				setIsLoading(true);
-				const res: RequestResult = await fetchTournament(name);
-				if (res.message === 'success') {
-					setDetails(res.result);
-				} else {
-					setError(true);
-				}
-			} catch (err) {
-				void err;
-				setError(true);
-			}
-			setIsLoading(false);
-		}
-		fetchData();
-	}, [name]);
+	if (isLoading) return <LoadingIndicator />;
+	if (error || !details) return <>Error...</>;
 
-	if (isLoading) return <Spinner />;
-	if (isError || !details) return <>Error Page</>;
 	return <div>{JSON.stringify(details)}</div>;
 };
 

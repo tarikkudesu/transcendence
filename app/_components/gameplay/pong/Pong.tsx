@@ -21,14 +21,12 @@ class Pong {
 		this.ctx = ctx;
 		this.keyUp = keyUp;
 		this.keyDown = keyDown;
-		this.canvas.addEventListener('keyup', this.keyUp);
-		this.canvas.addEventListener('keydown', this.keyDown);
+		document.addEventListener('keyup', this.keyUp);
+		document.addEventListener('keydown', this.keyDown);
 	}
 	clear() {
-		if (this.canvas) {
-			this.canvas.removeEventListener('keyup', this.keyUp);
-			this.canvas.removeEventListener('keydown', this.keyDown);
-		}
+		document.removeEventListener('keyup', this.keyUp);
+		document.removeEventListener('keydown', this.keyDown);
 	}
 	updateSound(state: boolean) {
 		this.sound = state;
@@ -39,7 +37,7 @@ class Pong {
 		this.ctx.fillStyle = '#b3ec4b';
 		this.ctx.rect(
 			pong.rightPaddlePosX - pong.paddleRadius,
-			pong.rightPaddlePosY - pong.paddleHeight,
+			pong.rightPaddlePosY - pong.paddleHeight / 2,
 			pong.paddleRadius * 2,
 			pong.paddleHeight
 		);
@@ -51,7 +49,7 @@ class Pong {
 		this.ctx.fillStyle = '#b3ec4b';
 		this.ctx.rect(
 			pong.leftPaddlePosX - pong.paddleRadius,
-			pong.leftPaddlePosY - pong.paddleHeight,
+			pong.leftPaddlePosY - pong.paddleHeight / 2,
 			pong.paddleRadius * 2,
 			pong.paddleHeight
 		);

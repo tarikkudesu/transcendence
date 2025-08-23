@@ -1,9 +1,9 @@
 'use client';
 
+import { useNotification } from '@/app/_components/mini/useNotify';
 import { Badge } from '@radix-ui/themes';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { notificationContext, NotificationType } from './notificationContext';
-import { useNotification } from '@/app/_components/mini/useNotify';
 
 interface NotificationProviderProps {
 	children: React.ReactNode;
@@ -42,7 +42,13 @@ const NotificationProvider: React.FC<NotificationProviderProps> = ({ children })
 	const onmessage = useCallback((e: MessageEvent) => {
 		try {
 			const json: NotificationType[] = JSON.parse(e.data);
-			setNotifications(json);
+			setNotifications(
+				json.sort((a, b) => {
+					const dateA = new Date(Number(a.date));
+					const dateB = new Date(Number(b.date));
+					return dateB.getTime() - dateA.getTime();
+				})
+			);
 		} catch (err) {
 			void err;
 		}

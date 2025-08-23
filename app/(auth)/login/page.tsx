@@ -8,6 +8,7 @@ import { Box, Button, Flex, Text } from '@radix-ui/themes';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { ChangeEvent, useCallback, useState } from 'react';
+import { ToastContainer } from 'react-toastify';
 
 const Login: React.FC<unknown> = () => {
 	const router = useRouter();
@@ -29,13 +30,38 @@ const Login: React.FC<unknown> = () => {
 		if (result.message === 'success') {
 			notify({ message: 'Success', success: true });
 			// router.push(`2fa-authentication?email=${result.result?.email ?? ''}`); // ! restore Later
-			router.push('/dash');
+			router.push('/main');
 		} else notify({ message: result.message, error: true });
 		setIsLoading(false);
 	}, [notify, password, username]);
 
+	const contextClass = {
+		success: 'bg-dark-900 border-l-accent-300',
+		error: 'bg-dark-900 border-l-red-600',
+		info: 'bg-dark-900 border-l-blue-500',
+		warning: 'bg-dark-900 border-l-golden-500',
+		default: 'bg-dark-900 border-l-accent-300',
+		dark: 'bg-dark-900 border-l-accent-300',
+	};
+
 	return (
 		<main>
+			<ToastContainer
+				position="bottom-right"
+				autoClose={5000}
+				hideProgressBar
+				closeOnClick={false}
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+				theme="dark"
+				toastClassName={(context) =>
+					contextClass[context?.type || 'default'] +
+					' py-8 px-2 mt-1 rounded-md min-w-[300px] text-left border border-dark-500 border-l-4 border-l-accent-300 flex justify-center items-start'
+				}
+				closeButton={false}
+			/>
 			<div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
 				<Logo />
 				<Box height="24px" />
@@ -51,7 +77,7 @@ const Login: React.FC<unknown> = () => {
 							minLength={4}
 							maxLength={40}
 							value={username}
-							className="text-white w-full my-1 outline-none rounded-sm p-3 text-sm bg-dark-500"
+							className="text-white w-full my-1 outline-none rounded-md p-3 text-sm bg-dark-500"
 							onChange={(e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
 							type="text"
 							name="username"
@@ -65,7 +91,7 @@ const Login: React.FC<unknown> = () => {
 							minLength={4}
 							maxLength={40}
 							value={password}
-							className="text-white w-full my-1 outline-none rounded-sm p-3 text-sm bg-dark-500"
+							className="text-white w-full my-1 outline-none rounded-md p-3 text-sm bg-dark-500"
 							onChange={(e: ChangeEvent<HTMLInputElement>) => setPass(e.target.value)}
 							type={type}
 							name="password"

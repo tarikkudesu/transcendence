@@ -28,8 +28,8 @@ const PlayLocal: React.FC = () => {
 					Basic details that will be a representation of yourself across the YingYangPong playground.
 				</Text>
 				<Box height="20px" />
-				<Link href="/dash/board/gameplay/local">
-					<button className="py-3 px-4 text-center bg-golden-500 text-xs text-black rounded-sm cursor-pointer font-bold">
+				<Link href="/main/dashboard/gameplay/local">
+					<button className="py-3 px-4 text-center bg-golden-500 text-xs text-black rounded-md cursor-pointer font-bold">
 						Play Now
 					</button>
 				</Link>

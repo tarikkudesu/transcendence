@@ -1,37 +1,15 @@
 'use client';
 
-import { RequestResult } from '@/app/_service/auth/calls';
-import { fetchDoomLeaderboard } from '@/app/_service/game/calls';
 import { LeaderboardEntry } from '@/app/_service/game/schemas';
+import { useGET } from '@/app/_service/useFetcher';
 import { Text } from '@radix-ui/themes';
-import { useCallback, useEffect, useState } from 'react';
-import SafeImage from '../../mini/SafeImage';
-import UserCallout from '../game/UserCallout';
+import { useCallback } from 'react';
+import { User } from '../game/User';
+
+const API_BASE = process.env.API_BASE_URL ?? 'http://localhost:80/api/v1';
 
 const PongLeaderBoard: React.FC = ({}) => {
-	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const [isError, setError] = useState<boolean>(false);
-	const [leaderBoard, setLeaderBoard] = useState<LeaderboardEntry[]>([]);
-
-	useEffect(() => {
-		async function fetchData() {
-			try {
-				setIsLoading(true);
-				const res: RequestResult = await fetchDoomLeaderboard();
-				if (res.message === 'success') {
-					setLeaderBoard(res.result.slice(0, 3));
-				} else {
-					setError(true);
-				}
-			} catch (err) {
-				void err;
-				setError(true);
-			}
-			setIsLoading(false);
-		}
-		fetchData();
-	}, []);
-
+	const { isLoading, data: leaderBoard } = useGET<LeaderboardEntry[]>({ url: `${API_BASE}/game/pong/leaderboard` });
 	const content = useCallback(() => {
 		if (isLoading)
 			return (
@@ -39,40 +17,25 @@ const PongLeaderBoard: React.FC = ({}) => {
 					Loading...
 				</Text>
 			);
-		if (isError)
-			return (
-				<Text as="div" align="center" mt="5s">
-					ErrorPage
-				</Text>
-			);
+		if (!leaderBoard || leaderBoard.length === 0) return <>No data...</>;
 		return (
 			<>
 				{leaderBoard.map((ele, index) => (
-					<div key={index} className="bg-dark-950 px-[10%] py-[40px] mb-[10px]">
+					<div key={index} className="bg-dark-950 rounded-md px-[10%] py-[40px] m-8">
 						<div className="flex justify-between items-center">
 							<div className="flex justify-start gap-4">
 								<div className="h-[42px] w-[42px] rounded-full bg-dark-500 flex justify-center items-center text-xl font-black">
-									<div className="translate-y-0.5">{index}</div>
+									<div className="translate-y-0.5">{index + 1}</div>
 								</div>
-								<UserCallout username={ele.username}>
-									<SafeImage
-										fallbackSrc="/Logo.png"
-										priority
-										className="rounded-full cursor-pointer"
-										src={ele.avatar_url}
-										alt="player card"
-										width={42}
-										height={42}
-									></SafeImage>
-								</UserCallout>
-								<div className="">
-									<Text as="div" size="5" weight="bold" className="text-white">
-										{ele.username}
-									</Text>
-									<Text as="div" size="2" weight="bold" className="text-dark-300">
-										RANK #{index}
-									</Text>
-								</div>
+								<User.Trigger
+									username={ele.username}
+									avatar={ele.avatar_url}
+									extra={
+										<Text as="div" size="2" weight="bold" className="text-dark-300">
+											RANK #{index + 1}
+										</Text>
+									}
+								></User.Trigger>
 							</div>
 							<div className="">
 								<Text align="right" as="div" size="8" weight="bold" className="text-accent-300">
@@ -87,7 +50,7 @@ const PongLeaderBoard: React.FC = ({}) => {
 				))}
 			</>
 		);
-	}, [isError, isLoading, leaderBoard]);
+	}, [isLoading, leaderBoard]);
 
 	return <>{content()}</>;
 };

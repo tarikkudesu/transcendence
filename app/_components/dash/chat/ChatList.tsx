@@ -1,34 +1,41 @@
 'use client';
 
+import { useFriends } from '@/app/_service/friends/FriendContext';
+import { Friend } from '@/app/_service/friends/schema';
 import { useChatSocket } from '@/app/_service/ws/chat/chatContext';
+import ConversationProvider from '@/app/_service/ws/chat/conversationProvider';
 import { OuterMessage } from '@/app/_service/ws/chat/schemas';
 import { Box, ScrollArea, Text } from '@radix-ui/themes';
 import { useSearchParams } from 'next/navigation';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import ChatConversation, { EmptyConversation } from './ChatConversation';
 import ChatEntry from './ChatEntry';
-import ConversationProvider from '@/app/_service/ws/chat/conversationProvider';
 
 const ChatList: React.FC = ({}) => {
 	const { panel } = useChatSocket();
 	const searchParams = useSearchParams();
-	const [box, setBox] = useState<string>('');
+	const { friend: getFriend } = useFriends();
+	const [box, setBox] = useState<[username: string, avatar: string]>(['', '']);
 	const [search, setSearch] = useState<string>('');
 
 	useEffect(() => {
 		const chat = searchParams.get('chatemate');
-		if (chat) setBox(chat);
-	}, [searchParams]);
+		if (chat) {
+			const friend: Friend | null = getFriend(chat);
+			if (friend) setBox([friend.username, friend.avatar_url]);
+		}
+	}, [getFriend, searchParams]);
 
 	const filterPanel = useCallback(
 		(mate: OuterMessage): boolean => {
+			console.log(search, mate.lastMessage.sender);
 			if (!search) return true;
-			return mate.lastMessage.sender.toLowerCase().includes(search.toLowerCase());
+			return mate.friend.toLowerCase().includes(search.toLowerCase());
 		},
 		[search]
 	);
 
-	const setActive = useCallback((a: string) => setBox(a), []);
+	const setActive = useCallback((u: string, a: string) => setBox([u, a]), []);
 
 	return (
 		<>
@@ -63,7 +70,7 @@ const ChatList: React.FC = ({}) => {
 				</div>
 				<Box height="20px" />
 				<ScrollArea type="always" scrollbars="vertical" style={{ height: 654 }}>
-					{panel.length === 0 && (
+					{panel.filter(filterPanel).length === 0 && (
 						<Text as="div" align="center" className="h-full flex justify-center items-center">
 							You have no active chats
 						</Text>
@@ -74,20 +81,17 @@ const ChatList: React.FC = ({}) => {
 						</Text>
 					)}
 					{panel.length !== 0 &&
-						panel
-							.filter(filterPanel)
-							.sort((a, b) => a.lastMessage.date.localeCompare(b.lastMessage.date))
-							.map((ele, index) => (
-								<div key={index}>
-									<ChatEntry data={ele} active={box === ele.friend} setActive={setActive} />
-								</div>
-							))}
+						panel.filter(filterPanel).map((ele: OuterMessage, index: number) => (
+							<div key={index}>
+								<ChatEntry data={ele} active={box[0] === ele.friend} setActive={setActive} />
+							</div>
+						))}
 				</ScrollArea>
 			</div>
 			<div className="row-span-5 h-full min-w-[300px]">
 				{box ? (
-					<ConversationProvider friend={box}>
-						<ChatConversation chatemate={box} />
+					<ConversationProvider friend={box[0]}>
+						<ChatConversation chatemate={box[0]} avatar={box[1]} />
 					</ConversationProvider>
 				) : (
 					<EmptyConversation />

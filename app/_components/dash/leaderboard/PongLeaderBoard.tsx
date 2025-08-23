@@ -1,13 +1,14 @@
 'use client';
 
-import { RequestResult } from '@/app/_service/auth/calls';
-import { fetchPongLeaderboard } from '@/app/_service/game/calls';
 import { LeaderboardEntry } from '@/app/_service/game/schemas';
 import { Box, Flex, Text } from '@radix-ui/themes';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useGET } from '@/app/_service/useFetcher';
+import { useCallback } from 'react';
 import SafeImage from '../../mini/SafeImage';
-import UserCallout from '../game/UserCallout';
+import { User } from '../game/User';
+
+const API_BASE = process.env.API_BASE_URL ?? 'http://localhost:80/api/v1';
 
 interface PongLeaderBoardPlayerProps {
 	player: LeaderboardEntry;
@@ -17,18 +18,6 @@ const PongLeaderBoardFirstPlayer: React.FC<PongLeaderBoardPlayerProps> = ({ play
 		<div className="flex flex-col items-center justify-center">
 			<Box height="50px" />
 			<Box height="340px" className="bg-dark-950 rounded-t-[100px] relative w-[200px]">
-				{/* <svg
-					className="text-accent-300 absolute top-0 left-1/2 -translate-x-1/2 -translate-y-[80px]"
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 640 640"
-					width={50}
-					height={50}
-				>
-					<path
-						fill="currentColor"
-						d="M345 151.2C354.2 143.9 360 132.6 360 120C360 97.9 342.1 80 320 80C297.9 80 280 97.9 280 120C280 132.6 285.9 143.9 295 151.2L226.6 258.8C216.6 274.5 195.3 278.4 180.4 267.2L120.9 222.7C125.4 216.3 128 208.4 128 200C128 177.9 110.1 160 88 160C65.9 160 48 177.9 48 200C48 221.8 65.5 239.6 87.2 240L119.8 457.5C124.5 488.8 151.4 512 183.1 512L456.9 512C488.6 512 515.5 488.8 520.2 457.5L552.8 240C574.5 239.6 592 221.8 592 200C592 177.9 574.1 160 552 160C529.9 160 512 177.9 512 200C512 208.4 514.6 216.3 519.1 222.7L459.7 267.3C444.8 278.5 423.5 274.6 413.5 258.9L345 151.2z"
-					/>
-				</svg> */}
 				<svg
 					className="text-accent-300 absolute top-0 left-1/2 -translate-x-1/2 -translate-y-[80px]"
 					xmlns="http://www.w3.org/2000/svg"
@@ -50,9 +39,9 @@ const PongLeaderBoardFirstPlayer: React.FC<PongLeaderBoardPlayerProps> = ({ play
 					width={120}
 					height={120}
 				></SafeImage>
-				<Text as="div" align="center" size="4" weight="bold" className="text-white absolute bottom-4 left-1/2 -translate-x-1/2 ">
-					<UserCallout username={player.username}>{player.username}</UserCallout>
-					<Text as="div" align="center" size="6" weight="bold" className="text-accent-300 my-4">
+				<Text as="div" align="center" size="4" weight="bold" className="text-white absolute bottom-2 left-1/2 -translate-x-1/2 ">
+					{player.username}
+					<Text as="div" align="center" size="6" weight="bold" className="text-accent-300 my-2">
 						{player.winns}
 					</Text>
 				</Text>
@@ -74,9 +63,9 @@ const PongLeaderBoardSecondPlayer: React.FC<PongLeaderBoardPlayerProps> = ({ pla
 					width={100}
 					height={100}
 				></SafeImage>
-				<Text as="div" align="center" size="4" weight="bold" className="text-white absolute bottom-4 left-1/2 -translate-x-1/2 ">
-					<UserCallout username={player.username}>{player.username}</UserCallout>
-					<Text as="div" align="center" size="6" weight="bold" className="text-orange-500 my-4">
+				<Text as="div" align="center" size="4" weight="bold" className="text-white absolute bottom-2 left-1/2 -translate-x-1/2 ">
+					{player.username}
+					<Text as="div" align="center" size="6" weight="bold" className="text-orange-500 my-2">
 						{player.winns}
 					</Text>
 				</Text>
@@ -98,9 +87,9 @@ const PongLeaderBoardThirdPlayer: React.FC<PongLeaderBoardPlayerProps> = ({ play
 					width={80}
 					height={80}
 				></SafeImage>
-				<Text as="div" align="center" size="4" weight="bold" className="text-white absolute bottom-4 left-1/2 -translate-x-1/2 ">
-					<UserCallout username={player.username}>{player.username}</UserCallout>
-					<Text as="div" align="center" size="6" weight="bold" className="text-magenta-600 my-4">
+				<Text as="div" align="center" size="4" weight="bold" className="text-white absolute bottom-2 left-1/2 -translate-x-1/2 ">
+					{player.username}
+					<Text as="div" align="center" size="6" weight="bold" className="text-magenta-600 my-2">
 						{player.winns}
 					</Text>
 				</Text>
@@ -110,28 +99,7 @@ const PongLeaderBoardThirdPlayer: React.FC<PongLeaderBoardPlayerProps> = ({ play
 };
 
 const PongLeaderBoard: React.FC = ({}) => {
-	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const [isError, setError] = useState<boolean>(false);
-	const [leaderBoard, setLeaderBoard] = useState<LeaderboardEntry[]>([]);
-
-	useEffect(() => {
-		async function fetchData() {
-			try {
-				setIsLoading(true);
-				const res: RequestResult = await fetchPongLeaderboard();
-				if (res.message === 'success') {
-					setLeaderBoard(res.result.slice(0, 3));
-				} else {
-					setError(true);
-				}
-			} catch (err) {
-				void err;
-				setError(true);
-			}
-			setIsLoading(false);
-		}
-		fetchData();
-	}, []);
+	const { isLoading, data: leaderBoard } = useGET<LeaderboardEntry[]>({ url: `${API_BASE}/game/pong/leaderboard?end=10` });
 
 	const content = useCallback(() => {
 		if (isLoading)
@@ -140,24 +108,45 @@ const PongLeaderBoard: React.FC = ({}) => {
 					Loading...
 				</Text>
 			);
-		if (isError)
-			return (
-				<Text as="div" align="center" mt="5s">
-					ErrorPage
-				</Text>
-			);
+		if (!leaderBoard || leaderBoard.length === 0) return <>No data...</>;
 		return (
-			<Flex justify="center" align="center" className="px-[40px] pt-[20px] min-h-[410px]">
-				{leaderBoard.length === 3 && (
-					<>
-						<PongLeaderBoardThirdPlayer player={leaderBoard[2]} />
-						<PongLeaderBoardFirstPlayer player={leaderBoard[0]} />
-						<PongLeaderBoardSecondPlayer player={leaderBoard[1]} />
-					</>
-				)}
-			</Flex>
+			<>
+				<Flex justify="center" align="center" className="px-[40px] pt-[20px] min-h-[410px]">
+					{leaderBoard[2] && <PongLeaderBoardThirdPlayer player={leaderBoard[2]} />}
+					{leaderBoard[0] && <PongLeaderBoardFirstPlayer player={leaderBoard[0]} />}
+					{leaderBoard[1] && <PongLeaderBoardSecondPlayer player={leaderBoard[1]} />}
+				</Flex>
+				{leaderBoard.map((ele, index) => (
+					<div key={index} className="bg-dark-950 rounded-md px-[10%] py-[40px] m-8">
+						<div className="flex justify-between items-center">
+							<div className="flex justify-start gap-4">
+								<div className="h-[42px] w-[42px] rounded-full bg-dark-500 flex justify-center items-center text-xl font-black">
+									<div className="translate-y-0.5">{index + 1}</div>
+								</div>
+								<User.Trigger
+									username={ele.username}
+									avatar={ele.avatar_url}
+									extra={
+										<Text as="div" size="2" weight="bold" className="text-dark-300">
+											RANK #{index + 1}
+										</Text>
+									}
+								></User.Trigger>
+							</div>
+							<div className="">
+								<Text align="right" as="div" size="8" weight="bold" className="text-accent-300">
+									{ele.winns}
+								</Text>
+								<Text align="right" as="div" size="2" weight="bold" className="text-dark-300">
+									winns
+								</Text>
+							</div>
+						</div>
+					</div>
+				))}
+			</>
 		);
-	}, [isError, isLoading, leaderBoard]);
+	}, [isLoading, leaderBoard]);
 
 	return <>{content()}</>;
 };

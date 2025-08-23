@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback } from 'react';
-import toast from 'react-hot-toast';
+import { toast } from 'react-toastify';
 
 interface useNotificationProps {
 	message: string;
@@ -10,11 +10,9 @@ interface useNotificationProps {
 }
 export function useNotification() {
 	const notify = useCallback(({ message, error, success }: useNotificationProps) => {
-		setTimeout(() => {
-			if (error) toast.error(message, { style: { fontWeight: 'bold', color: 'white', backgroundColor: 'var(--red-3)' } });
-			else if (success) toast.success(message, { style: { fontWeight: 'bold', color: 'white', backgroundColor: 'var(--green-3)' } });
-			else toast(message, { style: { fontWeight: 'bold', color: 'white', backgroundColor: 'var(--accent-3)' } });
-		}, 200);
+		if (error) toast.error(message);
+		else if (success) toast.success(message);
+		else toast(message);
 	}, []);
 	return { notify };
 }

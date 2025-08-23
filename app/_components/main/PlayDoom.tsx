@@ -28,8 +28,8 @@ const PlayDoom: React.FC = () => {
 					Basic details that will be a representation of yourself across the YingYangPong playground.
 				</Text>
 				<Box height="20px" />
-				<Link href={`/dash/board/doom`}>
-					<button className="py-3 px-4 text-center bg-orange-500 text-xs text-white rounded-sm cursor-pointer font-bold">
+				<Link href={`/main/dashboard/playground`}>
+					<button className="py-3 px-4 text-center bg-orange-500 text-xs text-white rounded-md cursor-pointer font-bold">
 						Play Now
 					</button>
 				</Link>

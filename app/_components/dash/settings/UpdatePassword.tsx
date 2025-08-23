@@ -47,7 +47,7 @@ const UpdatePassword: React.FC = () => {
 								minLength={4}
 								maxLength={40}
 								value={password}
-								className="w-full my-1 outline-none rounded-sm p-3 text-sm bg-dark-500"
+								className="w-full my-1 outline-none rounded-md p-3 text-sm bg-dark-500"
 								onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
 								type={type}
 								name="password"

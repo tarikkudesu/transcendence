@@ -1,14 +1,15 @@
 'use client';
 
-import { RequestResult } from '@/app/_service/auth/calls';
-import { fetchDoomLeaderboard } from '@/app/_service/game/calls';
 import { LeaderboardEntry } from '@/app/_service/game/schemas';
-import { Box, Callout, Flex, Text } from '@radix-ui/themes';
+import { Box, Flex, Text } from '@radix-ui/themes';
 
-import { InfoCircledIcon } from '@radix-ui/react-icons';
-import { useCallback, useEffect, useState } from 'react';
+import { useGET } from '@/app/_service/useFetcher';
+import { useCallback } from 'react';
 import SafeImage from '../../mini/SafeImage';
+import { User } from '../game/User';
 import UserCallout from '../game/UserCallout';
+
+const API_BASE = process.env.API_BASE_URL ?? 'http://localhost:80/api/v1';
 
 interface DoomLeaderBoardPlayerProps {
 	player: LeaderboardEntry;
@@ -99,29 +100,7 @@ const DoomLeaderBoardThirdPlayer: React.FC<DoomLeaderBoardPlayerProps> = ({ play
 };
 
 const DoomLeaderBoard: React.FC = ({}) => {
-	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const [isError, setError] = useState<boolean>(false);
-	const [leaderBoard, setLeaderBoard] = useState<LeaderboardEntry[]>([]);
-
-	useEffect(() => {
-		async function fetchData() {
-			try {
-				setIsLoading(true);
-				const res: RequestResult = await fetchDoomLeaderboard();
-				if (res.message === 'success') {
-					setLeaderBoard(res.result.slice(0, 3));
-				} else {
-					setError(true);
-				}
-			} catch (err) {
-				void err;
-				setError(true);
-			}
-			setIsLoading(false);
-		}
-		fetchData();
-	}, []);
-
+	const { isLoading, data: leaderBoard } = useGET<LeaderboardEntry[]>({ url: `${API_BASE}/game/doom/leaderboard?end=10` });
 	const content = useCallback(() => {
 		if (isLoading)
 			return (
@@ -129,26 +108,45 @@ const DoomLeaderBoard: React.FC = ({}) => {
 					Loading...
 				</Text>
 			);
-		if (isError)
-			<Callout.Root color="red">
-				<Callout.Icon>
-					<InfoCircledIcon />
-				</Callout.Icon>
-				<Callout.Text>Oops! Something went wrong while loading the data. Please try again.</Callout.Text>
-			</Callout.Root>;
-
+		if (!leaderBoard || leaderBoard.length === 0) return <>No data...</>;
 		return (
-			<Flex justify="center" align="center" className="px-[40px] pt-[20px] min-h-[410px]">
-				{leaderBoard.length === 3 && (
-					<>
-						<DoomLeaderBoardThirdPlayer player={leaderBoard[2]} />
-						<DoomLeaderBoardFirstPlayer player={leaderBoard[0]} />
-						<DoomLeaderBoardSecondPlayer player={leaderBoard[1]} />
-					</>
-				)}
-			</Flex>
+			<>
+				<Flex justify="center" align="center" className="px-[40px] pt-[20px] min-h-[410px]">
+					{leaderBoard[2] && <DoomLeaderBoardThirdPlayer player={leaderBoard[2]} />}
+					{leaderBoard[0] && <DoomLeaderBoardFirstPlayer player={leaderBoard[0]} />}
+					{leaderBoard[1] && <DoomLeaderBoardSecondPlayer player={leaderBoard[1]} />}
+				</Flex>
+				{leaderBoard.map((ele, index) => (
+					<div key={index} className="bg-dark-950 rounded-md px-[10%] py-[40px] m-8">
+						<div className="flex justify-between items-center">
+							<div className="flex justify-start gap-4">
+								<div className="h-[42px] w-[42px] rounded-full bg-dark-500 flex justify-center items-center text-xl font-black">
+									<div className="translate-y-0.5">{index + 1}</div>
+								</div>
+								<User.Trigger
+									username={ele.username}
+									avatar={ele.avatar_url}
+									extra={
+										<Text as="div" size="2" weight="bold" className="text-dark-300">
+											RANK #{index + 1}
+										</Text>
+									}
+								></User.Trigger>
+							</div>
+							<div className="">
+								<Text align="right" as="div" size="8" weight="bold" className="text-accent-300">
+									{ele.winns}
+								</Text>
+								<Text align="right" as="div" size="2" weight="bold" className="text-dark-300">
+									winns
+								</Text>
+							</div>
+						</div>
+					</div>
+				))}
+			</>
 		);
-	}, [isError, isLoading, leaderBoard]);
+	}, [isLoading, leaderBoard]);
 
 	return <>{content()}</>;
 };

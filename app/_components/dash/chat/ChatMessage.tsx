@@ -1,9 +1,9 @@
 import { Message } from '@/app/_service/ws/chat/schemas';
 
-import { format } from 'date-fns';
+import { formatDistanceToNow } from 'date-fns';
 import React from 'react';
-import UserCallout from '../game/UserCallout';
 import SafeImage from '../../mini/SafeImage';
+import UserCallout from '../game/UserCallout';
 
 interface ChatMyMessageProps {
 	data: Message;
@@ -17,10 +17,7 @@ export const ChatMyMessage: React.FC<ChatMyMessageProps> = ({ data }) => {
 				<div className="text-sm py-2 px-4 text-black rounded-t-[12px] rounded-br-[4px] rounded-bl-[12px] bg-accent-400">
 					{data.message}
 				</div>
-				<div className="text-dark-200 text-xs mt-1">
-					{/* {Date.now() - Number(data.date) < 3600 * 1000 ? format(data.date, 'HH:mm') : format(data.date, 'yyyy-MM-dd')} */}
-					{format(Date.now(), 'HH:mm')}
-				</div>
+				<div className="text-dark-200 text-xs mt-1">{formatDistanceToNow(Number(data.date), { addSuffix: true })}</div>
 			</div>
 		</div>
 	);
@@ -49,10 +46,7 @@ export const ChatOtherMessage: React.FC<ChatMyMessageProps> = ({ data }) => {
 					<div className="text-sm py-2 px-4 rounded-t-[12px] rounded-bl-[4px] rounded-br-[12px] bg-dark-700 text-white">
 						{data.message}
 					</div>
-					<div className="text-dark-200 text-xs mt-1">
-						{/* {Date.now() - Number(data.date) < 3600 * 1000 ? format(data.date, 'HH:mm') : format(data.date, 'yyyy-MM-dd')} */}
-						{format(Date.now(), 'HH:mm')}
-					</div>
+					<div className="text-dark-200 text-xs mt-1">{formatDistanceToNow(Number(data.date), { addSuffix: true })}</div>
 				</div>
 			</div>
 			<div className=""></div>

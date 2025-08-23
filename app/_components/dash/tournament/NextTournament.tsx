@@ -2,11 +2,14 @@
 
 import { RegisterMessage, useGameSocket } from '@/app/_service/ws/game';
 import { Badge, Box, Text } from '@radix-ui/themes';
+import { useRouter } from 'next/navigation';
 import React, { ChangeEvent, useState } from 'react';
 
 const NextTournament: React.FC = ({}) => {
 	const { tournament, send } = useGameSocket();
 	const [alias, setAlias] = useState<string>('');
+	const router = useRouter();
+
 	return (
 		<>
 			<div className="my-[80px]">
@@ -70,9 +73,10 @@ const NextTournament: React.FC = ({}) => {
 							</button>
 						</>
 					)}
-					{tournament.state === 'playing' && (
+					{tournament.state === 'playing' && tournament.registered && (
 						<button
 							disabled={tournament.gid === ''}
+							onClick={() => router.push(`/main/dashboard/gameplay/pong/${tournament.gid}/tournament`)}
 							className="w-full py-2 my-3 px-4 text-center bg-accent-300 disabled:bg-dark-600 disabled:text-white text-sm disabled:opacity-40 text-black rounded-md cursor-pointer font-bold"
 						>
 							Play

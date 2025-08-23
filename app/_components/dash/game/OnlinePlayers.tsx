@@ -1,16 +1,18 @@
 'use client';
 
-import { ClientPlayer, InviteMessage, useGameSocket } from '@/app/_service/ws/game';
-import { Text } from '@radix-ui/themes';
+import { useFriends } from '@/app/_service/friends/FriendContext';
+import { Friend } from '@/app/_service/friends/schema';
+import { useGameSocket } from '@/app/_service/ws/game';
+import {  Text } from '@radix-ui/themes';
 import { useSearchParams } from 'next/navigation';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
-import User from './User';
-import { PongButton } from '../../buttons/ServerButtons';
+import { User } from './User';
 
 const OnlinePlayers: React.FC = ({}) => {
 	const [search, setSearch] = useState<string>('');
 	const searchParams = useSearchParams();
-	const { pool, send } = useGameSocket();
+	const { online } = useGameSocket();
+	const { friends } = useFriends();
 
 	useEffect(() => {
 		const player = searchParams.get('playersearch');
@@ -18,9 +20,10 @@ const OnlinePlayers: React.FC = ({}) => {
 	}, [searchParams]);
 
 	const filterPool = useCallback(
-		(pooler: ClientPlayer): boolean => {
+		(player: Friend): boolean => {
+			if (player.stat !== 'accepted') return false;
 			if (!search) return true;
-			return pooler.username.toLowerCase().includes(search.toLowerCase());
+			return player.username.toLowerCase().includes(search.toLowerCase());
 		},
 		[search]
 	);
@@ -35,13 +38,13 @@ const OnlinePlayers: React.FC = ({}) => {
 					/>
 				</svg>
 				<Text as="div" size="5" weight="bold">
-					Online Players ({pool.length})
+					Players
 				</Text>
 			</div>
-			<Text as="div" size="3" mb="8" className="text-dark-200">
+			<Text as="div" size="3" mb="2" className="text-dark-200">
 				Browse a live list of players currently online, ready to join matches or challenges.
 			</Text>
-			<div className="relative">
+			<div className="relative mt-4 mb-8 bg-dark-950 border border-accent-300 rounded-md">
 				<svg
 					width={20}
 					height={20}
@@ -66,26 +69,33 @@ const OnlinePlayers: React.FC = ({}) => {
 					name="text"
 				/>
 			</div>
-			{pool.filter(filterPool).map((pooler, index) => (
-				<div key={index} className="flex justify-between items-center px-2">
-					<User username={pooler.username} extra={pooler.inviteStatus} />
-					<div className="flex items-center gap-2">
-						<PongButton
-							onClick={() => send(InviteMessage('pong', pooler.username))}
-							className="bg-dark-700 hover:bg-accent-300 hover:text-black"
-						>
-							Pong
-						</PongButton>
-						<PongButton
-							onClick={() => send(InviteMessage('card of doom', pooler.username))}
-							className="bg-dark-700 hover:bg-golden-500 hover:text-black"
-						>
-							Doom
-						</PongButton>
-					</div>
+
+			{friends.filter(filterPool).map((player, index) => (
+				<div key={player.username} className="p-1 hover:bg-dark-800 rounded-md">
+					<User.Dialog username={player.username}>
+						<User.Trigger
+							username={player.username}
+							avatar={player.avatar_url}
+							extra={
+								online(player.username) === 'free' ? (
+									<Text as="div" size="1" className="font-medium text-accent-300">
+										Online
+									</Text>
+								) : online(player.username) === 'playing' ? (
+									<Text as="div" size="1" className="font-medium text-accent-300">
+										Playing
+									</Text>
+								) : (
+									<Text as="div" size="1" className="font-medium text-dark-300">
+										Offline
+									</Text>
+								)
+							}
+						/>
+					</User.Dialog>
 				</div>
 			))}
-			{search && pool.filter(filterPool).length === 0 && (
+			{search && friends.filter(filterPool).length === 0 && (
 				<Text as="div" align="center" className="text-dark-200">
 					No Player Found
 				</Text>

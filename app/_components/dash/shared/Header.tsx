@@ -8,6 +8,8 @@ import Logo from '../../mini/Logo';
 import { useNotification } from '../../mini/useNotify';
 import MainSearch from '../friends/MainSearch';
 import NotificationCenter from '../notification/NotificationCenter';
+import GameInviteCenter from '../notification/GameInviteCenter';
+import FriendRequestCenter from '../notification/FriendRequestCenter';
 
 const Header: React.FC = ({}) => {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -32,13 +34,15 @@ const Header: React.FC = ({}) => {
 					<Logo />
 					<MainSearch />
 				</Flex>
-				<Flex gap="8" align="center">
+				<Flex gap="6" align="center">
+					<GameInviteCenter />
+					<FriendRequestCenter />
 					<NotificationCenter />
 					<Button
 						variant="solid"
 						onClick={logoutCall}
 						loading={isLoading}
-						className="py-3 px-4 text-center bg-dark-900 text-xs text-dark-200 hover:text-black hover:bg-accent-300 rounded-sm cursor-pointer font-bold"
+						className="py-3 px-4 text-center bg-dark-900 text-xs text-dark-200 hover:text-black hover:bg-accent-300 rounded-md cursor-pointer font-bold"
 					>
 						Log Out
 					</Button>

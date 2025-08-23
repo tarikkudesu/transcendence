@@ -15,6 +15,9 @@ class SocketState {
 	pong: Main.ClientPong = Main.ClientPong.instance;
 	doom: Main.ClientCardOfDoom = Main.ClientCardOfDoom.instance;
 
+	pooler: (username: string) => Main.ClientPlayer | undefined = (u: string) => Main.ClientPlayer.instance;
+	online: (username: string) => 'playing' | 'free' | undefined = (u: string) => undefined;
+
 	send: (message: string) => void = () => {};
 	reset: () => void = () => {};
 }

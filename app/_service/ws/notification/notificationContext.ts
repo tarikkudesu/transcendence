@@ -6,11 +6,10 @@ export interface NotificationType {
 		| 'REGESTRATIONOPEN'
 		| 'TOURNAMENTMATCHUP'
 		| 'TOURNAMENTWON'
-		| 'PONGGAMEINVITATION'
-		| 'DOOMGAMEINVITATION'
 		| 'FRIENDREQUEST'
 		| 'FRIENDACCEPTEDYOURREQUEST'
 		| 'CHATMESSAGE';
+	id: number;
 	date: number;
 	sender: string;
 	service: string;

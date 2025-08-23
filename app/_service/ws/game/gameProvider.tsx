@@ -28,6 +28,20 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 	const [pong, setPong] = useState<Main.ClientPong>(Main.ClientPong.instance);
 	const [doom, setDoom] = useState<Main.ClientCardOfDoom>(Main.ClientCardOfDoom.instance);
 
+	const online = useCallback(
+		(username: string): 'playing' | 'free' | undefined => {
+			return pool.find((ele) => ele.username === username)?.playerStatus;
+		},
+		[pool]
+	);
+
+	const pooler = useCallback(
+		(username: string): Main.ClientPlayer | undefined => {
+			return pool.find((ele) => ele.username === username);
+		},
+		[pool]
+	);
+
 	const reset = useCallback(() => {
 		setPong(Main.ClientPong.instance);
 		setDoom(Main.ClientCardOfDoom.instance);
@@ -49,14 +63,13 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 				}
 				case 'PLAY': {
 					const p: Main.Play = Main.Json({ message, target: Main.Play.instance });
-					if (game === 'pong') router.push('/dash/board/gameplay/' + p.gid);
-					// else router.push('/dashboard/extra/' + p.gid);
+					if (game === 'pong') router.push(`/main/dashboard/gameplay/pong/${p.gid}/${p.opponent}`);
+					else router.push('/main/dashboard/gameplay/doom/' + p.gid);
 					break;
 				}
 				// ? Game
 				case 'PONG': {
 					const p: Main.ClientPong = Main.Json({ message, target: Main.ClientPong.instance });
-					console.log(p);
 					setPong(p);
 					break;
 				}
@@ -84,7 +97,6 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 
 	const send = useCallback(
 		(message: string) => {
-			console.log(message);
 			if (socketRef.current?.OPEN && message) socketRef.current?.send(message);
 			else notify({ message: "connection hasn't been established", error: true });
 		},
@@ -124,7 +136,6 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 
 	useEffect(
 		function () {
-			if (socketRef.current && !error && !close) return;
 			try {
 				console.log('creating Game WebSocket connection ' + API_BASE);
 				if (API_BASE) {
@@ -169,7 +180,7 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 	}
 
 	return (
-		<Main.gameContext.Provider value={{ error, close, open, send, pool, invitations, tournament, pong, doom, reset }}>
+		<Main.gameContext.Provider value={{ error, close, open, send, pool, invitations, tournament, pong, doom, online, pooler, reset }}>
 			{children}
 			{content()}
 		</Main.gameContext.Provider>

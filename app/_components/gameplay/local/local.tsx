@@ -19,11 +19,11 @@ const Ping: React.FC<{ updateWinner: (w: 'Player 1' | 'Player 2' | 'None') => vo
 
 	useEffect(() => {
 		pong.pause(pause);
-	}, [pause]);
+	}, [pause, pong]);
 
 	useEffect(() => {
 		pong.updateSound(sound);
-	}, [sound]);
+	}, [pong, sound]);
 
 	useEffect(() => {
 		const canvas: HTMLCanvasElement = canvasRef.current as HTMLCanvasElement;
@@ -44,7 +44,7 @@ const Ping: React.FC<{ updateWinner: (w: 'Player 1' | 'Player 2' | 'None') => vo
 			}
 			pong.clear();
 		};
-	}, []);
+	}, [pong, sound, updateWinner]);
 
 	return (
 		<canvas

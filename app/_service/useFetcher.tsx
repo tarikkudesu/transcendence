@@ -10,17 +10,16 @@ export function useMutate<TResponse = unknown, TBody = unknown>() {
 		body,
 		signal,
 		method,
-		refresh,
 	}: {
 		url: string;
 		body: TBody;
 		signal?: AbortSignal;
-		refresh?: () => void;
 		method: 'POST' | 'PUT' | 'DELETE';
 	}) => {
 		setIsLoading(true);
 		setError(null);
 		try {
+			await new Promise((resolve) => setTimeout(resolve, 2000));
 			const res = await fetch(url, {
 				method: method,
 				credentials: 'include',
@@ -34,7 +33,6 @@ export function useMutate<TResponse = unknown, TBody = unknown>() {
 		} catch (err) {
 			setError(err instanceof Error ? err.message : 'Unknown error');
 		} finally {
-			if (refresh) refresh();
 			setIsLoading(false);
 		}
 	};
@@ -46,7 +44,11 @@ interface useGETProps {
 	revalidate?: number;
 	signal?: AbortSignal;
 }
-export function useGET<T = unknown>({ url, signal, revalidate }: useGETProps) {
+export function useGET<T = unknown>({
+	url,
+	signal,
+	revalidate,
+}: useGETProps): { data: T | null; isLoading: boolean; error: string | null; refetch: () => void } {
 	const [data, setData] = useState<T | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isMounted, setIsMounted] = useState(false);

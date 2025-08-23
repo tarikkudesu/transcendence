@@ -65,7 +65,7 @@ const LoginVerify: React.FC<unknown> = () => {
 							minLength={6}
 							maxLength={6}
 							value={code}
-							className="w-full my-1 outline-none rounded-sm p-3 text-sm bg-dark-500"
+							className="w-full my-1 outline-none rounded-md p-3 text-sm bg-dark-500"
 							onChange={(e: ChangeEvent<HTMLInputElement>) => setCode(e.target.value)}
 							type="text"
 							name="code"

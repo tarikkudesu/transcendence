@@ -163,8 +163,8 @@ class Pong {
 		this.opponentScore = 0;
 		this.updateWinner = updateWinner;
 		this.ball = new Ball({ direction: new Vector(0, 0) });
-		this.canvas.addEventListener('keyup', this.keyUp.bind(this));
-		this.canvas.addEventListener('keydown', this.keyDown.bind(this));
+		document.addEventListener('keyup', this.keyUp.bind(this));
+		document.addEventListener('keydown', this.keyDown.bind(this));
 		this.frameId = requestAnimationFrame(this.mainLoop.bind(this));
 	}
 	resetMatch(): void {
@@ -192,10 +192,8 @@ class Pong {
 	}
 	clear() {
 		cancelAnimationFrame(this.frameId);
-		if (this.canvas) {
-			this.canvas.removeEventListener('keyup', this.keyUp.bind(this));
-			this.canvas.removeEventListener('keydown', this.keyDown.bind(this));
-		}
+		document.removeEventListener('keyup', this.keyUp.bind(this));
+		document.removeEventListener('keydown', this.keyDown.bind(this));
 	}
 
 	keyDown(e: KeyboardEvent) {

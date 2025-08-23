@@ -3,11 +3,13 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { PongButton } from '@/app/_components/buttons/ServerButtons';
-import { EngageMessage, FlipMessage, useGameSocket } from '@/app/_service/ws/game';
-import { SvgSoundOff, SvgSoundOn } from '@/app/_svg/svg';
+import { useAuth } from '@/app/_service/AuthContext';
+import { ClientPlayer, EngageMessage, FlipMessage, InviteMessage, useGameSocket } from '@/app/_service/ws/game';
+import { SvgChat, SvgDoom, SvgSoundOff, SvgSoundOn } from '@/app/_svg/svg';
 import { Box, Grid } from '@radix-ui/themes';
+import { useRouter } from 'next/navigation';
 import SafeImage from '../../mini/SafeImage';
-import { Disconnected, Won, Lost, Waiting } from '../Cards';
+import { Disconnected, Lost, Waiting, Won } from '../Cards';
 import GameInfo from '../pong/Info';
 
 const Diamond: React.FC<{ state: string; gid: string; index: number; sound: boolean }> = ({ state, gid, index, sound }) => {
@@ -41,33 +43,6 @@ const Diamond: React.FC<{ state: string; gid: string; index: number; sound: bool
 
 const Doom: React.FC<{ sound: boolean; gid: string }> = ({ sound, gid }) => {
 	const { doom } = useGameSocket();
-	// const cards: string[] = [
-	// 	'C',
-	// 	'C',
-	// 	'C',
-	// 	'C',
-	// 	'C',
-	// 	'C',
-	// 	'C',
-	// 	'C',
-	// 	'C',
-	// 	'C',
-	// 	'D',
-	// 	'D',
-	// 	'C',
-	// 	'C',
-	// 	'C',
-	// 	'B',
-	// 	'B',
-	// 	'C',
-	// 	'C',
-	// 	'C',
-	// 	'C',
-	// 	'C',
-	// 	'C',
-	// 	'C',
-	// 	'C',
-	// ];
 	return (
 		<Grid columns="5" rows="5" gap="2">
 			{doom.cards.map((card, index) => (
@@ -77,9 +52,13 @@ const Doom: React.FC<{ sound: boolean; gid: string }> = ({ sound, gid }) => {
 	);
 };
 
-const RemoteDoom: React.FC<{ gid: string }> = ({ gid }) => {
+const RemoteDoom: React.FC<{ gid: string; opponent: string }> = ({ gid, opponent }) => {
+	const { username } = useAuth();
+	const router = useRouter();
 	const [sound, setSound] = useState<boolean>(true);
-	const { send, doom: game, open } = useGameSocket();
+	const { pooler: getPooler, send, pong: game, open } = useGameSocket();
+
+	const pooler: ClientPlayer | undefined = getPooler(opponent);
 
 	useEffect(() => {
 		if (open && gid) send(EngageMessage('card of doom', gid));
@@ -90,10 +69,54 @@ const RemoteDoom: React.FC<{ gid: string }> = ({ gid }) => {
 	}, []);
 
 	function Content(): React.ReactNode {
-		if (game.stop) return <Disconnected player={'disconnedted'} opponent="tarikkudesu" />;
-		if (game.won) return <Won player={'won'} opponent="tarikkudesu" />;
-		if (game.lost) return <Lost player={'lost'} opponent="tarikkudesu" />;
-		if (!game.start) return <Waiting player={'me'} opponent="tarikkudesu" />;
+		if (game.stop) return <Disconnected player={username} opponent={opponent} />;
+		if (game.won)
+			return (
+				<Won player={username} opponent={opponent}>
+					{pooler && (
+						<>
+							<PongButton
+								onClick={() => send(InviteMessage('card of doom', pooler.username))}
+								disabled={pooler.playerStatus === 'playing' || pooler.inviteStatus === 'pending'}
+								loading={pooler.inviteStatus === 'pending'}
+								className="w-full bg-dark-950 hover:bg-golden-500 hover:text-black text-sm"
+							>
+								<SvgDoom size={24} />
+							</PongButton>
+							<PongButton
+								onClick={() => router.push(`/main/dashboard/chat?chatemate=${opponent}`)}
+								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black"
+							>
+								<SvgChat size={24} />
+							</PongButton>
+						</>
+					)}
+				</Won>
+			);
+		if (game.lost)
+			return (
+				<Lost player={username} opponent={opponent}>
+					{pooler && (
+						<>
+							<PongButton
+								onClick={() => send(InviteMessage('card of doom', pooler.username))}
+								disabled={pooler.playerStatus === 'playing' || pooler.inviteStatus === 'pending'}
+								loading={pooler.inviteStatus === 'pending'}
+								className="w-full bg-dark-950 hover:bg-golden-500 hover:text-black text-sm"
+							>
+								Rematch
+							</PongButton>
+							<PongButton
+								onClick={() => router.push(`/main/dashboard/chat?chatemate=${opponent}`)}
+								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black"
+							>
+								<SvgChat size={24} />
+							</PongButton>
+						</>
+					)}
+				</Lost>
+			);
+		if (!game.start) return <Waiting player={username} opponent={opponent} />;
 		return <Doom gid={gid} sound={sound} />;
 	}
 

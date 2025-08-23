@@ -2,16 +2,17 @@
 
 import { FriendSearch } from '@/app/_service/friends/schema';
 import { useGET } from '@/app/_service/useFetcher';
-import { ScrollArea, Text } from '@radix-ui/themes';
-import Link from 'next/link';
+import { ScrollArea } from '@radix-ui/themes';
+import { useRouter } from 'next/navigation';
 import React, { ChangeEvent, memo, useCallback, useEffect, useMemo, useState } from 'react';
-import User from '../game/User';
 import LoadingIndicator from '../../mini/Loading';
+import { User } from '../game/User';
 
 const API_BASE = process.env.API_BASE_URL ?? 'http://localhost:80/api/v1';
 
-const Search: React.FC<{ search: string }> = memo(({ search }) => {
+const Search: React.FC<{ search: string; clear: () => void }> = memo(({ search, clear }) => {
 	const controller = useMemo(() => new AbortController(), []);
+	const router = useRouter();
 
 	const { data, error, isLoading } = useGET<FriendSearch[]>({
 		url: `${API_BASE}/friends/u/${encodeURIComponent(search)}`,
@@ -25,13 +26,22 @@ const Search: React.FC<{ search: string }> = memo(({ search }) => {
 
 	if (isLoading) return <LoadingIndicator size="md" />;
 	if (error) return <div className="mx-4">Error....</div>;
-	if (!data || data.length === 0) return <div className="mx-4">No data</div>;
+	if (!data) return <div className="text-center text-dark-200 my-8">No Search Entry</div>;
 
 	return (
 		<>
 			{data.map((ele) => (
-				<div key={ele.username} className="px-4 hover:bg-dark-700">
-					<User username={ele.username} />
+				<div
+					key={ele.username}
+					className="py-1 cursor-pointer hover:bg-dark-700"
+					onClick={() => {
+						clear();
+						router.push(`/main/dashboard/${ele.username}`);
+					}}
+				>
+					<div className="scale-90">
+						<User.Trigger username={ele.username} avatar={ele.avatar_url} extra="" />
+					</div>
 				</div>
 			))}
 		</>
@@ -102,18 +112,21 @@ const MainSearch: React.FC = () => {
 
 	return (
 		<>
-			{active && <div className="fixed top-0 left-0 right-0 bottom-0" onClick={closeAndClear} />}
-
-			<div className="rounded-md bg-dark-700 flex justify-start items-center my-1 mx-6 w-[400px] relative" onClick={open}>
+			{active && <div className="fixed top-0 left-0 right-0 bottom-0 z-10" onClick={closeAndClear} />}
+			<div
+				onClick={open}
+				className={`rounded-md bg-dark-950 flex justify-start items-center my-1 mx-6 w-[400px] relative ${
+					active && 'border border-accent-300'
+				}`}
+			>
 				{active && (
-					<div className="py-2 rounded-md bg-dark-950 absolute top-0 left-0 translate-y-[60px] w-[400px] text-white shadow-xl z-10">
-						<Link href="">
-							<Text as="div" size="2" align="right" my="2" mx="4" className="text-dark-200 hover:text-accent-300">
-								See all
-							</Text>
-						</Link>
-						<ScrollArea type="always" scrollbars="vertical" style={{ maxHeight: 400 }}>
-							{search && <Search search={search} />}
+					<div className="py-2 rounded-md bg-dark-950 absolute top-0 left-0 translate-y-[60px] w-[400px] text-white shadow-xl z-10 border border-dark-500 min-h-[100px]">
+						<ScrollArea type="always" scrollbars="vertical" style={{ maxHeight: 600 }}>
+							{search ? (
+								<Search search={search} clear={closeAndClear} />
+							) : (
+								<div className="text-center text-dark-200">No Search Entry</div>
+							)}
 						</ScrollArea>
 					</div>
 				)}

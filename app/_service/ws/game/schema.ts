@@ -168,10 +168,12 @@ export class Flip {
 
 export class Play {
 	public gid: string;
-	constructor(gid: string) {
+	public opponent: string;
+	constructor(gid: string, opponent: string) {
+		this.opponent = opponent;
 		this.gid = gid;
 	}
-	static instance = new Play('');
+	static instance = new Play('', '');
 }
 
 export class Pool {

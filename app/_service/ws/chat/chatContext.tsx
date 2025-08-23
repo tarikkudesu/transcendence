@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import { OuterMessage } from './schemas';
+import { Message, OuterMessage } from './schemas';
 
 class SocketState {
 	// * Websocket vars
@@ -7,6 +7,7 @@ class SocketState {
 	close: boolean = false;
 	open: boolean = false;
 
+	lastMessage: (u: string) => Message | undefined = (u: string) => undefined;
 	panel: OuterMessage[] = [];
 }
 

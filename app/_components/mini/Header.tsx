@@ -30,7 +30,7 @@ const Header: React.FC = ({}) => {
 					variant="solid"
 					onClick={logoutCall}
 					loading={isLoading}
-					className="py-3 px-4 text-center bg-dark-700 text-xs text-dark-200 hover:text-white hover:bg-dark-600 rounded-sm cursor-pointer font-bold"
+					className="py-3 px-4 text-center bg-dark-700 text-xs text-dark-200 hover:text-white hover:bg-dark-600 rounded-md cursor-pointer font-bold"
 				>
 					Log Out
 				</Button>

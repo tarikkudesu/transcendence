@@ -24,7 +24,6 @@ const CurrentMatches: React.FC = ({}) => {
 					<div key={index} className="my-2 flex justify-center">
 						<Text size="2" className="text-dark-50 col-span-2 row-span-5">
 							<UserCallout username={ele.player}>{ele.player}</UserCallout>
-
 							<Text weight="bold" className="text-accent-300 mx-2">
 								:
 							</Text>

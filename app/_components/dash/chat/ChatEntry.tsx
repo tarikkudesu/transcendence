@@ -3,12 +3,12 @@
 import { OuterMessage } from '@/app/_service/ws/chat/schemas';
 import { Text } from '@radix-ui/themes';
 
-
+import { formatDistanceToNow } from 'date-fns';
 import React from 'react';
 import SafeImage from '../../mini/SafeImage';
 
 interface ChatEntryProps {
-	setActive: (e: string) => void;
+	setActive: (u: string, a: string) => void;
 	data: OuterMessage;
 	active: boolean;
 }
@@ -20,7 +20,7 @@ const ChatEntry: React.FC<ChatEntryProps> = ({ data, active, setActive }) => {
 				active ? 'bg-dark-600' : ''
 			}`}
 			onClick={() => {
-				setActive(data.friend);
+				setActive(data.friend, data.avatar);
 			}}
 		>
 			<div className="relative">
@@ -35,15 +35,12 @@ const ChatEntry: React.FC<ChatEntryProps> = ({ data, active, setActive }) => {
 				></SafeImage>
 			</div>
 			<div className="flex flex-col justify-center items-center w-full gap-0.5 ml-4">
-				<div className="flex justify-between items-center w-full">
+				<div className="flex justify-between items-center w-full gap-2">
 					<Text size="3" weight="bold" className="text-white">
 						{data.friend}
 					</Text>
-					<Text size="1" className="text-dark-200">
-						{data.lastMessage.date}
-						{/* {Date.now() - Number(data.lastMessage.date) < 3600 * 1000
-							? format(data.lastMessage.date, 'HH:mm')
-							: format(data.lastMessage.date, 'yyyy-MM-dd')} */}
+					<Text size="1" className="text-dark-200 text-right">
+						{data.lastMessage.date && formatDistanceToNow(Number(data.lastMessage.date), { addSuffix: true })}
 					</Text>
 				</div>
 				<div className="flex justify-between items-end w-full">

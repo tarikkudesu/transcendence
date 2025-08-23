@@ -64,7 +64,7 @@ const ResetPassword: React.FC<unknown> = () => {
 							minLength={4}
 							maxLength={40}
 							value={password}
-							className="w-full my-1 outline-none rounded-sm p-3 text-sm bg-dark-500"
+							className="w-full my-1 outline-none rounded-md p-3 text-sm bg-dark-500"
 							onChange={(e: ChangeEvent<HTMLInputElement>) => setPass(e.target.value)}
 							type={type}
 							name="password"
@@ -77,7 +77,7 @@ const ResetPassword: React.FC<unknown> = () => {
 							minLength={4}
 							maxLength={40}
 							value={repassword}
-							className="w-full my-1 outline-none rounded-sm p-3 text-sm bg-dark-500"
+							className="w-full my-1 outline-none rounded-md p-3 text-sm bg-dark-500"
 							onChange={(e: ChangeEvent<HTMLInputElement>) => setRePass(e.target.value)}
 							type={type}
 							name="password"

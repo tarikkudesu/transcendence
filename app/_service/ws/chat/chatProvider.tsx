@@ -4,7 +4,7 @@ import { useNotification } from '@/app/_components/mini/useNotify';
 import { Badge } from '@radix-ui/themes';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { chatContext } from './chatContext';
-import { OuterMessage } from './schemas';
+import { Message, OuterMessage } from './schemas';
 
 interface ChatProviderProps {
 	children: React.ReactNode;
@@ -22,13 +22,12 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 	// * Data Holders
 	const [panel, setPanel] = useState<OuterMessage[]>([]);
 
-	// const send = useCallback(
-	// 	(message: string) => {
-	// 		if (socketRef.current?.OPEN && message) socketRef.current?.send(message);
-	// 		else notify({ message: "Chat connection hasn't been established", error: true });
-	// 	},
-	// 	[notify]
-	// );
+	const lastMessage = useCallback(
+		(u: string): Message | undefined => {
+			return panel.find((ele) => ele.friend === u)?.lastMessage;
+		},
+		[panel]
+	);
 
 	const onerror = useCallback(() => {
 		setOpen(false);
@@ -47,7 +46,13 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 		(e: MessageEvent) => {
 			try {
 				const json: OuterMessage[] = JSON.parse(e.data);
-				setPanel(json as OuterMessage[]);
+				setPanel(
+					(json as OuterMessage[]).sort((a, b) => {
+						const dateA = new Date(Number(a.lastMessage.date));
+						const dateB = new Date(Number(b.lastMessage.date));
+						return dateB.getTime() - dateA.getTime();
+					})
+				);
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			} catch (err: any) {
 				notify({ message: err.message, error: true });
@@ -108,7 +113,7 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 	}
 
 	return (
-		<chatContext.Provider value={{ error, close, open, panel }}>
+		<chatContext.Provider value={{ error, close, open, panel, lastMessage }}>
 			{children}
 			{content()}
 		</chatContext.Provider>

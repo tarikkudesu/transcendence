@@ -1,4 +1,4 @@
-import { SvgPlay, SvgSpinner, SvgStar, SvgTrophy, SvgWifi } from '@/app/_svg/svg';
+import { SvgInfo, SvgPlay, SvgSpinner, SvgStar, SvgTrophy, SvgWifi } from '@/app/_svg/svg';
 import { PongButton } from '../buttons/ServerButtons';
 
 interface CardsProps {
@@ -29,7 +29,11 @@ export const Waiting: React.FC<CardsProps> = ({ player }) => {
 	);
 };
 
-export const Won: React.FC<CardsProps> = ({ player }) => {
+export const Won: React.FC<{
+	player: string;
+	opponent: string;
+	children: React.ReactNode;
+}> = ({ player, children }) => {
 	return (
 		<div className="w-[300px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-cardenter">
 			<div className="relative">
@@ -43,14 +47,7 @@ export const Won: React.FC<CardsProps> = ({ player }) => {
 							Congratulations, <span className="text-accent-300">{player}</span>!
 						</p>
 						<p className="text-xs font-bold text-dark-300 pt-1">Every match you win is a step closer to greatness</p>
-						<div className="grid grid-cols-2 gap-3 mt-6">
-							<PongButton className="bg-dark-700 hover:bg-accent-300 hover:text-black" onClick={() => confirm}>
-								Rematch
-							</PongButton>
-							<PongButton className="bg-dark-700 hover:bg-accent-300 hover:text-black" onClick={() => confirm}>
-								Chat
-							</PongButton>
-						</div>
+						<div className="grid grid-cols-2 gap-3 mt-6">{children}</div>
 					</div>
 				</div>
 			</div>
@@ -58,13 +55,17 @@ export const Won: React.FC<CardsProps> = ({ player }) => {
 	);
 };
 
-export const Lost: React.FC<CardsProps> = ({ player }) => {
+export const Lost: React.FC<{
+	player: string;
+	opponent: string;
+	children: React.ReactNode;
+}> = ({ player, children }) => {
 	return (
 		<div className="w-[300px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-cardenter">
 			<div className="relative">
 				<div className="bg-dark-950 rounded-md p-8 shadow-2xl border border-dark-500 relative overflow-hidden">
 					<div className="absolute top-0 left-0 right-0 flex justify-center items-center h-[100px] shadow-lg bg-dark-500">
-						<SvgTrophy size={40} />
+						<SvgInfo size={40} />
 					</div>
 					<div className="mt-[100px] relative z-10 text-center">
 						<h2 className="text-2xl font-bold mb-2 text-accent-300">Good Effort 💪</h2>
@@ -72,14 +73,7 @@ export const Lost: React.FC<CardsProps> = ({ player }) => {
 							Keep trying, <span className="text-accent-300">{player}</span>!
 						</p>
 						<p className="text-xs font-bold text-dark-300 pt-1">There is always a chance to revenge</p>
-						<div className="grid grid-cols-2 gap-3 mt-6">
-							<PongButton className="bg-dark-700 hover:bg-accent-300 hover:text-black" onClick={() => confirm}>
-								Rematch
-							</PongButton>
-							<PongButton className="bg-dark-700 hover:bg-accent-300 hover:text-black" onClick={() => confirm}>
-								Chat
-							</PongButton>
-						</div>
+						<div className="grid grid-cols-2 gap-3 mt-6">{children}</div>
 					</div>
 				</div>
 			</div>

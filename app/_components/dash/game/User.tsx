@@ -1,71 +1,182 @@
+import { useFriends } from '@/app/_service/friends/FriendContext';
+import { Friend } from '@/app/_service/friends/schema';
 import { useGET } from '@/app/_service/useFetcher';
 import { UserProfile } from '@/app/_service/user/schema';
-import { Text } from '@radix-ui/themes';
-import React from 'react';
-import LoadingIndicator from '../../mini/Loading';
+import { ClientPlayer, InviteMessage, useGameSocket } from '@/app/_service/ws/game';
+import { SvgChat, SvgDoom, SvgPong, SvgProfile, SvgSpinner } from '@/app/_svg/svg';
+import { Badge, Text } from '@radix-ui/themes';
+import { useRouter } from 'next/navigation';
+import React, { useCallback, useState } from 'react';
+import { PongButton } from '../../buttons/ServerButtons';
 import SafeImage from '../../mini/SafeImage';
-import UserCallout from './UserCallout';
 
-interface UserProps {
-	avatarclassName?: string;
-	hideusername?: boolean;
-	hideavatar?: boolean;
+interface TriggerProps {
 	username: string;
-	extra?: string;
-	size?: number;
+	avatar: string;
+	extra: React.ReactNode;
+}
+
+interface DialogProps {
+	children: React.ReactNode;
+	username: string;
 }
 
 const API_BASE = process.env.API_BASE_URL ?? 'http://localhost:80/api/v1';
 
-const User: React.FC<UserProps> = ({ username, extra, hideusername, hideavatar, size, avatarclassName }) => {
-	const { data, isLoading, error } = useGET<UserProfile>({ url: `${API_BASE}/users/${username}` });
-
-	function content() {
-		if (isLoading) return <LoadingIndicator size="md" />;
-		if (error || !data)
-			return (
+const Trigger: React.FC<TriggerProps> = ({ username, avatar, extra }) => {
+	return (
+		<>
+			<div className="flex justify-start items-center">
 				<SafeImage
 					priority
+					width={42}
+					height={42}
+					src={avatar}
 					alt="player card"
 					fallbackSrc="/Logo.png"
-					width={size ? size : 36}
-					height={size ? size : 36}
-					src="/Logo.png"
-					className={'rounded-full cursor-pointer ' + avatarclassName}
+					className={'rounded-full cursor-pointer'}
 				></SafeImage>
-			);
-		else
-			return (
-				<>
-					{!hideavatar && (
-						<SafeImage
-							priority
-							alt="player card"
-							fallbackSrc="/Logo.png"
-							width={size ? size : 36}
-							height={size ? size : 36}
-							src={data.avatar}
-							className={'rounded-full cursor-pointer ' + avatarclassName}
-						></SafeImage>
-					)}
-					{!hideusername && (
-						<Text as="div" className="ml-4 text-md">
-							{username}
-							{extra && (
-								<Text as="div" className="text-xs">
-									{extra}
-								</Text>
-							)}
-						</Text>
-					)}
-				</>
-			);
-	}
-	return (
-		<UserCallout username={data ? data.username : ''} className="flex items-center p-2">
-			{content()}
-		</UserCallout>
+				<Text as="div" className="ml-4 text-md font-bold">
+					{username}
+					{extra}
+				</Text>
+			</div>
+		</>
 	);
 };
 
-export default User;
+const Dialog: React.FC<DialogProps> = ({ username, children }) => {
+	const { friend: getFriend, isLoading: actionLoading } = useFriends();
+	const { data: user, error, isLoading } = useGET<UserProfile>({ url: `${API_BASE}/users/${username}` });
+	const { pooler: getPooler, send } = useGameSocket();
+	const [active, setActive] = useState<boolean>();
+	const router = useRouter();
+
+	const pooler: ClientPlayer | undefined = getPooler(username);
+	const friend: Friend | null = getFriend(username);
+
+	const Node = useCallback((): React.ReactNode => {
+		if (isLoading) return <SvgSpinner size={25} className="text-accent-300" />;
+		if (error || !user) return <div className="text-center">Error...</div>;
+
+		return (
+			<>
+				<div className="flex justify-start items-center">
+					<SafeImage
+						priority
+						width={58}
+						height={58}
+						src={user.avatar}
+						alt="player card"
+						fallbackSrc="/Logo.png"
+						className={'rounded-full cursor-pointer'}
+					></SafeImage>
+					<Text as="div" className="ml-4 text-md font-bold">
+						{username}
+						{pooler && pooler.inviteStatus === 'pending' && (
+							<Badge ml="3" radius="full" size="1" color="blue">
+								pending
+							</Badge>
+						)}
+						{pooler && pooler.inviteStatus === 'declined' && (
+							<Badge ml="3" size="1" radius="full" color="red">
+								declined
+							</Badge>
+						)}
+						{pooler && pooler.inviteStatus === 'accepted' && (
+							<Badge ml="3" size="1" radius="full" color="green">
+								accepted
+							</Badge>
+						)}
+
+						{friend && pooler ? (
+							pooler.playerStatus === 'free' ? (
+								<Text as="div" size="1" className="font-medium text-accent-300">
+									Online
+								</Text>
+							) : (
+								<Text as="div" size="1" className="font-medium text-accent-300">
+									Playing
+								</Text>
+							)
+						) : (
+							<Text as="div" size="1" className="font-medium text-dark-300">
+								Offline
+							</Text>
+						)}
+					</Text>
+				</div>
+				<Text as="div" className="text-md text-dark-200 my-4">
+					{user.bio}
+				</Text>
+				<div className="flex my-1 gap-2">
+					{friend && friend.stat === 'accepted' && (
+						<>
+							<PongButton
+								onClick={() => router.push(`/main/dashboard/chat?chatemate=${friend.username}`)}
+								loading={actionLoading}
+								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black"
+							>
+								<SvgChat size={24} />
+							</PongButton>
+							<PongButton
+								loading={actionLoading}
+								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black"
+								onClick={() => router.push(`/main/dashboard/${friend.username}`)}
+							>
+								<SvgProfile size={24} />
+							</PongButton>
+						</>
+					)}
+					{friend && friend.stat === 'accepted' && pooler && (
+						<>
+							<PongButton
+								onClick={() => send(InviteMessage('pong', username))}
+								disabled={
+									pooler.playerStatus === 'playing' ||
+									pooler.inviteStatus === 'pending' ||
+									pooler.inviteStatus === 'declined'
+								}
+								loading={actionLoading || pooler.inviteStatus === 'pending'}
+								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black disabled:text-white disabled:bg-dark-700"
+							>
+								<SvgPong size={24} />
+							</PongButton>
+							<PongButton
+								onClick={() => send(InviteMessage('card of doom', username))}
+								disabled={
+									pooler.playerStatus === 'playing' ||
+									pooler.inviteStatus === 'pending' ||
+									pooler.inviteStatus === 'declined'
+								}
+								loading={actionLoading || pooler.inviteStatus === 'pending'}
+								className="bg-dark-700 w-full hover:bg-golden-500 hover:text-black disabled:text-white disabled:bg-dark-700"
+							>
+								<SvgDoom size={24} />
+							</PongButton>
+						</>
+					)}
+				</div>
+			</>
+		);
+	}, [actionLoading, error, friend, isLoading, pooler, router, send, user, username]);
+
+	return (
+		<>
+			{active && <div className="fixed inset-0 z-40 bg-dark-800/25" onClick={() => setActive(false)}></div>}
+			<span className="flex items-center p-2 cursor-pointer relative" onClick={() => setActive(true)}>
+				{children}
+				{active && user && (
+					<div className="absolute top-0 left-0 p-6 bg-dark-800 rounded-md border border-dark-500 w-[400px] shadow-xl z-50">
+						{Node()}
+					</div>
+				)}
+			</span>
+		</>
+	);
+};
+
+export const User = {
+	Trigger,
+	Dialog,
+};
