@@ -8,8 +8,8 @@ export const UserProfileInitialState = {
 	bio: '',
 };
 
-export const authContext = createContext(UserProfileInitialState);
+export const userContext = createContext(UserProfileInitialState);
 
-export function useAuth() {
-	return useContext(authContext);
+export function useUser() {
+	return useContext(userContext);
 }

@@ -3,7 +3,7 @@
 import { useCallback } from 'react';
 import { useGET, useMutate } from '../useFetcher';
 import { friendsContext } from './FriendContext';
-import { Friend, FriendActionResponse, FriendRequest } from './schema';
+import { Friend, FriendRequest } from './schema';
 
 interface FriendsProviderProps {
 	children: React.ReactNode;
@@ -12,7 +12,7 @@ interface FriendsProviderProps {
 const FriendsProvider: React.FC<FriendsProviderProps> = ({ children }) => {
 	const { data: friends, refetch: friendsRefetch } = useGET<Friend[]>({ url: `/friends` });
 	const { data: requests, refetch: requestsRefetch } = useGET<FriendRequest[]>({ url: `/friends/request` });
-	const { isLoading, fetchData } = useMutate<FriendActionResponse>();
+	const { isLoading, fetchData } = useMutate<{ to: string }>();
 
 	const friend = useCallback(
 		(username: string): Friend | null => {

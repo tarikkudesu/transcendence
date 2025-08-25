@@ -1,30 +1,31 @@
 'use client';
 
-import { RequestResult, logout } from '@/app/_service/auth/calls';
-import { Button, Flex } from '@radix-ui/themes';
+import { useAuth } from '@/app/_service/auth/authContext';
+import { Flex } from '@radix-ui/themes';
 import { useRouter } from 'next/navigation';
-import { useCallback, useState } from 'react';
+import { useEffect } from 'react';
+import { PongButton } from '../../buttons/ServerButtons';
 import Logo from '../../mini/Logo';
 import { useNotification } from '../../mini/useNotify';
 import MainSearch from '../friends/MainSearch';
-import NotificationCenter from '../notification/NotificationCenter';
-import GameInviteCenter from '../notification/GameInviteCenter';
 import FriendRequestCenter from '../notification/FriendRequestCenter';
+import GameInviteCenter from '../notification/GameInviteCenter';
+import NotificationCenter from '../notification/NotificationCenter';
 
 const Header: React.FC = ({}) => {
-	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const { notify } = useNotification();
 	const router = useRouter();
+	const { notify } = useNotification();
+	const { logoutcall, isLoading, data, error } = useAuth();
 
-	const logoutCall = useCallback(async () => {
-		setIsLoading(true);
-		const result: RequestResult = await logout();
-		if (result.message === 'success') {
-			notify({ message: 'Success', success: true });
+	useEffect(() => {
+		if (data) {
+			notify({ message: data.message, success: true });
 			router.push('/login');
 		}
-		setIsLoading(false);
-	}, []);
+		if (error) {
+			notify({ message: error.message, error: true });
+		}
+	}, [data, error, notify]);
 
 	return (
 		<header className="w-full h-[150px] absolute top-0 left-0 right-0g">
@@ -38,14 +39,13 @@ const Header: React.FC = ({}) => {
 					<GameInviteCenter />
 					<FriendRequestCenter />
 					<NotificationCenter />
-					<Button
-						variant="solid"
-						onClick={logoutCall}
+					<PongButton
+						onClick={() => logoutcall()}
 						loading={isLoading}
-						className="py-3 px-4 text-center bg-dark-900 text-xs text-dark-200 hover:text-black hover:bg-accent-300 rounded-md cursor-pointer font-bold"
+						className="bg-dark-700 text-dark-200 hover:text-white hover:bg-dark-600"
 					>
 						Log Out
-					</Button>
+					</PongButton>
 				</Flex>
 			</Flex>
 		</header>

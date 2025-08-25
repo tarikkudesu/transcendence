@@ -1,5 +1,7 @@
 export interface MutateResponse {
 	success: boolean;
+	message: string;
+	email?: string;
 }
 
 export interface UpdatePasswordRequest {

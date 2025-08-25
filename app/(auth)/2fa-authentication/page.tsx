@@ -1,11 +1,12 @@
 'use client';
 
+import { PongButton } from '@/app/_components/buttons/ServerButtons';
 import Logo from '@/app/_components/mini/Logo';
 import { useNotification } from '@/app/_components/mini/useNotify';
-import { useMutate } from '@/app/_service/useFetcher';
-import { Box, Button, Text } from '@radix-ui/themes';
+import { useAuth } from '@/app/_service/auth/authContext';
+import { Box, Text } from '@radix-ui/themes';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 
 const LoginVerify: React.FC<unknown> = () => {
 	const router = useRouter();
@@ -13,7 +14,19 @@ const LoginVerify: React.FC<unknown> = () => {
 	const searchParams = useSearchParams();
 	const [code, setCode] = useState<string>('');
 	const [email, setEmail] = useState<string>('');
-	const { fetchData, data, isLoading, error } = useMutate();
+	const { resendotp, twofacall, isLoading, data, error, reset } = useAuth();
+
+	useEffect(() => {
+		if (data) {
+			notify({ message: data.message, success: true });
+			reset();
+			router.push('/main');
+		}
+		if (error) {
+			notify({ message: error.message, error: true });
+			reset();
+		}
+	}, [data, error, notify, reset]);
 
 	useEffect(() => {
 		const mail: string | null = searchParams.get('email');
@@ -23,28 +36,6 @@ const LoginVerify: React.FC<unknown> = () => {
 		}
 		setEmail(mail);
 	}, [router, searchParams]);
-
-	// const [isLoading, setIsLoading] = useState<boolean>(false);
-
-	const verifyCall = useCallback(async () => {
-		if (!code || !email) return;
-		// setIsLoading(true);
-		// const result: RequestResult = await verify2FA({ email, verificationCode: code });
-		// if (result.message === 'success') {
-		// 	notify({ message: 'Success', success: true });
-		// 	router.push(`2fa-authentication?email=${result.result?.email ?? ''}`);
-		// } else notify({ message: result.message, error: true });
-		// setIsLoading(false);
-	}, [code, email, notify, router]);
-
-	const resendCall = useCallback(async () => {
-		// setIsLoading(true);
-		// const result: RequestResult = await resendOtp({ email });
-		// if (result.message === 'success') {
-		// 	notify({ message: 'Success', success: true });
-		// } else notify({ message: result.message, error: true });
-		// setIsLoading(false);
-	}, [email, notify]);
 
 	return (
 		<main>
@@ -73,20 +64,18 @@ const LoginVerify: React.FC<unknown> = () => {
 						></input>
 					</label>
 					<Box height="20px" />
-					<button onClick={resendCall} className="text-sm text-dark-200 hover:text-accent-300">
+					<button onClick={() => resendotp({ email })} className="text-sm text-dark-200 hover:text-accent-300">
 						resend code?
 					</button>
 					<Box height="20px" />
-					<Button
-						radius="small"
-						size="3"
-						disabled={!code || !email || code.length !== 6}
-						className="w-full p-2.5 disabled:bg-dark-600 bg-accent-300 text-center"
-						onClick={verifyCall}
+					<PongButton
 						loading={isLoading}
+						disabled={!code || !email || code.length !== 6}
+						onClick={() => twofacall({ email, verificationCode: code })}
+						className="w-full disabled:bg-dark-600 disabled:text-white bg-accent-300 text-black hover:bg-accent-200"
 					>
-						Verify
-					</Button>
+						Sign In
+					</PongButton>
 					<Box height="20px" />
 				</div>
 			</div>

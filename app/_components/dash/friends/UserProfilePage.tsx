@@ -5,12 +5,13 @@ import { Friend, FriendRequest } from '@/app/_service/friends/schema';
 import { useGET } from '@/app/_service/useFetcher';
 import { UserProfile } from '@/app/_service/user/schema';
 import { ClientPlayer, InviteMessage, useGameSocket } from '@/app/_service/ws/game';
-import { SvgAddFriend, SvgBan, SvgChat, SvgDoom, SvgInfo, SvgPong, SvgSpinner } from '@/app/_svg/svg';
+import { SvgAddFriend, SvgBan, SvgChat, SvgDoom, SvgInfo, SvgPong } from '@/app/_svg/svg';
 import { Callout, Text } from '@radix-ui/themes';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 import { PongButton } from '../../buttons/ServerButtons';
+import { Spinner } from '../../mini/Loading';
 import SafeImage from '../../mini/SafeImage';
 
 const UserProfilePage: React.FC<{ username: string }> = ({ username }) => {
@@ -24,12 +25,11 @@ const UserProfilePage: React.FC<{ username: string }> = ({ username }) => {
 	const friend: Friend | null = getFriend(username);
 
 	const Node = useCallback((): React.ReactNode => {
-		if (isLoading) return <SvgSpinner size={64} className="text-accent-300" />;
-		if (error || !user) return <div className="text-center">Error...</div>;
-
+		if (isLoading) return <Spinner />;
+		if (error || !user) return null;
 		return (
 			<>
-				<div className="flex flex-col items-center justify-center my-[40px]">
+				<div className="flex flex-col items-center justify-center m-8">
 					<SafeImage
 						priority
 						width={200}
@@ -62,8 +62,7 @@ const UserProfilePage: React.FC<{ username: string }> = ({ username }) => {
 						</Text>
 					</>
 				)}
-
-				<div className="flex gap-2 mx-8">
+				<div className="flex gap-2 m-8">
 					{friend && friend.stat === 'blocked' && (
 						<Callout.Root variant="soft" color="red" className="w-full">
 							<Callout.Icon>
@@ -165,7 +164,7 @@ const UserProfilePage: React.FC<{ username: string }> = ({ username }) => {
 		username,
 	]);
 
-	return <div className="bg-dark-950 rounded-md shadow-xl min-h-[100px] my-8">{Node()}</div>;
+	return <div className="bg-dark-950 rounded-md shadow-xl my-8">{Node()}</div>;
 };
 
 export default UserProfilePage;

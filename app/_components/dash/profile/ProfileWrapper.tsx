@@ -1,13 +1,13 @@
 'use client';
 
-import { useAuth } from '@/app/_service/AuthContext';
+import { useUser } from '@/app/_service/user/userContext';
 import React from 'react';
 import DoomHistory from './DoomHistory';
 import PongHistory from './PongHistory';
 import Stats from './Stats';
 
 const ProfileWrapper: React.FC = ({}) => {
-	const { username } = useAuth();
+	const { username } = useUser();
 	return (
 		<>
 			<Stats username={username} />

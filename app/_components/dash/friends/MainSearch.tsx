@@ -5,14 +5,14 @@ import { useGET } from '@/app/_service/useFetcher';
 import { ScrollArea } from '@radix-ui/themes';
 import { useRouter } from 'next/navigation';
 import React, { ChangeEvent, memo, useCallback, useEffect, useMemo, useState } from 'react';
-import LoadingIndicator from '../../mini/Loading';
+import { Spinner } from '../../mini/Loading';
 import { User } from '../game/User';
 
 const Search: React.FC<{ search: string; clear: () => void }> = memo(({ search, clear }) => {
 	const controller = useMemo(() => new AbortController(), []);
 	const router = useRouter();
 
-	const { data, error, isLoading } = useGET<FriendSearch[]>({
+	const { data, isLoading } = useGET<FriendSearch[]>({
 		url: `/friends/u/${encodeURIComponent(search)}`,
 		signal: controller.signal,
 		revalidate: 3600,
@@ -22,29 +22,33 @@ const Search: React.FC<{ search: string; clear: () => void }> = memo(({ search, 
 		return () => controller.abort();
 	}, [controller]);
 
-	if (isLoading) return <LoadingIndicator size="md" />;
-	if (error) return <div className="mx-4">Error....</div>;
-	if (!data) return <div className="text-center text-dark-200 my-8">No Search Entry</div>;
-
+	if (isLoading) return <Spinner />;
 	return (
 		<>
-			{data.map((ele) => (
-				<div
-					key={ele.username}
-					className="py-1 cursor-pointer hover:bg-dark-700"
-					onClick={() => {
-						clear();
-						router.push(`/main/dashboard/${ele.username}`);
-					}}
-				>
-					<div className="scale-90">
-						<User.Trigger username={ele.username} avatar={ele.avatar_url} extra="" />
-					</div>
+			{data && data.length && (
+				<div className="py-2 rounded-md bg-dark-950 absolute top-0 left-0 translate-y-[60px] w-[400px] text-white shadow-xl z-10 border border-dark-500">
+					<ScrollArea type="always" scrollbars="vertical" style={{ maxHeight: 600 }}>
+						{data.map((ele) => (
+							<div
+								key={ele.username}
+								className="py-1 cursor-pointer hover:bg-dark-700"
+								onClick={() => {
+									clear();
+									router.push(`/main/dashboard/${ele.username}`);
+								}}
+							>
+								<div className="scale-90">
+									<User.Trigger username={ele.username} avatar={ele.avatar_url} extra="" />
+								</div>
+							</div>
+						))}
+					</ScrollArea>
 				</div>
-			))}
+			)}
 		</>
 	);
 });
+
 Search.displayName = 'Search';
 
 interface SearchInputProps {
@@ -103,7 +107,6 @@ const MainSearch: React.FC = () => {
 
 	const closeAndClear = useCallback(() => {
 		setActive(false);
-		setSearch('');
 	}, []);
 
 	const open = useCallback(() => setActive(true), []);
@@ -117,17 +120,7 @@ const MainSearch: React.FC = () => {
 					active && 'border border-accent-300'
 				}`}
 			>
-				{active && (
-					<div className="py-2 rounded-md bg-dark-950 absolute top-0 left-0 translate-y-[60px] w-[400px] text-white shadow-xl z-10 border border-dark-500 min-h-[100px]">
-						<ScrollArea type="always" scrollbars="vertical" style={{ maxHeight: 600 }}>
-							{search ? (
-								<Search search={search} clear={closeAndClear} />
-							) : (
-								<div className="text-center text-dark-200">No Search Entry</div>
-							)}
-						</ScrollArea>
-					</div>
-				)}
+				{active && search && <Search search={search} clear={closeAndClear} />}
 				<SearchInput setSearch={setSearch} />
 			</div>
 		</>

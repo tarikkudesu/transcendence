@@ -1,15 +1,13 @@
 'use client';
 
-import { RequestResult } from '@/app/_service/auth/calls';
-import { useAuth } from '@/app/_service/AuthContext';
-import { deleteUser } from '@/app/_service/user/calls';
 import { Button, Card, Flex, Text } from '@radix-ui/themes';
 import React, { useCallback, useState } from 'react';
 import { useNotification } from '../../mini/useNotify';
+import { useUser } from '@/app/_service/user/userContext';
 
 const DeleteAccount: React.FC = () => {
 	const { notify } = useNotification();
-	const { username } = useAuth();
+	const { username } = useUser();
 	const [isLoading, setIsLoading] = useState(false);
 
 	const handleAccountCall = useCallback(async () => {

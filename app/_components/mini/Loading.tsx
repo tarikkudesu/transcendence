@@ -1,3 +1,5 @@
+import { SvgSpinner } from '@/app/_svg/svg';
+
 interface LoadingIndicatorProps {
 	size?: 'sm' | 'md' | 'lg';
 	className?: string;
@@ -24,6 +26,14 @@ function LoadingIndicator({ size = 'md', className = '' }: LoadingIndicatorProps
 				<div className={`animate-spin absolute top-0 right-0 ${dotSizes[size]} bg-accent-400 opacity-75`}></div>
 				<div className={`animate-spin absolute top-0 left-0 ${dotSizes[size]} bg-accent-400`}></div>
 			</div>
+		</div>
+	);
+}
+
+export function Spinner(): React.ReactNode {
+	return (
+		<div className="text-accent-300 w-full">
+			<SvgSpinner size={24} className="animate-spin mx-auto my-4" />
 		</div>
 	);
 }

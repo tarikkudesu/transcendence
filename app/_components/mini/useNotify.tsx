@@ -11,7 +11,6 @@ interface useNotificationProps {
 export function useNotification() {
 	const notify = useCallback(({ message, error, success }: useNotificationProps) => {
 		if (error) toast.error(message);
-		else if (success) toast.success(message);
 		else toast(message);
 	}, []);
 	return { notify };

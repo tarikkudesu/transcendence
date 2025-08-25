@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuth } from '@/app/_service/AuthContext';
+
 import { ChatMessage } from '@/app/_service/ws/chat/composer';
 import { useConversationSocket } from '@/app/_service/ws/chat/conversationContext';
 import { InviteMessage, useGameSocket } from '@/app/_service/ws/game';
@@ -12,6 +12,7 @@ import { PongButton } from '../../buttons/ServerButtons';
 import { User } from '../game/User';
 import { ChatMyMessage, ChatOtherMessage } from './ChatMessage';
 import EmojiList from './EmojiList';
+import { useUser } from '@/app/_service/user/userContext';
 
 export const EmptyConversation: React.FC = () => {
 	return (
@@ -67,7 +68,7 @@ const ChatConversation: React.FC<ChatConversationProps> = ({ chatemate, avatar }
 	const pooler: ClientPlayer | undefined = getPooler(chatemate ?? '');
 	const inputRef = useRef<HTMLInputElement>(null);
 	const endRef = useRef<HTMLDivElement>(null);
-	const { username } = useAuth();
+	const { username } = useUser();
 
 	const appendEmoji = useCallback(
 		(e: string) => {

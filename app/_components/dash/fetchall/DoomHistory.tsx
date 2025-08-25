@@ -2,23 +2,31 @@
 
 import { DoomHistoryEntry } from '@/app/_service/game/schemas';
 import { useGET } from '@/app/_service/useFetcher';
-import { SvgSpinner } from '@/app/_svg/svg';
 import { Badge, Text } from '@radix-ui/themes';
 import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
-import { useCallback } from 'react';
+import { Spinner } from '../../mini/Loading';
 
 const DoomHistory: React.FC<{ username: string }> = ({ username }) => {
-	const { data, error, isLoading } = useGET<DoomHistoryEntry[]>({ url: `/game/doom/history/${username}` });
+	const { data, isLoading } = useGET<DoomHistoryEntry[]>({ url: `/game/doom/history/${username}` });
 
-	const content = useCallback(() => {
-		if (isLoading) return <SvgSpinner size={24} />;
-		if (error) return <>Error...</>;
-		if (!data) return <div className="text-center">No data...</div>;
+	if (isLoading) return <Spinner />;
 
-		return (
-			<>
-				{data.map((ele, index) => (
+	return (
+		<div className="bg-dark-950 p-8 rounded-md">
+			<div className="grid grid-cols-6 grid-rows-5 gap-2">
+				<Text size="2" className="text-dark-200 col-span-3 row-span-5">
+					Players
+				</Text>
+				<Text size="2" className="text-dark-200 row-span-5 col-start-4">
+					Result
+				</Text>
+				<Text size="2" className="text-dark-200 col-span-2 row-span-5 col-start-5">
+					Date
+				</Text>
+			</div>
+			{data &&
+				data.map((ele, index) => (
 					<div key={index} className="grid grid-cols-6 grid-rows-5 gap-[8px] text-nowrap">
 						<Text as="div" size="2" className="text-dark-50 col-span-3 row-span-5">
 							<Link href={`/main/dashboard/${ele.player_username}`}>{ele.player_username}</Link>
@@ -39,24 +47,6 @@ const DoomHistory: React.FC<{ username: string }> = ({ username }) => {
 						</Text>
 					</div>
 				))}
-			</>
-		);
-	}, [isLoading, error, data]);
-
-	return (
-		<div className="bg-dark-950 p-8 rounded-md">
-			<div className="grid grid-cols-6 grid-rows-5 gap-2">
-				<Text size="2" className="text-dark-200 col-span-3 row-span-5">
-					Players
-				</Text>
-				<Text size="2" className="text-dark-200 row-span-5 col-start-4">
-					Result
-				</Text>
-				<Text size="2" className="text-dark-200 col-span-2 row-span-5 col-start-5">
-					Date
-				</Text>
-			</div>
-			{content()}
 		</div>
 	);
 };

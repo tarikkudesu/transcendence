@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
-import AuthProvider from '../_service/AuthProvider';
+
 import FriendsProvider from '../_service/friends/FriendProvider';
+import UserProvider from '../_service/user/userProvider';
 
 export const metadata: Metadata = {
 	title: 'YingYangPong',
@@ -17,9 +18,9 @@ export default function RootLayout({
 }>) {
 	return (
 		<main className="min-h-screen relative pb-[100px]">
-			<AuthProvider>
+			<UserProvider>
 				<FriendsProvider>{children}</FriendsProvider>
-			</AuthProvider>
+			</UserProvider>
 		</main>
 	);
 }

@@ -1,27 +1,28 @@
 'use client';
 
+import { PongButton } from '@/app/_components/buttons/ServerButtons';
 import Logo from '@/app/_components/mini/Logo';
 import { useNotification } from '@/app/_components/mini/useNotify';
-import { forgotPassword, RequestResult } from '@/app/_service/auth/calls';
-import { Box, Button, Text } from '@radix-ui/themes';
+import { useAuth } from '@/app/_service/auth/authContext';
+import { Box, Text } from '@radix-ui/themes';
 import Link from 'next/link';
-import React, { ChangeEvent, useCallback, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 
 const ForgotPassword: React.FC<unknown> = () => {
-	const [email, setEmail] = useState<string>('');
-
 	const { notify } = useNotification();
-	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [email, setEmail] = useState<string>('');
+	const { forgotpasscall, isLoading, data, error, reset } = useAuth();
 
-	const verifyCall = useCallback(async () => {
-		if (!email) return;
-		setIsLoading(true);
-		const result: RequestResult = await forgotPassword({ email });
-		if (result.message === 'success') {
-			notify({ message: 'Success', success: true });
-		} else notify({ message: result.message, error: true });
-		setIsLoading(false);
-	}, [email, notify]);
+	useEffect(() => {
+		if (data) {
+			notify({ message: data.message, success: true });
+			reset();
+		}
+		if (error) {
+			notify({ message: error.message, error: true });
+			reset();
+		}
+	}, [data, error, notify, reset]);
 
 	return (
 		<main>
@@ -33,7 +34,7 @@ const ForgotPassword: React.FC<unknown> = () => {
 						Forgot your password?
 					</Text>
 					<Text as="div" mb="4" mt="1" className="text-sm text-dark-200">
-						YingYangPong has emailed you instructions on how to reset it.
+						YingYangPong will email you instructions on how to reset it.
 					</Text>
 					<Box height="12px" />
 					<label className="text-sm text-dark-200">
@@ -45,21 +46,19 @@ const ForgotPassword: React.FC<unknown> = () => {
 							value={email}
 							className="w-full my-1 outline-none rounded-md p-3 text-sm bg-dark-500"
 							onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
-							type="text"
-							name="username"
+							type="email"
+							name="email"
 						></input>
 					</label>
 					<Box height="20px" />
-					<Button
-						radius="small"
-						size="3"
-						disabled={!email}
-						className="w-full p-2.5 disabled:bg-dark-600 bg-accent-300 text-center"
-						onClick={verifyCall}
+					<PongButton
 						loading={isLoading}
+						disabled={!email}
+						onClick={() => forgotpasscall({ email })}
+						className="w-full disabled:bg-dark-600 disabled:text-white bg-accent-300 text-black hover:bg-accent-200"
 					>
-						Verify
-					</Button>
+						Reset
+					</PongButton>
 					<Box height="20px" />
 					<Link href="/login" className="text-sm text-accent-300">
 						Return to Login

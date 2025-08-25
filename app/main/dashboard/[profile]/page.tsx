@@ -12,7 +12,7 @@ const Page: React.FC<{ params: Promise<{ profile: string }> }> = async ({ params
 	return (
 		<div className="mx-auto max-w-[1400px] grid grid-cols-1 xl:grid-cols-2 gap-4 xl:gap-12">
 			<UserProfilePage username={profile} />
-			<div className="">
+			<div>
 				<Stats username={profile} />
 				<PongHistory username={profile} />
 				<DoomHistory username={profile} />

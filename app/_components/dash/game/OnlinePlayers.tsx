@@ -70,7 +70,7 @@ const OnlinePlayers: React.FC = ({}) => {
 				/>
 			</div>
 
-			{friends.filter(filterPool).map((player, index) => (
+			{friends.filter(filterPool).map((player) => (
 				<div key={player.username} className="p-1 hover:bg-dark-800 rounded-md">
 					<User.Dialog username={player.username}>
 						<User.Trigger
@@ -82,7 +82,7 @@ const OnlinePlayers: React.FC = ({}) => {
 										Online
 									</Text>
 								) : online(player.username) === 'playing' ? (
-									<Text as="div" size="1" className="font-medium text-accent-300">
+									<Text as="div" size="1" className="font-medium text-golden-500">
 										Playing
 									</Text>
 								) : (

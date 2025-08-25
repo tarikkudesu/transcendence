@@ -1,15 +1,13 @@
 'use client';
 
-import { RequestResult } from '@/app/_service/auth/calls';
-import { useAuth } from '@/app/_service/AuthContext';
-import { updateAvatar } from '@/app/_service/user/calls';
 import { Button, Card, Flex, Text } from '@radix-ui/themes';
 import { useCallback, useRef, useState } from 'react';
 import SafeImage from '../../mini/SafeImage';
 import { useNotification } from '../../mini/useNotify';
+import { useUser } from '@/app/_service/user/userContext';
 
 const UpdateAvatar: React.FC = () => {
-	const { username } = useAuth();
+	const { username } = useUser();
 	const { notify } = useNotification();
 	const [file, setFile] = useState<File | null>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);

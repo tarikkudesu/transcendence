@@ -3,11 +3,13 @@ import { Friend } from '@/app/_service/friends/schema';
 import { useGET } from '@/app/_service/useFetcher';
 import { UserProfile } from '@/app/_service/user/schema';
 import { ClientPlayer, InviteMessage, useGameSocket } from '@/app/_service/ws/game';
-import { SvgChat, SvgDoom, SvgPong, SvgProfile, SvgSpinner } from '@/app/_svg/svg';
+import { SvgChat, SvgDoom, SvgPong, SvgProfile } from '@/app/_svg/svg';
 import { Badge, Link, Text } from '@radix-ui/themes';
 import { useRouter } from 'next/navigation';
 import React, { useCallback, useState } from 'react';
 import { PongButton } from '../../buttons/ServerButtons';
+import Error from '../../mini/Error';
+import { Spinner } from '../../mini/Loading';
 import SafeImage from '../../mini/SafeImage';
 
 const Username: React.FC<{ username: string; className?: string }> = ({ username, className }) => {
@@ -128,8 +130,8 @@ const Dialog: React.FC<{
 	const friend: Friend | null = getFriend(username);
 
 	const Node = useCallback((): React.ReactNode => {
-		if (isLoading) return <SvgSpinner size={25} className="text-accent-300" />;
-		if (error || !user) return <div className="text-center">Error...</div>;
+		if (isLoading) return <Spinner />;
+		if (error || !user) return <Error />;
 
 		return (
 			<>
@@ -167,7 +169,7 @@ const Dialog: React.FC<{
 									Online
 								</Text>
 							) : (
-								<Text as="div" size="1" className="font-medium text-accent-300">
+								<Text as="div" size="1" className="font-medium text-golden-500">
 									Playing
 								</Text>
 							)
@@ -210,7 +212,7 @@ const Dialog: React.FC<{
 									pooler.inviteStatus === 'declined'
 								}
 								loading={actionLoading || pooler.inviteStatus === 'pending'}
-								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black disabled:text-white disabled:bg-dark-700"
+								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black disabled:text-white disabled:bg-dark-500"
 							>
 								<SvgPong size={24} />
 							</PongButton>
@@ -222,7 +224,7 @@ const Dialog: React.FC<{
 									pooler.inviteStatus === 'declined'
 								}
 								loading={actionLoading || pooler.inviteStatus === 'pending'}
-								className="bg-dark-700 w-full hover:bg-golden-500 hover:text-black disabled:text-white disabled:bg-dark-700"
+								className="bg-dark-700 w-full hover:bg-golden-500 hover:text-black disabled:text-white disabled:bg-dark-500"
 							>
 								<SvgDoom size={24} />
 							</PongButton>

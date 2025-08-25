@@ -1,29 +1,42 @@
 'use client';
 
+import { PongButton } from '@/app/_components/buttons/ServerButtons';
 import Logo from '@/app/_components/mini/Logo';
 import { useNotification } from '@/app/_components/mini/useNotify';
-import { RequestResult, resetPassword } from '@/app/_service/auth/calls';
+import { useAuth } from '@/app/_service/auth/authContext';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
-import { Box, Button, Flex, Text } from '@radix-ui/themes';
+import { Box, Flex, Text } from '@radix-ui/themes';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import router from 'next/router';
+import { useRouter, useSearchParams } from 'next/navigation';
+
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 
 const ResetPassword: React.FC<unknown> = () => {
-	const searchParams = useSearchParams();
-	const [password, setPass] = useState<string>('');
-	const [repassword, setRePass] = useState<string>('');
-	const [token, setToken] = useState<string>('');
-	const [type, setType] = useState<'password' | 'text'>('password');
-
+	const router = useRouter();
 	const { notify } = useNotification();
-	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const searchParams = useSearchParams();
+	const [token, setToken] = useState<string>('');
+	const [newPassword, setNewPass] = useState<string>('');
+	const { isLoading, resetpasscall, data, error, reset } = useAuth();
+	const [repeatNewPassword, setRepeatNewPass] = useState<string>('');
+	const [type, setType] = useState<'password' | 'text'>('password');
 
 	const switchtype = useCallback(() => {
 		if (type === 'password') setType('text');
 		else setType('password');
 	}, [type]);
+
+	useEffect(() => {
+		if (data) {
+			notify({ message: data.message, success: true });
+			reset();
+			router.push('/main');
+		}
+		if (error) {
+			notify({ message: error.message, error: true });
+			reset();
+		}
+	}, [data, error, notify, reset]);
 
 	useEffect(() => {
 		const temp: string | null = searchParams.get('token');
@@ -33,16 +46,6 @@ const ResetPassword: React.FC<unknown> = () => {
 		}
 		setToken(temp);
 	}, [searchParams]);
-
-	const verifyCall = useCallback(async () => {
-		if (!token || !password || !repassword) return;
-		setIsLoading(true);
-		const result: RequestResult = await resetPassword({ newPassword: password, repeatNewPassword: repassword, token });
-		if (result.message === 'success') {
-			notify({ message: 'Success', success: true });
-		} else notify({ message: result.message, error: true });
-		setIsLoading(false);
-	}, [notify, password, repassword, token]);
 
 	return (
 		<main>
@@ -63,9 +66,9 @@ const ResetPassword: React.FC<unknown> = () => {
 							required
 							minLength={4}
 							maxLength={40}
-							value={password}
+							value={newPassword}
 							className="w-full my-1 outline-none rounded-md p-3 text-sm bg-dark-500"
-							onChange={(e: ChangeEvent<HTMLInputElement>) => setPass(e.target.value)}
+							onChange={(e: ChangeEvent<HTMLInputElement>) => setNewPass(e.target.value)}
 							type={type}
 							name="password"
 						></input>
@@ -76,25 +79,22 @@ const ResetPassword: React.FC<unknown> = () => {
 							required
 							minLength={4}
 							maxLength={40}
-							value={repassword}
+							value={repeatNewPassword}
 							className="w-full my-1 outline-none rounded-md p-3 text-sm bg-dark-500"
-							onChange={(e: ChangeEvent<HTMLInputElement>) => setRePass(e.target.value)}
+							onChange={(e: ChangeEvent<HTMLInputElement>) => setRepeatNewPass(e.target.value)}
 							type={type}
 							name="password"
 						></input>
 					</label>
 					<Box height="20px" />
-					<Button
-						radius="small"
-						size="3"
-						disabled={!password || !repassword || !token}
-						className="w-full p-2.5 disabled:bg-dark-600 bg-accent-300 text-center"
-						onClick={verifyCall}
+					<PongButton
 						loading={isLoading}
+						disabled={!newPassword || !repeatNewPassword || !token}
+						onClick={() => resetpasscall({ newPassword, repeatNewPassword, token })}
+						className="w-full disabled:bg-dark-600 disabled:text-white bg-accent-300 text-black hover:bg-accent-200"
 					>
 						Reset Password
-					</Button>
-
+					</PongButton>
 					<Box height="20px" />
 					<Flex justify="between" align="center">
 						<Link href="/forgot-password" className="text-sm text-dark-200 hover:text-accent-300">

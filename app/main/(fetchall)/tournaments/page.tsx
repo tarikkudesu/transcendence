@@ -1,4 +1,3 @@
-import PongLeaderBoard from '@/app/_components/dash/fetchall/PongLeaderBoard';
 import TournamentHistory from '@/app/_components/dash/fetchall/TournamentHistory';
 import Footer from '@/app/_components/mini/Footer';
 import Header from '@/app/_components/mini/Header';

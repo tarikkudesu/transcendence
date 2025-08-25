@@ -2,18 +2,17 @@
 
 import { TournamentHistoryEntry } from '@/app/_service/game/schemas';
 import { useGET } from '@/app/_service/useFetcher';
-import { Flex, Spinner, Text } from '@radix-ui/themes';
+import { Flex, Text } from '@radix-ui/themes';
 import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
 import React from 'react';
 import { PongButton } from '../../buttons/ServerButtons';
+import { Spinner } from '../../mini/Loading';
 
 const TournamentHistory: React.FC = ({}) => {
 	const { isLoading, data: tournaments } = useGET<TournamentHistoryEntry[]>({ url: `/game/tournament/history?end=10` });
 
 	if (isLoading) return <Spinner />;
-
-	console.log(tournaments);
 
 	return (
 		<div className="my-[80px]">
@@ -23,8 +22,8 @@ const TournamentHistory: React.FC = ({}) => {
 			<Text as="div" size="3" mb="8" align="center" className="text-dark-200">
 				Browse past tournaments, view winners, scores, and match highlights.
 			</Text>
-			{!tournaments || (tournaments.length === 0 && <>No Data...</>)}
 			{tournaments &&
+				tournaments.length &&
 				tournaments.map((ele, index) => {
 					return (
 						<div key={index} className="bg-dark-950 px-[10%] py-[40px] mb-[10px]">

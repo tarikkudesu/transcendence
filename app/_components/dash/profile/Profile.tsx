@@ -1,13 +1,14 @@
 'use client';
 
-import { useAuth } from '@/app/_service/AuthContext';
+import { useUser } from '@/app/_service/user/userContext';
 import { Box, Text } from '@radix-ui/themes';
 
 import React from 'react';
 import SafeImage from '../../mini/SafeImage';
+import { format } from 'date-fns';
 
 const DashboardProfile: React.FC = ({}) => {
-	const { avatar, username, bio, created_at } = useAuth();
+	const { avatar, username, bio, created_at } = useUser();
 
 	return (
 		<div className="py-8">
@@ -30,7 +31,7 @@ const DashboardProfile: React.FC = ({}) => {
 			</Text>
 			<Box height="4px" />
 			<Text as="div" align="center" size="2" className="text-dark-200">
-				Joined at {created_at.slice(0, 10)}
+				Joined at {format(Number(created_at), 'yyyy-MM-dd HH:mm')}
 			</Text>
 		</div>
 	);

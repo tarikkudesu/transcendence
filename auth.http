@@ -5,11 +5,30 @@ signup
     "email": "test@gmail.com",
     "password": "123456789"
 }
+success
+{
+    "success": true,
+    "message": "A verification code has been sent to your email, please check your email inbox"
+}
+error
+{
+    "statusCode": 409,
+    "error": "Conflict",
+    "message": "this user already Exist"
+}
+
+
 verify account
 {
     "verificationCode": "890801",
     "email": "test@gmail.com"
 }
+success
+{
+    "success": true,
+    "message": "verification done successfully"
+}
+
 forgot passord
 {
     "email": "test@gmail.com"
@@ -25,10 +44,20 @@ login
     "username": "furina",
     "password": "pass0000"
 }
+{
+    "statusCode": 404,
+    "error": "Not Found",
+    "message": "User not Found"
+}
 verify 2fa
 {
     "verificationCode": "531323",
     "email": "test@gmail.com"
+}
+{
+    "statusCode": 400,
+    "error": "Bad Request",
+    "message": "Verification code must be exactly 6 digits"
 }
 resend otp
 {

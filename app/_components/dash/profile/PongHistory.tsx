@@ -2,50 +2,16 @@
 
 import { PongHistoryEntry } from '@/app/_service/game/schemas';
 import { useGET } from '@/app/_service/useFetcher';
-import { SvgClockArrow, SvgMore, SvgSpinner } from '@/app/_svg/svg';
+import { SvgClockArrow, SvgMore } from '@/app/_svg/svg';
 import { Badge, Flex, Text } from '@radix-ui/themes';
 import Link from 'next/link';
-import { useCallback } from 'react';
 
 import { formatDistanceToNow } from 'date-fns';
+import { Spinner } from '../../mini/Loading';
 import { User } from '../game/User';
 
 const PongHistory: React.FC<{ username: string }> = ({ username }) => {
-	const { data, error, isLoading } = useGET<PongHistoryEntry[]>({ url: `/game/pong/history/${username}?end=10` });
-
-	const content = useCallback(() => {
-		if (isLoading) return <SvgSpinner size={24} />;
-		if (error) return <>Error...</>;
-		if (!data) return <div className="text-center">No data</div>;
-		return (
-			<>
-				{data.map((ele, index) => (
-					<div key={index} className="grid grid-cols-6 grid-rows-5 gap-2 text-nowrap">
-						<Text as="div" size="2" className="text-dark-50 col-span-2 row-span-5">
-							<User.Username className="text-white" username={ele.player_username} />
-							<Text weight="bold" className="text-accent-300 mx-2">
-								:
-							</Text>
-							<User.Username className="text-white" username={ele.opponent_username} />
-						</Text>
-						<Text as="div" size="2" className="text-dark-50 row-span-5 col-start-3">
-							{ele.player_score}
-							<Text weight="bold" className="text-accent-300 mx-2">
-								:
-							</Text>
-							{ele.opponent_score}
-						</Text>
-						<Text className="row-span-5 col-start-4">
-							{ele.player_score > ele.opponent_score ? <Badge color="green">Won</Badge> : <Badge color="red">Lost</Badge>}
-						</Text>
-						<Text as="div" size="2" className="text-dark-50 col-span-2 row-span-5 col-start-5">
-							{formatDistanceToNow(Number(ele.game_date), { addSuffix: true })}
-						</Text>
-					</div>
-				))}
-			</>
-		);
-	}, [data, error, isLoading]);
+	const { data, isLoading } = useGET<PongHistoryEntry[]>({ url: `/game/pong/history/${username}?end=10` });
 
 	return (
 		<div className="flex-grow p-4 rounded-md bg-dark-700 my-8 px-6">
@@ -74,7 +40,31 @@ const PongHistory: React.FC<{ username: string }> = ({ username }) => {
 					DATE
 				</Text>
 			</div>
-			{content()}
+			{isLoading && <Spinner />}
+			{data && (
+				<>
+					{data.map((ele, index) => (
+						<div key={index} className="grid grid-cols-6 grid-rows-5 gap-2 text-nowrap">
+							<Text as="div" size="2" className="text-dark-50 col-span-2 row-span-5">
+								<User.Username className="text-white" username={ele.player_username} />
+								<span className="font-bold text-accent-300 mx-2">:</span>
+								<User.Username className="text-white" username={ele.opponent_username} />
+							</Text>
+							<Text as="div" size="2" className="text-dark-50 row-span-5 col-start-3">
+								{ele.player_score}
+								<span className="font-bold text-accent-300 mx-2">:</span>
+								{ele.opponent_score}
+							</Text>
+							<Text className="row-span-5 col-start-4">
+								{ele.player_score > ele.opponent_score ? <Badge color="green">Won</Badge> : <Badge color="red">Lost</Badge>}
+							</Text>
+							<Text as="div" size="2" className="text-dark-50 col-span-2 row-span-5 col-start-5">
+								{formatDistanceToNow(Number(ele.game_date), { addSuffix: true })}
+							</Text>
+						</div>
+					))}
+				</>
+			)}
 		</div>
 	);
 };

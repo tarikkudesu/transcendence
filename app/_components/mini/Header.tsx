@@ -1,39 +1,39 @@
 'use client';
-import { logout, RequestResult } from '@/app/_service/auth/calls';
-import { Button, Flex } from '@radix-ui/themes';
+
+import { useAuth } from '@/app/_service/auth/authContext';
+import { Flex } from '@radix-ui/themes';
 import { useRouter } from 'next/navigation';
-import React, { useCallback, useState } from 'react';
+import React, { useEffect } from 'react';
+import { PongButton } from '../buttons/ServerButtons';
 import Logo from './Logo';
 import { useNotification } from './useNotify';
 
 const Header: React.FC = ({}) => {
-	const [isLoading, setIsLoading] = useState<boolean>(false);
-
-	const { notify } = useNotification();
 	const router = useRouter();
+	const { notify } = useNotification();
+	const { logoutcall, isLoading, data, error } = useAuth();
 
-	const logoutCall = useCallback(async () => {
-		setIsLoading(true);
-		const result: RequestResult = await logout();
-		if (result.message === 'success') {
-			notify({ message: 'Success', success: true });
+	useEffect(() => {
+		if (data) {
+			notify({ message: data.message, success: true });
 			router.push('/login');
 		}
-		setIsLoading(false);
-	}, []);
+		if (error) {
+			notify({ message: error.message, error: true });
+		}
+	}, [data, error, notify]);
 
 	return (
 		<header>
 			<Flex justify="between" align="center" height="80px" mx="100px">
 				<Logo />
-				<Button
-					variant="solid"
-					onClick={logoutCall}
+				<PongButton
+					onClick={() => logoutcall()}
 					loading={isLoading}
-					className="py-3 px-4 text-center bg-dark-700 text-xs text-dark-200 hover:text-white hover:bg-dark-600 rounded-md cursor-pointer font-bold"
+					className="bg-dark-700 text-dark-200 hover:text-white hover:bg-dark-600"
 				>
 					Log Out
-				</Button>
+				</PongButton>
 			</Flex>
 		</header>
 	);

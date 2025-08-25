@@ -1,16 +1,16 @@
 'use client';
 
-import { useAuth } from '@/app/_service/AuthContext';
 import { useMutate } from '@/app/_service/useFetcher';
+import { UpdatePasswordRequest } from '@/app/_service/user/schema';
+import { useUser } from '@/app/_service/user/userContext';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
-import { Box, Button, Card, Flex, Text } from '@radix-ui/themes';
+import { Box, Card, Flex, Text } from '@radix-ui/themes';
 import Link from 'next/link';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { PongButton } from '../../buttons/ServerButtons';
 import { useNotification } from '../../mini/useNotify';
-import { UpdatePasswordRequest } from '@/app/_service/user/schema';
-
 const UpdatePassword: React.FC = () => {
-	const { username } = useAuth();
+	const { username } = useUser();
 	const { notify } = useNotification();
 	const [type, setType] = useState<'password' | 'text'>('password');
 	const { fetchData, isLoading, error, data } = useMutate<UpdatePasswordRequest>();
@@ -70,18 +70,12 @@ const UpdatePassword: React.FC = () => {
 							</label>
 						</Flex>
 					</Box>
-					<Button
+					<PongButton
+						className="bg-accent-300 text-black disabled:bg-dark-600 disabled:text-dark-200"
 						disabled={!password}
-						variant="outline"
-						radius="small"
-						color="gray"
-						size="3"
-						className="px-4 text-center bg-accent-300 text-sm text-black cursor-pointer disabled:bg-dark-600 disabled:text-dark-200"
 						onClick={updatePasswordCall}
 						loading={isLoading}
-					>
-						Update
-					</Button>
+					></PongButton>
 				</Flex>
 			</Card>
 		</div>

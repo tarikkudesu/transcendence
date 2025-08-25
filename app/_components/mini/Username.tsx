@@ -1,10 +1,10 @@
 'use client';
 
-import { useAuth } from '@/app/_service/AuthContext';
+import { useUser } from '@/app/_service/user/userContext';
 import React from 'react';
 
 const Username: React.FC = () => {
-	const { username } = useAuth();
+	const { username } = useUser();
 	return <span>{username}</span>;
 };
 

@@ -2,18 +2,17 @@
 
 import { TournamentHistoryEntry } from '@/app/_service/game/schemas';
 import { useGET } from '@/app/_service/useFetcher';
-import { Flex, Spinner, Text } from '@radix-ui/themes';
+import { Flex, Text } from '@radix-ui/themes';
 import Link from 'next/link';
 import React from 'react';
+import { Spinner } from '../../mini/Loading';
 
 const TournamentHistory: React.FC = ({}) => {
 	const { isLoading, data: tournaments } = useGET<TournamentHistoryEntry[]>({ url: `/game/tournament/history?end=10` });
 
 	if (isLoading) return <Spinner />;
-
 	return (
 		<>
-			{!tournaments || (tournaments.length === 0 && <>No Data...</>)}
 			{tournaments &&
 				tournaments.map((ele, index) => {
 					return (

@@ -6,13 +6,13 @@ import { useGET } from '@/app/_service/useFetcher';
 import { Card, Text } from '@radix-ui/themes';
 import React from 'react';
 import { PongButton } from '../../buttons/ServerButtons';
+import { Spinner } from '../../mini/Loading';
 import { User } from '../game/User';
 
 const Blocked: React.FC = () => {
 	const { isLoading, data } = useGET<BlockedFriend[]>({ url: `/friends/blocked` });
 	const { isLoading: blocking, declineCall } = useFriends();
-	if (isLoading) return <>Loading...</>;
-	if (!data || data.length === 0) return <></>;
+	if (isLoading) return <Spinner />;
 
 	return (
 		<div className="my-[36px]">
@@ -23,28 +23,30 @@ const Blocked: React.FC = () => {
 				Manage your list of blocked friends. Note that once you unblock someone, they won’t automatically be added back to your
 				friends list.
 			</Text>
-			<Card>
-				{data.map((ele, index) => (
-					<div key={index} className="p-2 flex justify-between items-center gap-8">
-						<User.Trigger
-							username={ele.username}
-							avatar={ele.avatar_url}
-							extra={
-								<Text as="div" size="1" weight="medium" className="text-dark-300">
-									{ele.stat}
-								</Text>
-							}
-						/>
-						<PongButton
-							loading={blocking}
-							onClick={() => declineCall(ele.username)}
-							className="bg-dark-900 hover:bg-red-600 hover:text-white"
-						>
-							Unblock
-						</PongButton>
-					</div>
-				))}
-			</Card>
+			{data && (
+				<Card>
+					{data.map((ele, index) => (
+						<div key={index} className="p-2 flex justify-between items-center gap-8">
+							<User.Trigger
+								username={ele.username}
+								avatar={ele.avatar_url}
+								extra={
+									<Text as="div" size="1" weight="medium" className="text-dark-300">
+										{ele.stat}
+									</Text>
+								}
+							/>
+							<PongButton
+								loading={blocking}
+								onClick={() => declineCall(ele.username)}
+								className="bg-dark-900 hover:bg-red-600 hover:text-white"
+							>
+								Unblock
+							</PongButton>
+						</div>
+					))}
+				</Card>
+			)}
 		</div>
 	);
 };

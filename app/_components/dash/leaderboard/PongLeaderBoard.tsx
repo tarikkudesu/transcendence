@@ -5,6 +5,7 @@ import { Box, Flex, Text } from '@radix-ui/themes';
 
 import { useGET } from '@/app/_service/useFetcher';
 import { useCallback } from 'react';
+import { Spinner } from '../../mini/Loading';
 import SafeImage from '../../mini/SafeImage';
 import { User } from '../game/User';
 
@@ -100,48 +101,46 @@ const PongLeaderBoard: React.FC = ({}) => {
 	const { isLoading, data: leaderBoard } = useGET<LeaderboardEntry[]>({ url: `/game/pong/leaderboard?end=10` });
 
 	const content = useCallback(() => {
-		if (isLoading)
-			return (
-				<Text as="div" align="center" mt="5s">
-					Loading...
-				</Text>
-			);
-		if (!leaderBoard || leaderBoard.length === 0) return <>No data...</>;
+		if (isLoading) return <Spinner />;
 		return (
 			<>
-				<Flex justify="center" align="center" className="px-[40px] pt-[20px] min-h-[410px]">
-					{leaderBoard[2] && <PongLeaderBoardThirdPlayer player={leaderBoard[2]} />}
-					{leaderBoard[0] && <PongLeaderBoardFirstPlayer player={leaderBoard[0]} />}
-					{leaderBoard[1] && <PongLeaderBoardSecondPlayer player={leaderBoard[1]} />}
-				</Flex>
-				{leaderBoard.map((ele, index) => (
-					<div key={index} className="bg-dark-950 rounded-md px-[10%] py-[40px] m-8">
-						<div className="flex justify-between items-center">
-							<div className="flex justify-start gap-4">
-								<div className="h-[42px] w-[42px] rounded-full bg-dark-500 flex justify-center items-center text-xl font-black">
-									<div className="translate-y-0.5">{index + 1}</div>
-								</div>
-								<User.Trigger
-									username={ele.username}
-									avatar={ele.avatar_url}
-									extra={
-										<Text as="div" size="2" weight="bold" className="text-dark-300">
-											RANK #{index + 1}
+				{leaderBoard && leaderBoard.length && (
+					<>
+						<Flex justify="center" align="center" className="px-[40px] pt-[20px] min-h-[410px]">
+							{leaderBoard[2] && <PongLeaderBoardThirdPlayer player={leaderBoard[2]} />}
+							{leaderBoard[0] && <PongLeaderBoardFirstPlayer player={leaderBoard[0]} />}
+							{leaderBoard[1] && <PongLeaderBoardSecondPlayer player={leaderBoard[1]} />}
+						</Flex>
+						{leaderBoard.map((ele, index) => (
+							<div key={index} className="bg-dark-950 rounded-md px-[10%] py-[40px] m-8">
+								<div className="flex justify-between items-center">
+									<div className="flex justify-start gap-4">
+										<div className="h-[42px] w-[42px] rounded-full bg-dark-500 flex justify-center items-center text-xl font-black">
+											<div className="translate-y-0.5">{index + 1}</div>
+										</div>
+										<User.Trigger
+											username={ele.username}
+											avatar={ele.avatar_url}
+											extra={
+												<Text as="div" size="2" weight="bold" className="text-dark-300">
+													RANK #{index + 1}
+												</Text>
+											}
+										></User.Trigger>
+									</div>
+									<div className="">
+										<Text align="right" as="div" size="8" weight="bold" className="text-accent-300">
+											{ele.winns}
 										</Text>
-									}
-								></User.Trigger>
+										<Text align="right" as="div" size="2" weight="bold" className="text-dark-300">
+											winns
+										</Text>
+									</div>
+								</div>
 							</div>
-							<div className="">
-								<Text align="right" as="div" size="8" weight="bold" className="text-accent-300">
-									{ele.winns}
-								</Text>
-								<Text align="right" as="div" size="2" weight="bold" className="text-dark-300">
-									winns
-								</Text>
-							</div>
-						</div>
-					</div>
-				))}
+						))}
+					</>
+				)}
 			</>
 		);
 	}, [isLoading, leaderBoard]);

@@ -1,67 +1,43 @@
 'use client';
 
+import { PongButton } from '@/app/_components/buttons/ServerButtons';
 import Logo from '@/app/_components/mini/Logo';
 import { useNotification } from '@/app/_components/mini/useNotify';
-import { login, RequestResult } from '@/app/_service/auth/calls';
+import { useAuth } from '@/app/_service/auth/authContext';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
-import { Box, Button, Flex, Text } from '@radix-ui/themes';
+import { Box, Flex, Text } from '@radix-ui/themes';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { ChangeEvent, useCallback, useState } from 'react';
-import { ToastContainer } from 'react-toastify';
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 
 const Login: React.FC<unknown> = () => {
-	const router = useRouter();
-	const { notify } = useNotification();
+	const { logincall, isLoading, data, error, reset } = useAuth();
 	const [type, setType] = useState<'password' | 'text'>('password');
-	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [username, setUsername] = useState<string>('');
 	const [password, setPass] = useState<string>('');
+	const { notify } = useNotification();
+	const router = useRouter();
+
+	useEffect(() => {
+		if (data) {
+			notify({ message: data.message, success: true });
+			const email: string = data.email ?? '';
+			reset();
+			router.push(`2fa-authentication?email=${email ?? ''}`);
+		}
+		if (error) {
+			notify({ message: error.message, error: true });
+			reset();
+		}
+	}, [data, error, notify, reset]);
 
 	const switchtype = useCallback(() => {
 		if (type === 'password') setType('text');
 		else setType('password');
 	}, [type]);
 
-	const loginCall = useCallback(async () => {
-		if (!username || !password) return;
-		setIsLoading(true);
-		const result: RequestResult = await login({ username, password });
-		if (result.message === 'success') {
-			notify({ message: 'Success', success: true });
-			// router.push(`2fa-authentication?email=${result.result?.email ?? ''}`); // ! restore Later
-			router.push('/main');
-		} else notify({ message: result.message, error: true });
-		setIsLoading(false);
-	}, [notify, password, username]);
-
-	const contextClass = {
-		success: 'bg-dark-900 border-l-accent-300',
-		error: 'bg-dark-900 border-l-red-600',
-		info: 'bg-dark-900 border-l-blue-500',
-		warning: 'bg-dark-900 border-l-golden-500',
-		default: 'bg-dark-900 border-l-accent-300',
-		dark: 'bg-dark-900 border-l-accent-300',
-	};
-
 	return (
 		<main>
-			<ToastContainer
-				position="bottom-right"
-				autoClose={5000}
-				hideProgressBar
-				closeOnClick={false}
-				rtl={false}
-				pauseOnFocusLoss
-				draggable
-				pauseOnHover
-				theme="dark"
-				toastClassName={(context) =>
-					contextClass[context?.type || 'default'] +
-					' py-8 px-2 mt-1 rounded-md min-w-[300px] text-left border border-dark-500 border-l-4 border-l-accent-300 flex justify-center items-start'
-				}
-				closeButton={false}
-			/>
 			<div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
 				<Logo />
 				<Box height="24px" />
@@ -109,16 +85,14 @@ const Login: React.FC<unknown> = () => {
 						</label>
 					</Flex>
 					<Box height="20px" />
-					<Button
-						radius="small"
-						size="3"
-						disabled={!password || !username}
-						className="w-full p-2.5 disabled:bg-dark-600 bg-accent-300 text-center"
-						onClick={loginCall}
+					<PongButton
 						loading={isLoading}
+						disabled={!password || !username}
+						onClick={() => logincall({ username, password })}
+						className="w-full disabled:bg-dark-600 disabled:text-white bg-accent-300 text-black hover:bg-accent-200"
 					>
 						Sign In
-					</Button>
+					</PongButton>
 					<Box height="20px" />
 					<Flex gap="6" my="2" justify="between" className="items-center">
 						<Box height="2px" className="bg-dark-600 w-full"></Box>
@@ -126,15 +100,12 @@ const Login: React.FC<unknown> = () => {
 						<Box height="2px" className="bg-dark-600 w-full"></Box>
 					</Flex>
 					<Box height="20px" />
-					<Button
-						variant="outline"
-						radius="small"
-						color="gray"
-						size="3"
-						className="w-full p-2.5 text-center bg-transparent text-sm"
+					<PongButton
+						loading={isLoading}
+						className="w-full text-white hover:text-black bg-transparent hover:bg-accent-300 border border-accent-300"
 					>
 						Sign in with Google
-					</Button>
+					</PongButton>
 					<Box height="20px" />
 					<Link href="/signup" className="text-sm text-dark-200">
 						New to YingYangPong? <Text className="text-accent-300">Create Account</Text>

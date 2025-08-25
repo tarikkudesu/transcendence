@@ -1,8 +1,9 @@
 import { Theme } from '@radix-ui/themes';
 import type { Metadata, Viewport } from 'next';
 import { Josefin_Sans } from 'next/font/google';
-import { Toaster } from 'react-hot-toast';
+
 import './globals.css';
+import AuthProvider from './_service/auth/authProvider';
 
 const josefin = Josefin_Sans({
 	subsets: ['latin'],
@@ -39,8 +40,7 @@ export default function RootLayout({
 					hasBackground={false}
 					className={`${josefin.className} bg-dark-900 text-amber-50 m-0`}
 				>
-					<Toaster position="top-center" reverseOrder={false} />
-					{children}
+					<AuthProvider>{children}</AuthProvider>
 				</Theme>
 			</body>
 		</html>

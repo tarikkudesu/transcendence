@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { PongButton } from '@/app/_components/buttons/ServerButtons';
-import { useAuth } from '@/app/_service/AuthContext';
+import { useUser } from '@/app/_service/user/userContext';
 import { ClientPlayer, EngageMessage, FlipMessage, InviteMessage, useGameSocket } from '@/app/_service/ws/game';
 import { SvgChat, SvgDoom, SvgSoundOff, SvgSoundOn } from '@/app/_svg/svg';
 import { Box, Grid } from '@radix-ui/themes';
@@ -53,10 +53,10 @@ const Doom: React.FC<{ sound: boolean; gid: string }> = ({ sound, gid }) => {
 };
 
 const RemoteDoom: React.FC<{ gid: string; opponent: string }> = ({ gid, opponent }) => {
-	const { username } = useAuth();
+	const { username } = useUser();
 	const router = useRouter();
 	const [sound, setSound] = useState<boolean>(true);
-	const { pooler: getPooler, send, pong: game, open } = useGameSocket();
+	const { pooler: getPooler, send, doom: game, open } = useGameSocket();
 
 	const pooler: ClientPlayer | undefined = getPooler(opponent);
 

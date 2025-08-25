@@ -3,22 +3,16 @@
 import { LeaderboardEntry } from '@/app/_service/game/schemas';
 import { useGET } from '@/app/_service/useFetcher';
 import { Text } from '@radix-ui/themes';
-import { useCallback } from 'react';
+import { Spinner } from '../../mini/Loading';
 import { User } from '../game/User';
 
 const PongLeaderBoard: React.FC = ({}) => {
 	const { isLoading, data: leaderBoard } = useGET<LeaderboardEntry[]>({ url: `/game/pong/leaderboard` });
-	const content = useCallback(() => {
-		if (isLoading)
-			return (
-				<Text as="div" align="center" mt="5s">
-					Loading...
-				</Text>
-			);
-		if (!leaderBoard || leaderBoard.length === 0) return <>No data...</>;
-		return (
-			<>
-				{leaderBoard.map((ele, index) => (
+	if (isLoading) return <Spinner />;
+	return (
+		<>
+			{leaderBoard &&
+				leaderBoard.map((ele, index) => (
 					<div key={index} className="bg-dark-950 rounded-md px-[10%] py-[40px] m-8">
 						<div className="flex justify-between items-center">
 							<div className="flex justify-start gap-4">
@@ -46,11 +40,8 @@ const PongLeaderBoard: React.FC = ({}) => {
 						</div>
 					</div>
 				))}
-			</>
-		);
-	}, [isLoading, leaderBoard]);
-
-	return <>{content()}</>;
+		</>
+	);
 };
 
 export default PongLeaderBoard;

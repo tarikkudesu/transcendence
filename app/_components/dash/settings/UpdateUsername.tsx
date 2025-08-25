@@ -1,17 +1,20 @@
 'use client';
 
-import { useAuth } from '@/app/_service/AuthContext';
 import { useMutate } from '@/app/_service/useFetcher';
 import { UpdateUsernameRequest } from '@/app/_service/user/schema';
-import { Button, Card, Flex, Text } from '@radix-ui/themes';
+import { useUser } from '@/app/_service/user/userContext';
+import { Card, Flex, Text } from '@radix-ui/themes';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { PongButton } from '../../buttons/ServerButtons';
 import { useNotification } from '../../mini/useNotify';
+import { useAuth } from '@/app/_service/auth/authContext';
 
 const UpdateUsername: React.FC = () => {
-	const { username } = useAuth();
+	const { username } = useUser();
 	const { notify } = useNotification();
 	const { fetchData, isLoading, error, data } = useMutate<UpdateUsernameRequest>();
 	const [newUsername, setNewUsername] = useState<string>('');
+	const { logoutcall } = useAuth();
 
 	const updateUsernameCall = useCallback(async () => {
 		if (!newUsername) return;
@@ -24,8 +27,11 @@ const UpdateUsername: React.FC = () => {
 
 	useEffect(() => {
 		if (error) notify({ message: error.message, error: true });
-		if (data) notify({ message: 'Username updated successfully', success: true });
-	}, [data, error, notify]);
+		if (data) {
+			notify({ message: 'Username updated successfully', success: true });
+			logoutcall();
+		}
+	}, [data, error, logoutcall, notify]);
 
 	return (
 		<div className="my-[36px]">
@@ -48,18 +54,14 @@ const UpdateUsername: React.FC = () => {
 						type="text"
 						name="text"
 					/>
-					<Button
+					<PongButton
+						className="bg-accent-300 text-black disabled:bg-dark-600 disabled:text-dark-200"
 						disabled={!newUsername}
-						variant="outline"
-						radius="small"
-						color="gray"
-						size="3"
-						className="px-4 text-center bg-accent-300 text-sm text-black cursor-pointer disabled:bg-dark-600 disabled:text-dark-200"
 						onClick={updateUsernameCall}
 						loading={isLoading}
 					>
 						Save
-					</Button>
+					</PongButton>
 				</Flex>
 			</Card>
 		</div>

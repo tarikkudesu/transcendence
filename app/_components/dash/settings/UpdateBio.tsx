@@ -1,14 +1,12 @@
 'use client';
 
-import { RequestResult } from '@/app/_service/auth/calls';
-import { useAuth } from '@/app/_service/AuthContext';
-import { updateBio } from '@/app/_service/user/calls';
+import { useUser } from '@/app/_service/user/userContext';
 import { Button, Card, Flex, Text, TextField } from '@radix-ui/themes';
 import React, { ChangeEvent, useCallback, useState } from 'react';
 import { useNotification } from '../../mini/useNotify';
 
 const UpdateBio: React.FC = () => {
-	const { username } = useAuth();
+	const { username } = useUser();
 	const { notify } = useNotification();
 	const [bio, setBio] = useState<string>('');
 	const [isLoading, setIsLoading] = useState<boolean>(false);
