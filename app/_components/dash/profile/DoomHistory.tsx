@@ -2,16 +2,15 @@
 
 import { DoomHistoryEntry } from '@/app/_service/game/schemas';
 import { useGET } from '@/app/_service/useFetcher';
-import { SvgClockArrow, SvgSpinner } from '@/app/_svg/svg';
+import { SvgClockArrow, SvgMore, SvgSpinner } from '@/app/_svg/svg';
 import { Badge, Flex, Text } from '@radix-ui/themes';
 import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
 import { useCallback } from 'react';
-
-const API_BASE = process.env.API_BASE_URL ?? 'http://localhost:80/api/v1';
+import { User } from '../game/User';
 
 const DoomHistory: React.FC<{ username: string }> = ({ username }) => {
-	const { data, error, isLoading } = useGET<DoomHistoryEntry[]>({ url: `${API_BASE}/game/doom/history/${username}?end=10` });
+	const { data, error, isLoading } = useGET<DoomHistoryEntry[]>({ url: `/game/doom/history/${username}?end=10` });
 
 	const content = useCallback(() => {
 		if (isLoading) return <SvgSpinner size={24} />;
@@ -23,11 +22,11 @@ const DoomHistory: React.FC<{ username: string }> = ({ username }) => {
 				{data.map((ele, index) => (
 					<div key={index} className="grid grid-cols-6 grid-rows-5 gap-[8px] text-nowrap">
 						<Text as="div" size="2" className="text-dark-50 col-span-3 row-span-5">
-							<Link href={`/main/dashboard/${ele.player_username}`}>{ele.player_username}</Link>
+							<User.Username className="text-white" username={ele.player_username} />
 							<Text weight="bold" className="text-accent-300 mx-2">
 								:
 							</Text>
-							<Link href={`/main/dashboard/${ele.opponent_username}`}>{ele.opponent_username}</Link>
+							<User.Username className="text-white" username={ele.opponent_username} />
 						</Text>
 						<Text className="row-span-5 col-start-4">
 							{ele.player_username === ele.winner_username ? (
@@ -55,18 +54,7 @@ const DoomHistory: React.FC<{ username: string }> = ({ username }) => {
 					</Text>
 				</div>
 				<Link href={`/main/doomhistory/${username}`}>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 640 640"
-						height={24}
-						width={24}
-						className="text-dark-200 hover:text-accent-300"
-					>
-						<path
-							fill="currentColor"
-							d="M224.5 160C224.5 147.1 232.3 135.4 244.3 130.4C256.3 125.4 270 128.2 279.1 137.4L439.1 297.4C451.6 309.9 451.6 330.2 439.1 342.7L279.1 502.7C269.9 511.9 256.2 514.6 244.2 509.6C232.2 504.6 224.5 492.9 224.5 480L224.5 160z"
-						/>
-					</svg>
+					<SvgMore size={24} className="text-dark-200 hover:text-accent-300" />
 				</Link>
 			</Flex>
 			<div className="grid grid-cols-6 grid-rows-5 gap-2">

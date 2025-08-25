@@ -3,15 +3,17 @@
 import { TournamentHistoryEntry } from '@/app/_service/game/schemas';
 import { useGET } from '@/app/_service/useFetcher';
 import { Flex, Spinner, Text } from '@radix-ui/themes';
+import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
 import React from 'react';
-
-const API_BASE = process.env.API_BASE_URL ?? 'http://localhost:80/api/v1';
+import { PongButton } from '../../buttons/ServerButtons';
 
 const TournamentHistory: React.FC = ({}) => {
-	const { isLoading, data: tournaments } = useGET<TournamentHistoryEntry[]>({ url: `${API_BASE}/game/tournament/history?end=10` });
+	const { isLoading, data: tournaments } = useGET<TournamentHistoryEntry[]>({ url: `/game/tournament/history?end=10` });
 
 	if (isLoading) return <Spinner />;
+
+	console.log(tournaments);
 
 	return (
 		<div className="my-[80px]">
@@ -30,23 +32,23 @@ const TournamentHistory: React.FC = ({}) => {
 								<Text as="div" size="7" className="font-black text-white">
 									{ele.tournament_name}
 									<Text as="div" size="3" className="text-dark-200">
-										{ele.tournament_date}
+										{formatDistanceToNow(Number(ele.tournament_date), { addSuffix: true })}
 									</Text>
 								</Text>
 								<Link href={'/main/dashboard/tournament/' + ele.tournament_name}>
-									<button className="py-3 px-6 text-center bg-accent-300 text-xs text-black rounded-md cursor-pointer font-bold">
-										See Details
-									</button>
+									<PongButton className="bg-accent-300 text-black font-bold">See Details</PongButton>
 								</Link>
 							</Flex>
 						</div>
 					);
 				})}
-			<Link href="/main/tournaments">
-				<Text as="div" align="center" size="1" mb="2" weight="bold" className="text-accent-300">
-					See full history
-				</Text>
-			</Link>
+			{tournaments?.length === 10 && (
+				<Link href="/main/tournaments">
+					<Text as="div" align="center" size="1" mb="2" weight="bold" className="text-accent-300">
+						See full history
+					</Text>
+				</Link>
+			)}
 		</div>
 	);
 };

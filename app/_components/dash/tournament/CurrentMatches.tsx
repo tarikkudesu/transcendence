@@ -3,7 +3,7 @@
 import { useGameSocket } from '@/app/_service/ws/game';
 import { Text } from '@radix-ui/themes';
 import React, { useCallback } from 'react';
-import UserCallout from '../game/UserCallout';
+import { User } from '../game/User';
 
 const CurrentMatches: React.FC = ({}) => {
 	const { tournament } = useGameSocket();
@@ -18,17 +18,15 @@ const CurrentMatches: React.FC = ({}) => {
 		return (
 			<>
 				<Text as="div" align="center" size="7" my="8" weight="bold">
-					ROUND <span className="text-accent-300">{tournament.round}</span>
+					ROUND <span className="text-accent-300">#{tournament.round}</span>
 				</Text>
 				{tournament.nextMatches.map((ele, index) => (
 					<div key={index} className="my-2 flex justify-center">
-						<Text size="2" className="text-dark-50 col-span-2 row-span-5">
-							<UserCallout username={ele.player}>{ele.player}</UserCallout>
-							<Text weight="bold" className="text-accent-300 mx-2">
-								:
-							</Text>
-							<UserCallout username={ele.opponent}>{ele.opponent}</UserCallout>
+						<User.Username className="text-white" username={ele.player} />
+						<Text weight="bold" className="text-accent-300 mx-2">
+							:
 						</Text>
+						<User.Username className="text-white" username={ele.opponent} />
 					</div>
 				))}
 			</>
@@ -49,3 +47,40 @@ const CurrentMatches: React.FC = ({}) => {
 };
 
 export default CurrentMatches;
+// const content = useCallback(() => {
+// 	return (
+// 		<>
+// 			<Text as="div" align="center" size="7" mt="8" mb="4" weight="bold">
+// 				ROUND <span className="text-accent-300">#4</span>
+// 			</Text>
+// 			<div className="my-2 flex justify-center">
+// 				<User.Username className='text-white' username="Najia" />
+// 				<Text weight="bold" className="text-accent-300 mx-2">
+// 					:
+// 				</Text>
+// 				<User.Username className='text-white' username="Najia" />
+// 			</div>
+// 			<div className="my-2 flex justify-center">
+// 				<User.Username className='text-white' username="Najia" />
+// 				<Text weight="bold" className="text-accent-300 mx-2">
+// 					:
+// 				</Text>
+// 				<User.Username className='text-white' username="Najia" />
+// 			</div>
+// 			<div className="my-2 flex justify-center">
+// 				<User.Username className='text-white' username="Najia" />
+// 				<Text weight="bold" className="text-accent-300 mx-2">
+// 					:
+// 				</Text>
+// 				<User.Username className='text-white' username="Najia" />
+// 			</div>
+// 			<div className="my-2 flex justify-center">
+// 				<User.Username className='text-white' username="Najia" />
+// 				<Text weight="bold" className="text-accent-300 mx-2">
+// 					:
+// 				</Text>
+// 				<User.Username className='text-white' username="Najia" />
+// 			</div>
+// 		</>
+// 	);
+// }, []);

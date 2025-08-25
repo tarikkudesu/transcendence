@@ -1,3 +1,7 @@
+export interface MutateResponse {
+	success: boolean;
+}
+
 export interface UpdatePasswordRequest {
 	newpassword: string;
 }

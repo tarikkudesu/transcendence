@@ -28,7 +28,6 @@ const ChatList: React.FC = ({}) => {
 
 	const filterPanel = useCallback(
 		(mate: OuterMessage): boolean => {
-			console.log(search, mate.lastMessage.sender);
 			if (!search) return true;
 			return mate.friend.toLowerCase().includes(search.toLowerCase());
 		},
@@ -69,7 +68,7 @@ const ChatList: React.FC = ({}) => {
 					></input>
 				</div>
 				<Box height="20px" />
-				<ScrollArea type="always" scrollbars="vertical" style={{ height: 654 }}>
+				<ScrollArea type="auto" scrollbars="vertical" style={{ height: 654 }}>
 					{panel.filter(filterPanel).length === 0 && (
 						<Text as="div" align="center" className="h-full flex justify-center items-center">
 							You have no active chats

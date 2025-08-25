@@ -97,6 +97,7 @@ const NotificationCenter = () => {
 	};
 	const getNotificationAction = (
 		sender: string,
+		id: number,
 		event:
 			| 'NEWTOURNAMENTDATE'
 			| 'REGESTRATIONOPEN'
@@ -113,6 +114,7 @@ const NotificationCenter = () => {
 						className="w-full bg-dark-950 hover:bg-accent-300 hover:text-black text-sm"
 						onClick={() => {
 							setActive(false);
+							send(ReadMessage(id));
 							router.push(`/main/dashboard/chat?chatemate=${sender}`);
 						}}
 					>
@@ -130,6 +132,7 @@ const NotificationCenter = () => {
 							className="w-full bg-dark-950 hover:bg-accent-300 hover:text-black text-sm"
 							onClick={() => {
 								setActive(false);
+								send(ReadMessage(id));
 								router.push('/main/dashboard/tournament');
 							}}
 						>
@@ -144,6 +147,7 @@ const NotificationCenter = () => {
 							className="w-full bg-dark-950 hover:bg-accent-300 hover:text-black text-sm"
 							onClick={() => {
 								setActive(false);
+								send(ReadMessage(id));
 								router.push('/main/dashboard/tournament');
 							}}
 						>
@@ -195,11 +199,11 @@ const NotificationCenter = () => {
 											<div className="" onClick={() => send(ReadMessage(notification.id))}>
 												<SvgTrash
 													size={24}
-													className="p-1 rounded-md text-dark-200 hover:text-red-500 absolute top-3 right-3 cursor-pointer"
+													className="p-1 rounded-md text-dark-200 hover:text-red-600 absolute top-3 right-3 cursor-pointer"
 												/>
 											</div>
 										</div>
-										{getNotificationAction(notification.sender, notification.event)}
+										{getNotificationAction(notification.sender, notification.id, notification.event)}
 									</div>
 								);
 							})}

@@ -3,7 +3,7 @@
 import { useGameSocket } from '@/app/_service/ws/game';
 import { Box, Flex, Text, Tooltip } from '@radix-ui/themes';
 import React, { useCallback } from 'react';
-import PlayerCard from '../game/PlayerCard';
+import { User } from '../game/User';
 
 const CurrentStrikes: React.FC = ({}) => {
 	const { tournament } = useGameSocket();
@@ -20,7 +20,7 @@ const CurrentStrikes: React.FC = ({}) => {
 				{tournament.results.map((ele, index) => (
 					<Tooltip content={ele.username} key={index}>
 						<Flex align="center" direction="column" gap="2">
-							<PlayerCard pooler={{ game: 'pong', inviteStatus: 'unsent', playerStatus: 'free', username: ele.username }} />
+							<User.Avatar username={ele.username} />
 							<Box height={`${ele.level * 20}px`} width="20px" className="rounded-full bg-accent-300"></Box>
 							<Text weight="bold" size="4">
 								{ele.level}
@@ -31,7 +31,7 @@ const CurrentStrikes: React.FC = ({}) => {
 			</Flex>
 		);
 	}, [tournament.results, tournament.state]);
-
+	
 	return (
 		<div className="my-[80px]">
 			<Text as="div" align="center" size="7" mb="2" weight="bold" className="text-accent-300">
@@ -46,3 +46,46 @@ const CurrentStrikes: React.FC = ({}) => {
 };
 
 export default CurrentStrikes;
+
+// const content = useCallback(() => {
+// 	return (
+// 		<Flex align="end" justify="center" gap="4">
+// 			<Tooltip content="tarikkudesu">
+// 				<Flex align="center" direction="column" gap="2">
+// 					<User.Avatar username="tarikkudesu" />
+// 					<Box height={`${1 * 20}px`} width="20px" className="rounded-full bg-accent-300"></Box>
+// 					<Text weight="bold" size="4">
+// 						{1}
+// 					</Text>
+// 				</Flex>
+// 			</Tooltip>
+// 			<Tooltip content="Najia24">
+// 				<Flex align="center" direction="column" gap="2">
+// 					<User.Avatar username="Najia24" />
+// 					<Box height={`${3 * 20}px`} width="20px" className="rounded-full bg-accent-300"></Box>
+// 					<Text weight="bold" size="4">
+// 						{3}
+// 					</Text>
+// 				</Flex>
+// 			</Tooltip>
+// 			<Tooltip content="tarikkudesu">
+// 				<Flex align="center" direction="column" gap="2">
+// 					<User.Avatar username="tarikkudesu" />
+// 					<Box height={`${4 * 20}px`} width="20px" className="rounded-full bg-accent-300"></Box>
+// 					<Text weight="bold" size="4">
+// 						{4}
+// 					</Text>
+// 				</Flex>
+// 			</Tooltip>
+// 			<Tooltip content="tarikkudesu">
+// 				<Flex align="center" direction="column" gap="2">
+// 					<User.Avatar username="tarikkudesu" />
+// 					<Box height={`${2 * 20}px`} width="20px" className="rounded-full bg-accent-300"></Box>
+// 					<Text weight="bold" size="4">
+// 						{2}
+// 					</Text>
+// 				</Flex>
+// 			</Tooltip>
+// 		</Flex>
+// 	);
+// }, []);

@@ -2,16 +2,18 @@
 
 import Logo from '@/app/_components/mini/Logo';
 import { useNotification } from '@/app/_components/mini/useNotify';
-import { RequestResult, resendOtp, verify2FA } from '@/app/_service/auth/calls';
+import { useMutate } from '@/app/_service/useFetcher';
 import { Box, Button, Text } from '@radix-ui/themes';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 
 const LoginVerify: React.FC<unknown> = () => {
 	const router = useRouter();
+	const { notify } = useNotification();
 	const searchParams = useSearchParams();
-	const [email, setEmail] = useState<string>('');
 	const [code, setCode] = useState<string>('');
+	const [email, setEmail] = useState<string>('');
+	const { fetchData, data, isLoading, error } = useMutate();
 
 	useEffect(() => {
 		const mail: string | null = searchParams.get('email');
@@ -22,27 +24,26 @@ const LoginVerify: React.FC<unknown> = () => {
 		setEmail(mail);
 	}, [router, searchParams]);
 
-	const { notify } = useNotification();
-	const [isLoading, setIsLoading] = useState<boolean>(false);
+	// const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const verifyCall = useCallback(async () => {
 		if (!code || !email) return;
-		setIsLoading(true);
-		const result: RequestResult = await verify2FA({ email, verificationCode: code });
-		if (result.message === 'success') {
-			notify({ message: 'Success', success: true });
-			router.push(`2fa-authentication?email=${result.result?.email ?? ''}`);
-		} else notify({ message: result.message, error: true });
-		setIsLoading(false);
+		// setIsLoading(true);
+		// const result: RequestResult = await verify2FA({ email, verificationCode: code });
+		// if (result.message === 'success') {
+		// 	notify({ message: 'Success', success: true });
+		// 	router.push(`2fa-authentication?email=${result.result?.email ?? ''}`);
+		// } else notify({ message: result.message, error: true });
+		// setIsLoading(false);
 	}, [code, email, notify, router]);
 
 	const resendCall = useCallback(async () => {
-		setIsLoading(true);
-		const result: RequestResult = await resendOtp({ email });
-		if (result.message === 'success') {
-			notify({ message: 'Success', success: true });
-		} else notify({ message: result.message, error: true });
-		setIsLoading(false);
+		// setIsLoading(true);
+		// const result: RequestResult = await resendOtp({ email });
+		// if (result.message === 'success') {
+		// 	notify({ message: 'Success', success: true });
+		// } else notify({ message: result.message, error: true });
+		// setIsLoading(false);
 	}, [email, notify]);
 
 	return (

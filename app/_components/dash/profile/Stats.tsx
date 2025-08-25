@@ -5,19 +5,9 @@ import { useGET } from '@/app/_service/useFetcher';
 import { SvgChart } from '@/app/_svg/svg';
 import { Separator, Text } from '@radix-ui/themes';
 
-const API_BASE = process.env.API_BASE_URL ?? 'http://localhost:80/api/v1';
-
 const Stats: React.FC<{ username: string }> = ({ username }) => {
-	const {
-		data: pong,
-		isLoading: pongIsLoading,
-		error: pongError,
-	} = useGET<PongSummary>({ url: `${API_BASE}/game/pong/summary/${username}` });
-	const {
-		data: doom,
-		isLoading: doomIsLoading,
-		error: doomError,
-	} = useGET<DoomSummary>({ url: `${API_BASE}/game/doom/summary/${username}` });
+	const { data: pong, isLoading: pongIsLoading, error: pongError } = useGET<PongSummary>({ url: `/game/pong/summary/${username}` });
+	const { data: doom, isLoading: doomIsLoading, error: doomError } = useGET<DoomSummary>({ url: `/game/doom/summary/${username}` });
 
 	function content() {
 		if (pongIsLoading || doomIsLoading) return <>Loading...</>;

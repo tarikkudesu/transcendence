@@ -4,6 +4,7 @@ import { RegisterMessage, useGameSocket } from '@/app/_service/ws/game';
 import { Badge, Box, Text } from '@radix-ui/themes';
 import { useRouter } from 'next/navigation';
 import React, { ChangeEvent, useState } from 'react';
+import { PongButton } from '../../buttons/ServerButtons';
 
 const NextTournament: React.FC = ({}) => {
 	const { tournament, send } = useGameSocket();
@@ -25,7 +26,7 @@ const NextTournament: React.FC = ({}) => {
 							NAME
 						</Text>
 						<Text size="2" className="text-dark-200 row-span-5 col-start-3">
-							EMPTY SLOTS
+							SLOTS
 						</Text>
 						<Text size="2" className="text-dark-200 row-span-5 col-start-4">
 							STATE
@@ -50,7 +51,7 @@ const NextTournament: React.FC = ({}) => {
 					<Box height="18px" />
 					{tournament.state !== 'playing' && (
 						<>
-							<label className="text-sm text-dark-200 my-3">
+							<label className="text-sm text-dark-200 my-4">
 								Alias
 								<input
 									required
@@ -58,29 +59,31 @@ const NextTournament: React.FC = ({}) => {
 									maxLength={24}
 									value={alias}
 									placeholder="alias"
-									className="w-full my-1 outline-none rounded-md px-3 py-2.5 text-sm bg-dark-600 text-white"
+									className={`w-full mt-1 mb-4 outline-none rounded-md px-3 py-2.5 text-sm bg-dark-600 text-white ${
+										alias ? '' : 'border border-red-600'
+									}`}
 									onChange={(e: ChangeEvent<HTMLInputElement>) => setAlias(e.target.value)}
 									type="text"
 									name="alias"
 								></input>
 							</label>
-							<button
+							<PongButton
 								disabled={tournament.state !== 'open' || tournament.registered || !alias}
 								onClick={() => send(RegisterMessage('pong', alias))}
-								className="w-full py-2 my-3 px-4 text-center border-[1px] border-accent-300 bg-dark-950 disabled:border-dark-200 disabled:bg-dark-600 hover:bg-dark-900 text-sm disabled:opacity-40 text-white rounded-md cursor-pointer font-bold"
+								className="w-full bg-accent-300 disabled:bg-dark-600 disabled:text-white disabled:opacity-40 text-black font-bold"
 							>
 								Register Now!
-							</button>
+							</PongButton>
 						</>
 					)}
 					{tournament.state === 'playing' && tournament.registered && (
-						<button
+						<PongButton
 							disabled={tournament.gid === ''}
 							onClick={() => router.push(`/main/dashboard/gameplay/pong/${tournament.gid}/tournament`)}
-							className="w-full py-2 my-3 px-4 text-center bg-accent-300 disabled:bg-dark-600 disabled:text-white text-sm disabled:opacity-40 text-black rounded-md cursor-pointer font-bold"
+							className="w-full bg-accent-300 disabled:bg-dark-600 disabled:text-white disabled:opacity-40 text-black font-bold"
 						>
 							Play
-						</button>
+						</PongButton>
 					)}
 				</div>
 			</div>

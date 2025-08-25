@@ -4,26 +4,96 @@ import { useGET } from '@/app/_service/useFetcher';
 import { UserProfile } from '@/app/_service/user/schema';
 import { ClientPlayer, InviteMessage, useGameSocket } from '@/app/_service/ws/game';
 import { SvgChat, SvgDoom, SvgPong, SvgProfile, SvgSpinner } from '@/app/_svg/svg';
-import { Badge, Text } from '@radix-ui/themes';
+import { Badge, Link, Text } from '@radix-ui/themes';
 import { useRouter } from 'next/navigation';
 import React, { useCallback, useState } from 'react';
 import { PongButton } from '../../buttons/ServerButtons';
 import SafeImage from '../../mini/SafeImage';
 
-interface TriggerProps {
+const Username: React.FC<{ username: string; className?: string }> = ({ username, className }) => {
+	return (
+		<Link href={`/main/dashboard/${username}`}>
+			<Text className={`${className} hover:text-accent-300`}>{username}</Text>
+		</Link>
+	);
+};
+const Avatar: React.FC<{ username: string }> = ({ username }) => {
+	const { data } = useGET<UserProfile>({ url: `/users/${username}` });
+
+	if (!data)
+		return (
+			<SafeImage
+				fallbackSrc="/Logo.png"
+				priority
+				className={`rounded-full cursor-pointer border-2 border-accent-300`}
+				src={'/Logo.png'}
+				alt="player card"
+				width={42}
+				height={42}
+			></SafeImage>
+		);
+	return (
+		<>
+			<Link href={`/main/dashboard/${username}`}>
+				<SafeImage
+					fallbackSrc="/Logo.png"
+					priority
+					className={`rounded-full cursor-pointer border-2 border-accent-300`}
+					src={data.avatar}
+					alt="player card"
+					width={42}
+					height={42}
+				></SafeImage>
+			</Link>
+		</>
+	);
+};
+const Profile: React.FC<{ username: string }> = ({ username }) => {
+	const { data } = useGET<UserProfile>({ url: `/users/${username}` });
+
+	if (!data)
+		return (
+			<>
+				<div className="flex justify-start items-center">
+					<SafeImage
+						priority
+						width={42}
+						height={42}
+						src={'/Logo.png'}
+						alt="player card"
+						fallbackSrc="/Logo.png"
+						className={'rounded-full cursor-pointer'}
+					></SafeImage>
+					<Text as="div" className="ml-4 text-md font-bold">
+						{username}
+					</Text>
+				</div>
+			</>
+		);
+	return (
+		<>
+			<div className="flex justify-start items-center">
+				<SafeImage
+					priority
+					width={42}
+					height={42}
+					src={data.avatar}
+					alt="player card"
+					fallbackSrc="/Logo.png"
+					className={'rounded-full cursor-pointer'}
+				></SafeImage>
+				<Text as="div" className="ml-4 text-md font-bold">
+					{username}
+				</Text>
+			</div>
+		</>
+	);
+};
+const Trigger: React.FC<{
 	username: string;
 	avatar: string;
 	extra: React.ReactNode;
-}
-
-interface DialogProps {
-	children: React.ReactNode;
-	username: string;
-}
-
-const API_BASE = process.env.API_BASE_URL ?? 'http://localhost:80/api/v1';
-
-const Trigger: React.FC<TriggerProps> = ({ username, avatar, extra }) => {
+}> = ({ username, avatar, extra }) => {
 	return (
 		<>
 			<div className="flex justify-start items-center">
@@ -44,10 +114,12 @@ const Trigger: React.FC<TriggerProps> = ({ username, avatar, extra }) => {
 		</>
 	);
 };
-
-const Dialog: React.FC<DialogProps> = ({ username, children }) => {
+const Dialog: React.FC<{
+	children: React.ReactNode;
+	username: string;
+}> = ({ username, children }) => {
 	const { friend: getFriend, isLoading: actionLoading } = useFriends();
-	const { data: user, error, isLoading } = useGET<UserProfile>({ url: `${API_BASE}/users/${username}` });
+	const { data: user, error, isLoading } = useGET<UserProfile>({ url: `/users/${username}` });
 	const { pooler: getPooler, send } = useGameSocket();
 	const [active, setActive] = useState<boolean>();
 	const router = useRouter();
@@ -179,4 +251,7 @@ const Dialog: React.FC<DialogProps> = ({ username, children }) => {
 export const User = {
 	Trigger,
 	Dialog,
+	Username,
+	Profile,
+	Avatar,
 };

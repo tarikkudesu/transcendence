@@ -8,8 +8,6 @@ import { useCallback } from 'react';
 import SafeImage from '../../mini/SafeImage';
 import { User } from '../game/User';
 
-const API_BASE = process.env.API_BASE_URL ?? 'http://localhost:80/api/v1';
-
 interface PongLeaderBoardPlayerProps {
 	player: LeaderboardEntry;
 }
@@ -99,7 +97,7 @@ const PongLeaderBoardThirdPlayer: React.FC<PongLeaderBoardPlayerProps> = ({ play
 };
 
 const PongLeaderBoard: React.FC = ({}) => {
-	const { isLoading, data: leaderBoard } = useGET<LeaderboardEntry[]>({ url: `${API_BASE}/game/pong/leaderboard?end=10` });
+	const { isLoading, data: leaderBoard } = useGET<LeaderboardEntry[]>({ url: `/game/pong/leaderboard?end=10` });
 
 	const content = useCallback(() => {
 		if (isLoading)

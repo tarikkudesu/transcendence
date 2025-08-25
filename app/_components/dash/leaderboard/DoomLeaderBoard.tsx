@@ -9,8 +9,6 @@ import SafeImage from '../../mini/SafeImage';
 import { User } from '../game/User';
 import UserCallout from '../game/UserCallout';
 
-const API_BASE = process.env.API_BASE_URL ?? 'http://localhost:80/api/v1';
-
 interface DoomLeaderBoardPlayerProps {
 	player: LeaderboardEntry;
 }
@@ -100,7 +98,7 @@ const DoomLeaderBoardThirdPlayer: React.FC<DoomLeaderBoardPlayerProps> = ({ play
 };
 
 const DoomLeaderBoard: React.FC = ({}) => {
-	const { isLoading, data: leaderBoard } = useGET<LeaderboardEntry[]>({ url: `${API_BASE}/game/doom/leaderboard?end=10` });
+	const { isLoading, data: leaderBoard } = useGET<LeaderboardEntry[]>({ url: `/game/doom/leaderboard?end=10` });
 	const content = useCallback(() => {
 		if (isLoading)
 			return (

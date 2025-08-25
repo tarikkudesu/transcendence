@@ -93,7 +93,7 @@ export const Disconnected: React.FC<CardsProps> = ({ player }) => {
 								<SvgWifi size={24} />
 							</div>
 						</div>
-						<h2 className="text-2xl font-bold mb-2 text-red-500">Disonnected</h2>
+						<h2 className="text-2xl font-bold mb-2 text-red-600">Disonnected</h2>
 						<p className="text-xs font-bold text-white">Lost connection with {player}</p>
 						<p className="text-xs font-bold text-dark-300 pt-1">It seems that the other player has left the room</p>
 					</div>

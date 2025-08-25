@@ -9,10 +9,8 @@ import { useCallback } from 'react';
 
 import { formatDistanceToNow } from 'date-fns';
 
-const API_BASE = process.env.API_BASE_URL ?? 'http://localhost:80/api/v1';
-
 const PongHistory: React.FC<{ username: string }> = ({ username }) => {
-	const { data, error, isLoading } = useGET<PongHistoryEntry[]>({ url: `${API_BASE}/game/pong/history/${username}` });
+	const { data, error, isLoading } = useGET<PongHistoryEntry[]>({ url: `/game/pong/history/${username}` });
 
 	const content = useCallback(() => {
 		if (isLoading) return <SvgSpinner size={24} />;

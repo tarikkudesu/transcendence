@@ -13,12 +13,10 @@ import { useCallback } from 'react';
 import { PongButton } from '../../buttons/ServerButtons';
 import SafeImage from '../../mini/SafeImage';
 
-const API_BASE = process.env.API_BASE_URL ?? 'http://localhost:80/api/v1';
-
 const UserProfilePage: React.FC<{ username: string }> = ({ username }) => {
 	const { pooler: getPooler, send } = useGameSocket();
 	const { request: getRequest, friend: getFriend, addCall, acceptCall, declineCall, blockCall, isLoading: actionLoading } = useFriends();
-	const { data: user, error, isLoading } = useGET<UserProfile>({ url: `${API_BASE}/users/${username}` });
+	const { data: user, error, isLoading } = useGET<UserProfile>({ url: `/users/${username}` });
 	const router = useRouter();
 
 	const pooler: ClientPlayer | undefined = getPooler(username);
@@ -113,7 +111,7 @@ const UserProfilePage: React.FC<{ username: string }> = ({ username }) => {
 							<PongButton
 								loading={actionLoading}
 								onClick={() => blockCall(user.username)}
-								className="bg-dark-700 w-full hover:bg-red-500 hover:text-white"
+								className="bg-dark-700 w-full hover:bg-red-600 hover:text-white"
 							>
 								<SvgBan size={24} />
 							</PongButton>

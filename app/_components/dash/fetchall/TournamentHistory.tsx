@@ -6,10 +6,8 @@ import { Flex, Spinner, Text } from '@radix-ui/themes';
 import Link from 'next/link';
 import React from 'react';
 
-const API_BASE = process.env.API_BASE_URL ?? 'http://localhost:80/api/v1';
-
 const TournamentHistory: React.FC = ({}) => {
-	const { isLoading, data: tournaments } = useGET<TournamentHistoryEntry[]>({ url: `${API_BASE}/game/tournament/history?end=10` });
+	const { isLoading, data: tournaments } = useGET<TournamentHistoryEntry[]>({ url: `/game/tournament/history?end=10` });
 
 	if (isLoading) return <Spinner />;
 

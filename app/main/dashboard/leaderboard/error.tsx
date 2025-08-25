@@ -4,7 +4,6 @@
 import { useEffect } from 'react';
 // import { AlertTriangle, RefreshCw, Home, ChevronLeft } from 'lucide-react';
 
-
 interface ErrorProps {
 	error?: Error & { digest?: string };
 	reset?: () => void;
@@ -96,7 +95,7 @@ export default function Error({ error, reset, statusCode }: ErrorProps) {
 						<div className="mb-8 p-4 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800 rounded-lg">
 							<h3 className="text-sm font-semibold text-red-800 dark:text-red-300 mb-2">Error Details (Development)</h3>
 							<p className="text-sm text-red-700 dark:text-red-400 font-mono break-all">{error.message}</p>
-							{error.digest && <p className="text-xs text-red-600 dark:text-red-500 mt-2">Error ID: {error.digest}</p>}
+							{error.digest && <p className="text-xs text-red-600 dark:text-red-600 mt-2">Error ID: {error.digest}</p>}
 						</div>
 					)}
 
@@ -108,8 +107,7 @@ export default function Error({ error, reset, statusCode }: ErrorProps) {
 								className="inline-flex items-center justify-center px-6 py-3 bg-accent-300 hover:bg-accent-400 text-dark-900 font-semibold rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-300 focus:ring-offset-2 focus:ring-offset-dark-900"
 							>
 								{/* <RefreshCw className="w-5 h-5 mr-2" /> */}
-								ICON
-								Try Again
+								ICON Try Again
 							</button>
 						)}
 
@@ -118,8 +116,7 @@ export default function Error({ error, reset, statusCode }: ErrorProps) {
 							className="inline-flex items-center justify-center px-6 py-3 bg-dark-600 hover:bg-dark-500 text-dark-100 font-semibold rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-dark-500 focus:ring-offset-2 focus:ring-offset-dark-900"
 						>
 							{/* <ChevronLeft className="w-5 h-5 mr-2" /> */}
-							ICON
-							Go Back
+							ICON Go Back
 						</button>
 
 						<button
@@ -127,8 +124,7 @@ export default function Error({ error, reset, statusCode }: ErrorProps) {
 							className="inline-flex items-center justify-center px-6 py-3 bg-dark-700 hover:bg-dark-600 text-dark-100 font-semibold rounded-lg border border-dark-600 hover:border-dark-500 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-dark-500 focus:ring-offset-2 focus:ring-offset-dark-900"
 						>
 							{/* <Home className="w-5 h-5 mr-2" /> */}
-							ICON
-							Home
+							ICON Home
 						</button>
 					</div>
 				</div>

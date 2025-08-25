@@ -68,7 +68,6 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 
 	useEffect(
 		function () {
-			if (socketRef.current && !error && !close) return;
 			try {
 				console.log('creating Chat WebSocket connection ' + API_BASE);
 				if (API_BASE) {

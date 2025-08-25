@@ -74,6 +74,7 @@ const LocalPong: React.FC = ({}) => {
 
 	const startGame = useCallback(() => {
 		setStart(true);
+		setPause(false);
 		setWinner('None');
 	}, []);
 

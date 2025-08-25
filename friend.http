@@ -26,15 +26,6 @@ GET http://localhost/api/v1/friends/u/oub
     }
 ]
 
-POST http://localhost/api/v1/friends/add
-{
-    "to": "fatima"
-}
-
-
-{
-    "message": "added successfully"
-}
 
 
 POST http://localhost/api/v1/friends/check
@@ -44,6 +35,17 @@ POST http://localhost/api/v1/friends/check
 
 {
     "message": "you are friends with benifits"
+}
+
+
+POST http://localhost/api/v1/friends/add
+{
+    "to": "fatima"
+}
+
+
+{
+    "message": "added successfully"
 }
 
 PUT http://localhost/api/v1/friends/accept
@@ -70,3 +72,6 @@ DELETE http://localhost/api/v1/friends/remove
     "to": "youssef"
 }
 
+{
+    "message": "blocked successfully"
+}

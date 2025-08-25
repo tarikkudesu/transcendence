@@ -69,8 +69,6 @@ const ChatConversation: React.FC<ChatConversationProps> = ({ chatemate, avatar }
 	const endRef = useRef<HTMLDivElement>(null);
 	const { username } = useAuth();
 
-	console.log(pooler);
-
 	const appendEmoji = useCallback(
 		(e: string) => {
 			if (chatemate) setMessage(`${message}${e}`);
@@ -100,22 +98,32 @@ const ChatConversation: React.FC<ChatConversationProps> = ({ chatemate, avatar }
 		endRef.current?.scrollIntoView({ behavior: 'smooth' });
 	}, [conversation]);
 
+	const state = useCallback((): React.ReactNode => {
+		if (!pooler)
+			return (
+				<Text as="div" size="1" className="font-medium text-dark-300">
+					Offline
+				</Text>
+			);
+		if (pooler.playerStatus === 'playing')
+			return (
+				<Text as="div" size="1" className="font-medium text-accent-300">
+					Playing
+				</Text>
+			);
+		return (
+			<Text as="div" size="1" className="font-medium text-accent-300">
+				Online
+			</Text>
+		);
+	}, [pooler]);
+
 	if (!open) return <EmptyConversation />;
 
 	return (
 		<div className="h-full flex flex-col justify-between items-center">
 			<div className="p-4 h-[80px] bg-dark-700 border-b-[1px] border-dark-500 w-full flex gap-4 justify-start items-center">
-				{chatemate && avatar && (
-					<User.Trigger
-						username={chatemate}
-						avatar={avatar}
-						extra={
-							<Text as="div" size="1" className="font-medium text-accent-300">
-								Online
-							</Text>
-						}
-					/>
-				)}
+				{chatemate && avatar && <User.Trigger username={chatemate} avatar={avatar} extra={state()} />}
 			</div>
 			<div className="flex-grow w-full bg-dark-950">
 				<div

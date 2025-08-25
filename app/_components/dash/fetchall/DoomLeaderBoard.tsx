@@ -6,10 +6,8 @@ import { Text } from '@radix-ui/themes';
 import { useCallback } from 'react';
 import { User } from '../game/User';
 
-const API_BASE = process.env.API_BASE_URL ?? 'http://localhost:80/api/v1';
-
 const DoomLeaderBoard: React.FC = ({}) => {
-	const { isLoading, data: leaderBoard } = useGET<LeaderboardEntry[]>({ url: `${API_BASE}/game/doom/leaderboard` });
+	const { isLoading, data: leaderBoard } = useGET<LeaderboardEntry[]>({ url: '/game/doom/leaderboard' });
 	const content = useCallback(() => {
 		if (isLoading)
 			return (

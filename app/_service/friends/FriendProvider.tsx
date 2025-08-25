@@ -9,11 +9,9 @@ interface FriendsProviderProps {
 	children: React.ReactNode;
 }
 
-const API_BASE = process.env.API_BASE_URL ?? 'http://localhost:80/api/v1';
-
 const FriendsProvider: React.FC<FriendsProviderProps> = ({ children }) => {
-	const { data: friends, refetch: friendsRefetch } = useGET<Friend[]>({ url: `${API_BASE}/friends` });
-	const { data: requests, refetch: requestsRefetch } = useGET<FriendRequest[]>({ url: `${API_BASE}/friends/request` });
+	const { data: friends, refetch: friendsRefetch } = useGET<Friend[]>({ url: `/friends` });
+	const { data: requests, refetch: requestsRefetch } = useGET<FriendRequest[]>({ url: `/friends/request` });
 	const { isLoading, fetchData } = useMutate<FriendActionResponse>();
 
 	const friend = useCallback(
@@ -43,7 +41,7 @@ const FriendsProvider: React.FC<FriendsProviderProps> = ({ children }) => {
 
 	const addCall = useCallback(
 		async (username: string) => {
-			await fetchData({ url: `${API_BASE}/friends/add`, method: 'POST', body: { to: username } });
+			await fetchData({ url: `/friends/add`, method: 'POST', body: { to: username } });
 			refetch();
 		},
 		[fetchData, refetch]
@@ -51,7 +49,7 @@ const FriendsProvider: React.FC<FriendsProviderProps> = ({ children }) => {
 
 	const acceptCall = useCallback(
 		async (username: string) => {
-			await fetchData({ url: `${API_BASE}/friends/accept`, method: 'PUT', body: { to: username } });
+			await fetchData({ url: `/friends/accept`, method: 'PUT', body: { to: username } });
 			refetch();
 		},
 		[fetchData, refetch]
@@ -59,7 +57,7 @@ const FriendsProvider: React.FC<FriendsProviderProps> = ({ children }) => {
 
 	const declineCall = useCallback(
 		async (username: string) => {
-			await fetchData({ url: `${API_BASE}/friends/remove`, method: 'DELETE', body: { to: username } });
+			await fetchData({ url: `/friends/remove`, method: 'DELETE', body: { to: username } });
 			refetch();
 		},
 		[fetchData, refetch]
@@ -67,7 +65,7 @@ const FriendsProvider: React.FC<FriendsProviderProps> = ({ children }) => {
 
 	const blockCall = useCallback(
 		async (username: string) => {
-			await fetchData({ url: `${API_BASE}/friends/block`, method: 'PUT', body: { to: username } });
+			await fetchData({ url: `/friends/block`, method: 'PUT', body: { to: username } });
 			refetch();
 		},
 		[fetchData, refetch]

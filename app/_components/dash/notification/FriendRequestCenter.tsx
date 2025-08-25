@@ -55,7 +55,7 @@ const FriendRequestCenter = () => {
 											<div className="" onClick={() => send(ReadMessage(notification.id))}>
 												<SvgTrash
 													size={24}
-													className="p-1 rounded-md text-dark-200 hover:text-red-500 absolute top-3 right-3 cursor-pointer"
+													className="p-1 rounded-md text-dark-200 hover:text-red-600 absolute top-3 right-3 cursor-pointer"
 												/>
 											</div>
 										</div>
@@ -65,6 +65,7 @@ const FriendRequestCenter = () => {
 												onClick={() => {
 													refetch();
 													setActive(false);
+													send(ReadMessage(notification.id));
 													router.push(`/main/dashboard/${notification.sender}`);
 												}}
 											>

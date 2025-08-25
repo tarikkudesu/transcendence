@@ -3,6 +3,12 @@ export interface FriendSearch {
 	username: string;
 }
 
+export interface BlockedFriend {
+	avatar_url: string;
+	username: string;
+	stat: string;
+}
+
 export interface Friend {
 	avatar_url: string;
 	username: string;

@@ -8,10 +8,8 @@ import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
 import { useCallback } from 'react';
 
-const API_BASE = process.env.API_BASE_URL ?? 'http://localhost:80/api/v1';
-
 const DoomHistory: React.FC<{ username: string }> = ({ username }) => {
-	const { data, error, isLoading } = useGET<DoomHistoryEntry[]>({ url: `${API_BASE}/game/doom/history/${username}` });
+	const { data, error, isLoading } = useGET<DoomHistoryEntry[]>({ url: `/game/doom/history/${username}` });
 
 	const content = useCallback(() => {
 		if (isLoading) return <SvgSpinner size={24} />;

@@ -1,20 +1,20 @@
 'use client';
 
-import { RequestResult } from '@/app/_service/auth/calls';
 import { useAuth } from '@/app/_service/AuthContext';
-import { updatePassword } from '@/app/_service/user/calls';
+import { useMutate } from '@/app/_service/useFetcher';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
 import { Box, Button, Card, Flex, Text } from '@radix-ui/themes';
 import Link from 'next/link';
-import React, { ChangeEvent, useCallback, useState } from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useNotification } from '../../mini/useNotify';
+import { UpdatePasswordRequest } from '@/app/_service/user/schema';
 
 const UpdatePassword: React.FC = () => {
 	const { username } = useAuth();
 	const { notify } = useNotification();
 	const [type, setType] = useState<'password' | 'text'>('password');
+	const { fetchData, isLoading, error, data } = useMutate<UpdatePasswordRequest>();
 	const [password, setPassword] = useState<string>('');
-	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const switchType = useCallback(() => {
 		setType((prev) => (prev === 'password' ? 'text' : 'password'));
@@ -22,12 +22,17 @@ const UpdatePassword: React.FC = () => {
 
 	const updatePasswordCall = useCallback(async () => {
 		if (!password) return;
-		setIsLoading(true);
-		const result: RequestResult = await updatePassword(username, { newpassword: password });
-		if (result.message === 'success') notify({ message: 'Success', success: true });
-		else notify({ message: result.message, error: true });
-		setIsLoading(false);
-	}, [password, username, notify]);
+		fetchData({
+			url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/profile/password/${username}`,
+			method: 'PUT',
+			body: { newpassword: password },
+		});
+	}, [fetchData, password, username]);
+
+	useEffect(() => {
+		if (error) notify({ message: error.message, error: true });
+		if (data) notify({ message: 'Password updated successfully', success: true });
+	}, [data, error, notify]);
 
 	return (
 		<div className="my-[36px]">

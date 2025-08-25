@@ -167,7 +167,7 @@ const RemotePong: React.FC<{ gid: string; opponent: string }> = ({ gid, opponent
 					</PongButton>
 				)}
 			</div>
-			<GameInfo player="tarikkudesu" opponent="klaus" />
+			<GameInfo player={username} opponent={opponent} />
 		</div>
 	);
 };

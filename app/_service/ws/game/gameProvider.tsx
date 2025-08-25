@@ -136,6 +136,7 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 
 	useEffect(
 		function () {
+			if (open) return;
 			try {
 				console.log('creating Game WebSocket connection ' + API_BASE);
 				if (API_BASE) {

@@ -8,14 +8,12 @@ import React, { ChangeEvent, memo, useCallback, useEffect, useMemo, useState } f
 import LoadingIndicator from '../../mini/Loading';
 import { User } from '../game/User';
 
-const API_BASE = process.env.API_BASE_URL ?? 'http://localhost:80/api/v1';
-
 const Search: React.FC<{ search: string; clear: () => void }> = memo(({ search, clear }) => {
 	const controller = useMemo(() => new AbortController(), []);
 	const router = useRouter();
 
 	const { data, error, isLoading } = useGET<FriendSearch[]>({
-		url: `${API_BASE}/friends/u/${encodeURIComponent(search)}`,
+		url: `/friends/u/${encodeURIComponent(search)}`,
 		signal: controller.signal,
 		revalidate: 3600,
 	});

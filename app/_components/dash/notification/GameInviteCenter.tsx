@@ -68,7 +68,7 @@ const GameInviteCenter = () => {
 							</>
 						) : (
 							<PongButton
-								className="w-full bg-dark-950 hover:bg-red-500 hover:text-black text-sm"
+								className="w-full bg-dark-950 hover:bg-red-600 hover:text-black text-sm"
 								onClick={() => {
 									setActive(false);
 									send(DeleteMessage('card of doom', sender));
@@ -105,7 +105,7 @@ const GameInviteCenter = () => {
 							</>
 						) : (
 							<PongButton
-								className="w-full bg-dark-950 hover:bg-red-500 hover:text-black text-sm"
+								className="w-full bg-dark-950 hover:bg-red-600 hover:text-black text-sm"
 								onClick={() => {
 									setActive(false);
 									send(DeleteMessage('pong', sender));
@@ -154,7 +154,7 @@ const GameInviteCenter = () => {
 										<div className="" onClick={() => send(DeleteMessage(invite.game, invite.sender))}>
 											<SvgTrash
 												size={24}
-												className="p-1 rounded-md text-dark-200 hover:text-red-500 absolute top-3 right-3 cursor-pointer"
+												className="p-1 rounded-md text-dark-200 hover:text-red-600 absolute top-3 right-3 cursor-pointer"
 											/>
 										</div>
 									</div>

@@ -1,8 +1,17 @@
 import { useCallback, useEffect, useState } from 'react';
+import { MutateResponse } from './user/schema';
 
-export function useMutate<TResponse = unknown, TBody = unknown>() {
-	const [data, setData] = useState<TResponse | null>(null);
-	const [error, setError] = useState<string | null>(null);
+export const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+interface PongError {
+	error: string;
+	message: string;
+	statusCode: number;
+}
+
+export function useMutate<TBody = unknown>() {
+	const [data, setData] = useState<MutateResponse | null>(null);
+	const [error, setError] = useState<PongError | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 
 	const fetchData = async ({
@@ -16,26 +25,32 @@ export function useMutate<TResponse = unknown, TBody = unknown>() {
 		signal?: AbortSignal;
 		method: 'POST' | 'PUT' | 'DELETE';
 	}) => {
+		console.log(JSON.stringify(body));
+		console.log(body);
 		setIsLoading(true);
 		setError(null);
 		try {
 			await new Promise((resolve) => setTimeout(resolve, 2000));
-			const res = await fetch(url, {
+			const res = await fetch(`${url}`, {
 				method: method,
 				credentials: 'include',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(body),
 				signal,
 			});
-			if (!res.ok) throw new Error(await res.text());
-			const result = (await res.json()) as TResponse;
-			setData(result);
+			if (!res.ok) setError((await res.json()) as PongError);
+			else setData({ success: true });
 		} catch (err) {
-			setError(err instanceof Error ? err.message : 'Unknown error');
+			setError({
+				message: err instanceof Error ? err.message : 'Something went wrong, Please try again later...',
+				error: 'Unknown Error',
+				statusCode: 300,
+			});
 		} finally {
 			setIsLoading(false);
 		}
 	};
+
 	return { data, error, isLoading, fetchData };
 }
 
