@@ -1,5 +1,6 @@
 import { createContext, useContext } from 'react';
 import { PongError } from '../useFetcher';
+import { MutateResponse, UpdateAvatarRequest, UpdateBioRequest, UpdatePasswordRequest, UpdateUsernameRequest } from '../user/schema';
 import {
 	ForgotPasswordRequest,
 	LoginRequest,
@@ -9,7 +10,6 @@ import {
 	Verify2FARequest,
 	VerifyAccountRequest,
 } from './schema';
-import { MutateResponse } from '../user/schema';
 
 interface authState {
 	reset: () => void;
@@ -17,14 +17,18 @@ interface authState {
 	error: PongError | null;
 	data: MutateResponse | null;
 	logoutcall: () => void;
-	refreshtokencall: () => void;
-	logincall: (data: LoginRequest) => void;
-	signupcall: (data: SignupRequest) => void;
-	resendotp: (data: ResendOtpRequest) => void;
-	twofacall: (data: Verify2FARequest) => void;
-	resetpasscall: (data: ResetPasswordRequest) => void;
-	forgotpasscall: (data: ForgotPasswordRequest) => void;
-	verifyaccountcall: (data: VerifyAccountRequest) => void;
+	deleteaccountcall: () => void;
+	logincall: (body: LoginRequest) => void;
+	signupcall: (body: SignupRequest) => void;
+	resendotp: (body: ResendOtpRequest) => void;
+	twofacall: (body: Verify2FARequest) => void;
+	resetpasscall: (body: ResetPasswordRequest) => void;
+	forgotpasscall: (body: ForgotPasswordRequest) => void;
+	verifyaccountcall: (body: VerifyAccountRequest) => void;
+	updatepasscall: (body: UpdatePasswordRequest) => void;
+	updateusernamecall: (body: UpdateUsernameRequest) => void;
+	updatebiocall: (body: UpdateBioRequest) => void;
+	updateavatarcall: (body: UpdateAvatarRequest) => void;
 }
 
 export const AuthInitialState = {
@@ -33,14 +37,18 @@ export const AuthInitialState = {
 	isLoading: false,
 	reset: () => confirm,
 	logoutcall: () => {},
-	refreshtokencall: () => {},
-	logincall: (data: LoginRequest) => {},
-	signupcall: (data: SignupRequest) => {},
-	resendotp: (data: ResendOtpRequest) => {},
-	twofacall: (data: Verify2FARequest) => {},
-	resetpasscall: (data: ResetPasswordRequest) => {},
-	forgotpasscall: (data: ForgotPasswordRequest) => {},
-	verifyaccountcall: (data: VerifyAccountRequest) => {},
+	deleteaccountcall: () => {},
+	logincall: (body: LoginRequest) => {},
+	signupcall: (body: SignupRequest) => {},
+	resendotp: (body: ResendOtpRequest) => {},
+	twofacall: (body: Verify2FARequest) => {},
+	resetpasscall: (body: ResetPasswordRequest) => {},
+	forgotpasscall: (body: ForgotPasswordRequest) => {},
+	verifyaccountcall: (body: VerifyAccountRequest) => {},
+	updatepasscall: (body: UpdatePasswordRequest) => {},
+	updateusernamecall: (body: UpdateUsernameRequest) => {},
+	updatebiocall: (body: UpdateBioRequest) => {},
+	updateavatarcall: (body: UpdateAvatarRequest) => {},
 };
 
 export const authContext = createContext<authState>(AuthInitialState);

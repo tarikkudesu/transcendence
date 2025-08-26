@@ -16,20 +16,18 @@ const SignUp: React.FC<unknown> = () => {
 	const [email, setEmail] = useState<string>('');
 	const [password, setPass] = useState<string>('');
 	const [username, setUsername] = useState<string>('');
-	const { data, error, isLoading, signupcall, reset } = useAuth();
+	const { data, error, isLoading, signupcall } = useAuth();
 	const [type, setType] = useState<'password' | 'text'>('password');
 
 	useEffect(() => {
 		if (data) {
 			notify({ message: data.message, success: true });
-			reset();
 			router.push(`verify-account?email=${email ?? ''}`);
 		}
 		if (error) {
 			notify({ message: error.message, error: true });
-			reset();
 		}
-	}, [data, email, error, notify, reset]);
+	}, [data, email, error, notify]);
 
 	const switchtype = useCallback(() => {
 		if (type === 'password') setType('text');

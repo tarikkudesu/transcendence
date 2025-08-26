@@ -11,18 +11,16 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 const ForgotPassword: React.FC<unknown> = () => {
 	const { notify } = useNotification();
 	const [email, setEmail] = useState<string>('');
-	const { forgotpasscall, isLoading, data, error, reset } = useAuth();
+	const { forgotpasscall, isLoading, data, error } = useAuth();
 
 	useEffect(() => {
 		if (data) {
 			notify({ message: data.message, success: true });
-			reset();
 		}
 		if (error) {
 			notify({ message: error.message, error: true });
-			reset();
 		}
-	}, [data, error, notify, reset]);
+	}, [data, error, notify]);
 
 	return (
 		<main>

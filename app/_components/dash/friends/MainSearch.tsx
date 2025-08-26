@@ -15,34 +15,35 @@ const Search: React.FC<{ search: string; clear: () => void }> = memo(({ search, 
 	const { data, isLoading } = useGET<FriendSearch[]>({
 		url: `/friends/u/${encodeURIComponent(search)}`,
 		signal: controller.signal,
-		revalidate: 3600,
 	});
 
 	useEffect(() => {
 		return () => controller.abort();
 	}, [controller]);
 
-	if (isLoading) return <Spinner />;
 	return (
 		<>
 			{data && data.length && (
 				<div className="py-2 rounded-md bg-dark-950 absolute top-0 left-0 translate-y-[60px] w-[400px] text-white shadow-xl z-10 border border-dark-500">
-					<ScrollArea type="always" scrollbars="vertical" style={{ maxHeight: 600 }}>
-						{data.map((ele) => (
-							<div
-								key={ele.username}
-								className="py-1 cursor-pointer hover:bg-dark-700"
-								onClick={() => {
-									clear();
-									router.push(`/main/dashboard/${ele.username}`);
-								}}
-							>
-								<div className="scale-90">
-									<User.Trigger username={ele.username} avatar={ele.avatar_url} extra="" />
+					{isLoading && <Spinner />}
+					{!isLoading && (
+						<ScrollArea type="always" scrollbars="vertical" style={{ maxHeight: 600 }}>
+							{data.map((ele) => (
+								<div
+									key={ele.username}
+									className="py-1 cursor-pointer hover:bg-dark-700"
+									onClick={() => {
+										clear();
+										router.push(`/main/dashboard/${ele.username}`);
+									}}
+								>
+									<div className="scale-90">
+										<User.Trigger username={ele.username} avatar={ele.avatar_url} extra="" />
+									</div>
 								</div>
-							</div>
-						))}
-					</ScrollArea>
+							))}
+						</ScrollArea>
+					)}
 				</div>
 			)}
 		</>

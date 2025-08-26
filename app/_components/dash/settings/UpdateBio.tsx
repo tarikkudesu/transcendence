@@ -1,24 +1,11 @@
 'use client';
 
-import { useUser } from '@/app/_service/user/userContext';
-import { Button, Card, Flex, Text, TextField } from '@radix-ui/themes';
-import React, { ChangeEvent, useCallback, useState } from 'react';
-import { useNotification } from '../../mini/useNotify';
+import { Card, Flex, Text, TextField } from '@radix-ui/themes';
+import React, { ChangeEvent, useState } from 'react';
+import { PongButton } from '../../buttons/ServerButtons';
 
 const UpdateBio: React.FC = () => {
-	const { username } = useUser();
-	const { notify } = useNotification();
 	const [bio, setBio] = useState<string>('');
-	const [isLoading, setIsLoading] = useState<boolean>(false);
-
-	const updateBioCall = useCallback(async () => {
-		if (!bio) return;
-		setIsLoading(true);
-		const result: RequestResult = await updateBio(username, { bio });
-		if (result.message === 'success') notify({ message: 'Success', success: true });
-		else notify({ message: result.message, error: true });
-		setIsLoading(false);
-	}, [bio, username, notify]);
 
 	return (
 		<div className="my-[36px]">
@@ -36,18 +23,9 @@ const UpdateBio: React.FC = () => {
 						placeholder="Enter your bio…"
 						className="flex-grow outline-none"
 					/>
-					<Button
-						disabled={!bio}
-						variant="outline"
-						radius="small"
-						color="gray"
-						size="3"
-						className="px-4 text-center bg-accent-300 text-sm text-black cursor-pointer disabled:bg-dark-600 disabled:text-dark-200"
-						onClick={updateBioCall}
-						loading={isLoading}
-					>
+					<PongButton className="bg-accent-300 hover:bg-accent-200 text-black disabled:bg-dark-600 disabled:text-dark-200">
 						Save
-					</Button>
+					</PongButton>
 				</Flex>
 			</Card>
 		</div>

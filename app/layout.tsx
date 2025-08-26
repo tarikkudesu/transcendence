@@ -4,6 +4,7 @@ import { Josefin_Sans } from 'next/font/google';
 
 import './globals.css';
 import AuthProvider from './_service/auth/authProvider';
+import UserProvider from './_service/user/userProvider';
 
 const josefin = Josefin_Sans({
 	subsets: ['latin'],
@@ -40,7 +41,9 @@ export default function RootLayout({
 					hasBackground={false}
 					className={`${josefin.className} bg-dark-900 text-amber-50 m-0`}
 				>
-					<AuthProvider>{children}</AuthProvider>
+					<UserProvider>
+						<AuthProvider>{children}</AuthProvider>
+					</UserProvider>
 				</Theme>
 			</body>
 		</html>

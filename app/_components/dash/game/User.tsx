@@ -189,13 +189,13 @@ const Dialog: React.FC<{
 							<PongButton
 								onClick={() => router.push(`/main/dashboard/chat?chatemate=${friend.username}`)}
 								loading={actionLoading}
-								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black"
+								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
 							>
 								<SvgChat size={24} />
 							</PongButton>
 							<PongButton
 								loading={actionLoading}
-								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black"
+								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
 								onClick={() => router.push(`/main/dashboard/${friend.username}`)}
 							>
 								<SvgProfile size={24} />
@@ -212,7 +212,7 @@ const Dialog: React.FC<{
 									pooler.inviteStatus === 'declined'
 								}
 								loading={actionLoading || pooler.inviteStatus === 'pending'}
-								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black disabled:text-white disabled:bg-dark-500"
+								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
 							>
 								<SvgPong size={24} />
 							</PongButton>
@@ -224,7 +224,7 @@ const Dialog: React.FC<{
 									pooler.inviteStatus === 'declined'
 								}
 								loading={actionLoading || pooler.inviteStatus === 'pending'}
-								className="bg-dark-700 w-full hover:bg-golden-500 hover:text-black disabled:text-white disabled:bg-dark-500"
+								className="bg-dark-700 w-full hover:bg-golden-500 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
 							>
 								<SvgDoom size={24} />
 							</PongButton>

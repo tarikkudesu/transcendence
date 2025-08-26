@@ -1,6 +1,5 @@
 'use client';
 
-
 import { ChatMessage } from '@/app/_service/ws/chat/composer';
 import { useConversationSocket } from '@/app/_service/ws/chat/conversationContext';
 import { InviteMessage, useGameSocket } from '@/app/_service/ws/game';
@@ -148,7 +147,7 @@ const ChatConversation: React.FC<ChatConversationProps> = ({ chatemate, avatar }
 					<div ref={endRef} />
 				</div>
 			</div>
-			<div className="h-[60px] bg-dark-700  border-t-[1px] border-dark-500 w-full flex justify-between items-center relative px-2">
+			<div className="h-[60px] space-x-2 bg-dark-700  border-t-[1px] border-dark-500 w-full flex justify-between items-center relative px-2">
 				{active && chatemate && (
 					<>
 						<div className="fixed top-0 left-0 right-0 bottom-0" onClick={() => setActive(false)}></div>
@@ -157,11 +156,11 @@ const ChatConversation: React.FC<ChatConversationProps> = ({ chatemate, avatar }
 				)}
 				<PongButton
 					onClick={() => setActive((stat) => !stat)}
-					className="h-[40px] w-[50px] bg-dark-600 hover:bg-accent-300 rounded-md mx-[2px] text-dark-300 flex justify-center items-center hover:text-black duration-150"
+					className="h-[40px] bg-dark-600 hover:bg-accent-300 rounded-md text-dark-300 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
 				>
 					<SvgEmojis size={18} className="translate-x-0.5 translate-y-0.5" />
 				</PongButton>
-				<div className="mx-[2px] rounded-md bg-dark-600 flex justify-start items-center flex-grow">
+				<div className="rounded-md bg-dark-600 flex justify-start items-center flex-grow">
 					<input
 						type="text"
 						name="text"
@@ -175,7 +174,7 @@ const ChatConversation: React.FC<ChatConversationProps> = ({ chatemate, avatar }
 					></input>
 				</div>
 				<PongButton
-					className="h-[40px] w-[50px] bg-dark-600 hover:bg-accent-300 rounded-md mx-[2px] text-dark-300 flex justify-center items-center hover:text-black duration-150"
+					className="h-[40px] bg-dark-600 hover:bg-accent-300 rounded-md text-dark-300 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
 					onClick={sendMessage}
 				>
 					<SvgChat size={18} />
@@ -184,17 +183,19 @@ const ChatConversation: React.FC<ChatConversationProps> = ({ chatemate, avatar }
 					<>
 						<PongButton
 							onClick={() => gameSend(InviteMessage('pong', pooler.username))}
-							disabled={pooler.playerStatus === 'playing' || pooler.inviteStatus === 'pending'}
-							loading={pooler.inviteStatus === 'pending'}
-							className="h-[40px] w-[50px] bg-dark-600 hover:bg-accent-300 rounded-md mx-[2px] text-dark-300 flex justify-center items-center hover:text-black duration-150"
+							disabled={
+								pooler.playerStatus === 'playing' || (pooler.inviteStatus === 'pending' && pooler.game === 'card of doom')
+							}
+							loading={pooler.inviteStatus === 'pending' && pooler.game === 'pong'}
+							className="h-[40px] w-[50px] bg-dark-600 hover:bg-accent-300 text-dark-300 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
 						>
 							<SvgPong size={18} />
 						</PongButton>
 						<PongButton
 							onClick={() => gameSend(InviteMessage('card of doom', pooler.username))}
-							disabled={pooler.playerStatus === 'playing' || pooler.inviteStatus === 'pending'}
-							loading={pooler.inviteStatus === 'pending'}
-							className="h-[40px] w-[50px] bg-dark-600 hover:bg-golden-500 rounded-md mx-[2px] text-dark-300 flex justify-center items-center hover:text-black duration-150"
+							disabled={pooler.playerStatus === 'playing' || (pooler.inviteStatus === 'pending' && pooler.game === 'pong')}
+							loading={pooler.inviteStatus === 'pending' && pooler.game === 'card of doom'}
+							className="h-[40px] bg-dark-600 hover:bg-golden-500 text-dark-300 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
 						>
 							<SvgDoom size={18} />
 						</PongButton>

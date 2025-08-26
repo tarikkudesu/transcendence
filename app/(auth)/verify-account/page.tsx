@@ -12,19 +12,17 @@ const SignUpVerify: React.FC<unknown> = () => {
 	const router = useRouter();
 	const { notify } = useNotification();
 	const searchParams = useSearchParams();
-	const { verifyaccountcall, resendotp, isLoading, data, error, reset } = useAuth();
+	const { verifyaccountcall, resendotp, isLoading, data, error } = useAuth();
 	const [email, setEmail] = useState<string>('');
 	const [code, setCode] = useState<string>('');
 
 	useEffect(() => {
 		if (data) {
 			notify({ message: data.message, success: true });
-			reset();
 			router.push('/main');
 		}
 		if (error) {
 			notify({ message: error.message, error: true });
-			reset();
 		}
 	}, [data, error, notify]);
 

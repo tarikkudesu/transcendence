@@ -4,6 +4,7 @@ import { PongButton } from '@/app/_components/buttons/ServerButtons';
 import Logo from '@/app/_components/mini/Logo';
 import { useNotification } from '@/app/_components/mini/useNotify';
 import { useAuth } from '@/app/_service/auth/authContext';
+import { useUser } from '@/app/_service/user/userContext';
 import { Box, Text } from '@radix-ui/themes';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { ChangeEvent, useEffect, useState } from 'react';
@@ -15,18 +16,19 @@ const LoginVerify: React.FC<unknown> = () => {
 	const [code, setCode] = useState<string>('');
 	const [email, setEmail] = useState<string>('');
 	const { resendotp, twofacall, isLoading, data, error, reset } = useAuth();
+	const { setAuthenticated } = useUser();
 
 	useEffect(() => {
 		if (data) {
 			notify({ message: data.message, success: true });
+			setAuthenticated();
 			reset();
 			router.push('/main');
 		}
 		if (error) {
 			notify({ message: error.message, error: true });
-			reset();
 		}
-	}, [data, error, notify, reset]);
+	}, [data, error, notify, reset, router, setAuthenticated]);
 
 	useEffect(() => {
 		const mail: string | null = searchParams.get('email');

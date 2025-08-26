@@ -27,9 +27,8 @@ const Login: React.FC<unknown> = () => {
 		}
 		if (error) {
 			notify({ message: error.message, error: true });
-			reset();
 		}
-	}, [data, error, notify, reset]);
+	}, [data, error, notify, reset, router]);
 
 	const switchtype = useCallback(() => {
 		if (type === 'password') setType('text');

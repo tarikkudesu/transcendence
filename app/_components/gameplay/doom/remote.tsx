@@ -76,10 +76,14 @@ const RemoteDoom: React.FC<{ gid: string; opponent: string }> = ({ gid, opponent
 					{pooler && (
 						<>
 							<PongButton
-								onClick={() => send(InviteMessage('card of doom', pooler.username))}
-								disabled={pooler.playerStatus === 'playing' || pooler.inviteStatus === 'pending'}
+								onClick={() => send(InviteMessage('card of doom', username))}
+								disabled={
+									pooler.playerStatus === 'playing' ||
+									pooler.inviteStatus === 'pending' ||
+									pooler.inviteStatus === 'declined'
+								}
 								loading={pooler.inviteStatus === 'pending'}
-								className="w-full bg-dark-950 hover:bg-golden-500 hover:text-black text-sm"
+								className="bg-dark-700 w-full hover:bg-golden-500 hover:text-black duration-150 disabled:text-dark-400 disabled:bg-dark-700"
 							>
 								<SvgDoom size={24} />
 							</PongButton>
@@ -99,12 +103,16 @@ const RemoteDoom: React.FC<{ gid: string; opponent: string }> = ({ gid, opponent
 					{pooler && (
 						<>
 							<PongButton
-								onClick={() => send(InviteMessage('card of doom', pooler.username))}
-								disabled={pooler.playerStatus === 'playing' || pooler.inviteStatus === 'pending'}
+								onClick={() => send(InviteMessage('card of doom', username))}
+								disabled={
+									pooler.playerStatus === 'playing' ||
+									pooler.inviteStatus === 'pending' ||
+									pooler.inviteStatus === 'declined'
+								}
 								loading={pooler.inviteStatus === 'pending'}
-								className="w-full bg-dark-950 hover:bg-golden-500 hover:text-black text-sm"
+								className="bg-dark-700 w-full hover:bg-golden-500 hover:text-black duration-150 disabled:text-dark-400 disabled:bg-dark-700"
 							>
-								Rematch
+								<SvgDoom size={24} />
 							</PongButton>
 							<PongButton
 								onClick={() => router.push(`/main/dashboard/chat?chatemate=${opponent}`)}

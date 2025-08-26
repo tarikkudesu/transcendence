@@ -17,7 +17,7 @@ const ResetPassword: React.FC<unknown> = () => {
 	const searchParams = useSearchParams();
 	const [token, setToken] = useState<string>('');
 	const [newPassword, setNewPass] = useState<string>('');
-	const { isLoading, resetpasscall, data, error, reset } = useAuth();
+	const { isLoading, resetpasscall, data, error } = useAuth();
 	const [repeatNewPassword, setRepeatNewPass] = useState<string>('');
 	const [type, setType] = useState<'password' | 'text'>('password');
 
@@ -29,14 +29,12 @@ const ResetPassword: React.FC<unknown> = () => {
 	useEffect(() => {
 		if (data) {
 			notify({ message: data.message, success: true });
-			reset();
 			router.push('/main');
 		}
 		if (error) {
 			notify({ message: error.message, error: true });
-			reset();
 		}
-	}, [data, error, notify, reset]);
+	}, [data, error, notify]);
 
 	useEffect(() => {
 		const temp: string | null = searchParams.get('token');

@@ -1,23 +1,25 @@
 'use client';
 
-import { Button, Card, Flex, Text } from '@radix-ui/themes';
-import React, { useCallback, useState } from 'react';
+import { useAuth } from '@/app/_service/auth/authContext';
+import { Card, Flex, Text } from '@radix-ui/themes';
+import router from 'next/router';
+import React, { useEffect } from 'react';
+import { PongButton } from '../../buttons/ServerButtons';
 import { useNotification } from '../../mini/useNotify';
-import { useUser } from '@/app/_service/user/userContext';
 
 const DeleteAccount: React.FC = () => {
+	const { deleteaccountcall, isLoading, error, data } = useAuth();
 	const { notify } = useNotification();
-	const { username } = useUser();
-	const [isLoading, setIsLoading] = useState(false);
 
-	const handleAccountCall = useCallback(async () => {
-		if (!confirm('Are you sure you want to delete your account? This action is irreversible.')) return;
-		setIsLoading(true);
-		const result: RequestResult = await deleteUser(username);
-		if (result.message === 'success') notify({ message: 'Account deleted successfully', success: true });
-		else notify({ message: result.message, error: true });
-		setIsLoading(false);
-	}, [notify, username]);
+	useEffect(() => {
+		if (data) {
+			notify({ message: data.message, success: true });
+			router.push('/login');
+		}
+		if (error) {
+			notify({ message: error.message, error: true });
+		}
+	}, [data, error, notify]);
 
 	return (
 		<div className="my-[36px]">
@@ -32,16 +34,9 @@ const DeleteAccount: React.FC = () => {
 					<Text as="div" weight="bold" size="2" className="text-white">
 						Delete my YingYangPong account
 					</Text>
-					<Button
-						color="gray"
-						radius="small"
-						size="3"
-						className="px-4 text-center bg-red-600 text-sm text-white font-bold"
-						onClick={handleAccountCall}
-						loading={isLoading}
-					>
+					<PongButton loading={isLoading} onClick={() => deleteaccountcall()} className="bg-red-600 text-white hover:bg-red-500">
 						Delete account
-					</Button>
+					</PongButton>
 				</Flex>
 			</Card>
 		</div>

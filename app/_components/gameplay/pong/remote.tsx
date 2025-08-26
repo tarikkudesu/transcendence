@@ -100,10 +100,14 @@ const RemotePong: React.FC<{ gid: string; opponent: string }> = ({ gid, opponent
 					{pooler && (
 						<>
 							<PongButton
-								onClick={() => send(InviteMessage('pong', pooler.username))}
-								disabled={pooler.playerStatus === 'playing' || pooler.inviteStatus === 'pending'}
+								onClick={() => send(InviteMessage('pong', username))}
+								disabled={
+									pooler.playerStatus === 'playing' ||
+									pooler.inviteStatus === 'pending' ||
+									pooler.inviteStatus === 'declined'
+								}
 								loading={pooler.inviteStatus === 'pending'}
-								className="w-full bg-dark-700 hover:bg-accent-300 hover:text-black text-sm"
+								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
 							>
 								<SvgPong size={24} />
 							</PongButton>
@@ -123,10 +127,14 @@ const RemotePong: React.FC<{ gid: string; opponent: string }> = ({ gid, opponent
 					{pooler && (
 						<>
 							<PongButton
-								onClick={() => send(InviteMessage('pong', pooler.username))}
-								disabled={pooler.playerStatus === 'playing' || pooler.inviteStatus === 'pending'}
+								onClick={() => send(InviteMessage('pong', username))}
+								disabled={
+									pooler.playerStatus === 'playing' ||
+									pooler.inviteStatus === 'pending' ||
+									pooler.inviteStatus === 'declined'
+								}
 								loading={pooler.inviteStatus === 'pending'}
-								className="w-full bg-dark-700 hover:bg-accent-300 hover:text-black text-sm"
+								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
 							>
 								<SvgPong size={24} />
 							</PongButton>

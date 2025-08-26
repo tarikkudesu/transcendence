@@ -1,32 +1,17 @@
 'use client';
 
-import { Button, Card, Flex, Text } from '@radix-ui/themes';
+import { Card, Flex, Text } from '@radix-ui/themes';
 import { useCallback, useRef, useState } from 'react';
+import { PongButton } from '../../buttons/ServerButtons';
 import SafeImage from '../../mini/SafeImage';
-import { useNotification } from '../../mini/useNotify';
-import { useUser } from '@/app/_service/user/userContext';
 
 const UpdateAvatar: React.FC = () => {
-	const { username } = useUser();
-	const { notify } = useNotification();
 	const [file, setFile] = useState<File | null>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
-	const [isLoading, setIsLoading] = useState(false);
 
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files && e.target.files[0]) setFile(e.target.files[0]);
 	};
-
-	const updateAvatarCall = useCallback(async () => {
-		if (!file) return;
-		setIsLoading(true);
-		const result: RequestResult = await updateAvatar(username, { avatar: file });
-		if (result.message === 'success') {
-			notify({ message: 'Success', success: true });
-			setFile(null);
-		} else notify({ message: result.message, error: true });
-		setIsLoading(false);
-	}, [file, notify, username]);
 
 	const triggerFileSelect = useCallback(() => {
 		fileInputRef.current?.click();
@@ -65,18 +50,9 @@ const UpdateAvatar: React.FC = () => {
 						onChange={handleFileChange}
 						style={{ display: 'none' }}
 					/>
-					<Button
-						size="3"
-						color="gray"
-						radius="small"
-						variant="outline"
-						disabled={!file || isLoading}
-						className="px-4 text-center bg-accent-300 text-sm text-black disabled:bg-dark-600 disabled:text-dark-200"
-						onClick={updateAvatarCall}
-						loading={isLoading}
-					>
+					<PongButton className="bg-accent-300 hover:bg-accent-200 text-black disabled:bg-dark-600 disabled:text-dark-200">
 						Save
-					</Button>
+					</PongButton>
 				</Flex>
 			</Card>
 		</div>

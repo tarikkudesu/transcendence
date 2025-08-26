@@ -1,45 +1,57 @@
 'use client';
 
 import LoadingIndicator from '@/app/_components/mini/Loading';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
 import { ToastContainer } from 'react-toastify';
-import { useAuth } from '../auth/authContext';
+import { protectedroutes } from '../consts';
 import { useGET } from '../useFetcher';
 import { UserProfile } from './schema';
 import { userContext } from './userContext';
 
-interface UserProviderProps {
-	children: React.ReactNode;
-}
+const contextClass = {
+	success: 'bg-dark-900 border-l-accent-300',
+	error: 'bg-dark-900 border-l-red-600',
+	info: 'bg-dark-900 border-l-blue-500',
+	warning: 'bg-dark-900 border-l-golden-500',
+	default: 'bg-dark-900 border-l-accent-300',
+	dark: 'bg-dark-900 border-l-accent-300',
+};
 
-const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
-	const { data: auth, isLoading: authLoading, error: authError, refreshtokencall } = useAuth();
-	const { data: user, isLoading: userLoading, error: userError } = useGET<UserProfile>({ url: `/auth/me` });
+const UserProvider: React.FC<{
+	children: React.ReactNode;
+}> = ({ children }) => {
+	const { data, isLoading: userLoading, error: userError } = useGET<UserProfile>({ url: `/users/me` });
+	const [user, setUser] = useState<UserProfile>({ created_at: '', username: '', avatar: '', email: '', bio: '' });
+	const [authenticated, setAuthenticated] = useState<boolean>(false);
+	const pathname = usePathname();
 	const router = useRouter();
 
+	console.log(user);
+
+	const setAuth = useCallback(() => {
+		setAuthenticated(true);
+	}, []);
+
+	const reset = useCallback(() => {
+		setUser({ created_at: '', username: '', avatar: '', email: '', bio: '' });
+		setAuthenticated(false);
+	}, []);
+
 	useEffect(() => {
-		if (userError && authError) {
-			router.push('/login');
-		} else if (userError) {
-			refreshtokencall();
-		}
-	}, [authError, refreshtokencall, userError]);
+		if (protectedroutes.some((ele) => ele === pathname) && !authenticated) router.push('/login');
+		// else if (!protectedroutes.some((ele) => ele === pathname) && authenticated) router.push('/main');
+	}, [pathname, router, authenticated]);
+
+	useEffect(() => {
+		if (userError) router.push('/login');
+		else if (data) setUser({ ...data });
+	}, [data, reset, router, userError]);
 
 	if (userLoading) return <LoadingIndicator size="md" />;
-	if (!user) return null;
-
-	const contextClass = {
-		success: 'bg-dark-900 border-l-accent-300',
-		error: 'bg-dark-900 border-l-red-600',
-		info: 'bg-dark-900 border-l-blue-500',
-		warning: 'bg-dark-900 border-l-golden-500',
-		default: 'bg-dark-900 border-l-accent-300',
-		dark: 'bg-dark-900 border-l-accent-300',
-	};
 
 	return (
-		<userContext.Provider value={user}>
+		<userContext.Provider value={{ ...user, reset, setAuthenticated: setAuth }}>
 			<ToastContainer
 				position="bottom-right"
 				autoClose={5000}

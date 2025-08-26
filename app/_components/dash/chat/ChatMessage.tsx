@@ -1,12 +1,20 @@
 import { Message } from '@/app/_service/ws/chat/schemas';
 
-import { format, formatDistanceToNow } from 'date-fns';
+import { format, isThisWeek, isToday, isYesterday } from 'date-fns';
 import React from 'react';
 import SafeImage from '../../mini/SafeImage';
 import UserCallout from '../game/UserCallout';
 
 interface ChatMyMessageProps {
 	data: Message;
+}
+
+function formatDate(date: number | string): string {
+	const parsedDate = Number(date);
+	if (isToday(parsedDate)) return format(parsedDate, 'HH:mm');
+	if (isYesterday(parsedDate)) return 'Yesterday';
+	if (isThisWeek(parsedDate, { weekStartsOn: 1 })) return format(parsedDate, 'EEEE');
+	return format(parsedDate, 'eeee d, yyyy');
 }
 
 export const ChatMyMessage: React.FC<ChatMyMessageProps> = ({ data }) => {
@@ -20,13 +28,7 @@ export const ChatMyMessage: React.FC<ChatMyMessageProps> = ({ data }) => {
 						{data.message}
 					</div>
 				</div>
-				<div className="text-dark-200 text-xs mt-1 text-right">
-					{Date.now() - Number(data.date) < 1000 * 3600 * 24
-						? formatDistanceToNow(Number(data.date), { addSuffix: true })
-						: Date.now() - Number(data.date) < 1000 * 3600 * 24 * 7
-						? format(Number(data.date), 'EEEE')
-						: format(Number(data.date), 'eeee d, yyyy')}
-				</div>
+				<div className="text-dark-200 text-xs mt-1 text-right text-nowrap">{formatDate(Number(data.date))}</div>
 			</div>
 		</div>
 	);
@@ -57,13 +59,7 @@ export const ChatOtherMessage: React.FC<ChatMyMessageProps> = ({ data }) => {
 							{data.message}
 						</div>
 					</div>
-					<div className="text-dark-200 text-xs mt-1">
-						{Date.now() - Number(data.date) < 1000 * 3600 * 24
-							? formatDistanceToNow(Number(data.date), { addSuffix: true })
-							: Date.now() - Number(data.date) < 1000 * 3600 * 24 * 7
-							? format(Number(data.date), 'EEEE')
-							: format(Number(data.date), 'eeee d, yyyy')}
-					</div>
+					<div className="text-dark-200 text-xs mt-1 text-nowrap">{formatDate(Number(data.date))}</div>
 				</div>
 			</div>
 			<div className=""></div>
