@@ -2,9 +2,8 @@ import { Theme } from '@radix-ui/themes';
 import type { Metadata, Viewport } from 'next';
 import { Josefin_Sans } from 'next/font/google';
 
-import './globals.css';
 import AuthProvider from './_service/auth/authProvider';
-import UserProvider from './_service/user/userProvider';
+import './globals.css';
 
 const josefin = Josefin_Sans({
 	subsets: ['latin'],
@@ -41,9 +40,7 @@ export default function RootLayout({
 					hasBackground={false}
 					className={`${josefin.className} bg-dark-900 text-amber-50 m-0`}
 				>
-					<UserProvider>
-						<AuthProvider>{children}</AuthProvider>
-					</UserProvider>
+					<AuthProvider>{children}</AuthProvider>
 				</Theme>
 			</body>
 		</html>

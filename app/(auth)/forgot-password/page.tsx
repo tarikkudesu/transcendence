@@ -3,7 +3,7 @@
 import { PongButton } from '@/app/_components/buttons/ServerButtons';
 import Logo from '@/app/_components/mini/Logo';
 import { useNotification } from '@/app/_components/mini/useNotify';
-import { useAuth } from '@/app/_service/auth/authContext';
+import { useForgotPasswordCall } from '@/app/_service/auth/Fetchers';
 import { Box, Text } from '@radix-ui/themes';
 import Link from 'next/link';
 import React, { ChangeEvent, useEffect, useState } from 'react';
@@ -11,15 +11,11 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 const ForgotPassword: React.FC<unknown> = () => {
 	const { notify } = useNotification();
 	const [email, setEmail] = useState<string>('');
-	const { forgotpasscall, isLoading, data, error } = useAuth();
+	const { forgotpasscall, data, error, isLoading } = useForgotPasswordCall();
 
 	useEffect(() => {
-		if (data) {
-			notify({ message: data.message, success: true });
-		}
-		if (error) {
-			notify({ message: error.message, error: true });
-		}
+		if (data) notify({ message: data.message, success: true });
+		if (error) notify({ message: error.message, error: true });
 	}, [data, error, notify]);
 
 	return (

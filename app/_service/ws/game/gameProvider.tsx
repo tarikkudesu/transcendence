@@ -151,7 +151,7 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 				setError(true);
 			}
 		},
-		[error, close, onmessage, onerror, onclose, onopen]
+		[error, close]
 	);
 
 	function content() {

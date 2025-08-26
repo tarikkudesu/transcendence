@@ -102,7 +102,7 @@ const NotificationProvider: React.FC<NotificationProviderProps> = ({ children })
 				setError(true);
 			}
 		},
-		[error, close, onmessage, onerror, onclose, onopen, close, error]
+		[error, close]
 	);
 
 	return (

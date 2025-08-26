@@ -79,53 +79,53 @@ export function useMutate<TBody = unknown>() {
 			signal?: AbortSignal;
 			method: 'POST' | 'PUT' | 'DELETE';
 		}) => {
-			reset();
-			setIsLoading(true);
-			try {
-				switch (method) {
-					case 'POST': {
-						const response: AxiosResponse<MutateResponse> = await client.post(url, { ...body });
-						setData(response.data);
-						break;
-					}
-					case 'DELETE': {
-						const response: AxiosResponse<MutateResponse> = await client.delete(url, { signal });
-						setData(response.data);
-						break;
-					}
-					case 'PUT': {
-						const response: AxiosResponse<MutateResponse> = await client.put(url, { ...body });
-						setData(response.data);
-						break;
-					}
-				}
-			} catch (err) {
-				if (err instanceof AxiosError && err.response) {
-					console.log({
-						error: err.response.statusText,
-						statusCode: err.response.status,
-						message: err.response.data.message,
-					})
-					setError({
-						error: err.response.statusText,
-						statusCode: err.response.status,
-						message: err.response.data.message,
-					});
-				} else {
-					console.log({
-						error: 'Unknown Error',
-						statusCode: 520,
-						message: 'Something went wrong, Please try again later',
-					})
-					setError({
-						error: 'Unknown Error',
-						statusCode: 520,
-						message: 'Something went wrong, Please try again later',
-					});
-				}
-			} finally {
-				setIsLoading(false);
-			}
+			// reset();
+			// setIsLoading(true);
+			// try {
+			// 	switch (method) {
+			// 		case 'POST': {
+			// 			const response: AxiosResponse<MutateResponse> = await client.post(url, { ...body });
+			// 			setData(response.data);
+			// 			break;
+			// 		}
+			// 		case 'DELETE': {
+			// 			const response: AxiosResponse<MutateResponse> = await client.delete(url, { signal });
+			// 			setData(response.data);
+			// 			break;
+			// 		}
+			// 		case 'PUT': {
+			// 			const response: AxiosResponse<MutateResponse> = await client.put(url, { ...body });
+			// 			setData(response.data);
+			// 			break;
+			// 		}
+			// 	}
+			// } catch (err) {
+			// 	if (err instanceof AxiosError && err.response) {
+			// 		console.log({
+			// 			error: err.response.statusText,
+			// 			statusCode: err.response.status,
+			// 			message: err.response.data.message,
+			// 		})
+			// 		setError({
+			// 			error: err.response.statusText,
+			// 			statusCode: err.response.status,
+			// 			message: err.response.data.message,
+			// 		});
+			// 	} else {
+			// 		console.log({
+			// 			error: 'Unknown Error',
+			// 			statusCode: 520,
+			// 			message: 'Something went wrong, Please try again later',
+			// 		})
+			// 		setError({
+			// 			error: 'Unknown Error',
+			// 			statusCode: 520,
+			// 			message: 'Something went wrong, Please try again later',
+			// 		});
+			// 	}
+			// } finally {
+			// 	setIsLoading(false);
+			// }
 		},
 		[reset]
 	);
@@ -174,7 +174,7 @@ export function useGET<T = unknown>({
 		} finally {
 			setIsLoading(false);
 		}
-	}, [reset, signal, url]);
+	}, []);
 
 	useEffect(() => {
 		fetchData();

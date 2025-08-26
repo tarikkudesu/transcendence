@@ -68,6 +68,7 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 
 	useEffect(
 		function () {
+			if (open) return;
 			try {
 				console.log('creating Chat WebSocket connection ' + API_BASE);
 				if (API_BASE) {
@@ -82,7 +83,7 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 				setError(true);
 			}
 		},
-		[error, close, onmessage, onerror, onclose, onopen]
+		[error, close]
 	);
 
 	function content() {

@@ -11,6 +11,7 @@ import { PongButton } from '../../buttons/ServerButtons';
 import Error from '../../mini/Error';
 import { Spinner } from '../../mini/Loading';
 import SafeImage from '../../mini/SafeImage';
+import { useGetUser } from '@/app/_service/user/getUser';
 
 const Username: React.FC<{ username: string; className?: string }> = ({ username, className }) => {
 	return (
@@ -120,8 +121,8 @@ const Dialog: React.FC<{
 	children: React.ReactNode;
 	username: string;
 }> = ({ username, children }) => {
-	const { friend: getFriend, isLoading: actionLoading } = useFriends();
-	const { data: user, error, isLoading } = useGET<UserProfile>({ url: `/users/${username}` });
+	const { friend: getFriend } = useFriends();
+	const { data: user, error, isLoading } = useGetUser(username);
 	const { pooler: getPooler, send } = useGameSocket();
 	const [active, setActive] = useState<boolean>();
 	const router = useRouter();
@@ -188,13 +189,11 @@ const Dialog: React.FC<{
 						<>
 							<PongButton
 								onClick={() => router.push(`/main/dashboard/chat?chatemate=${friend.username}`)}
-								loading={actionLoading}
 								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
 							>
 								<SvgChat size={24} />
 							</PongButton>
 							<PongButton
-								loading={actionLoading}
 								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
 								onClick={() => router.push(`/main/dashboard/${friend.username}`)}
 							>
@@ -211,7 +210,7 @@ const Dialog: React.FC<{
 									pooler.inviteStatus === 'pending' ||
 									pooler.inviteStatus === 'declined'
 								}
-								loading={actionLoading || pooler.inviteStatus === 'pending'}
+								loading={pooler.inviteStatus === 'pending'}
 								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
 							>
 								<SvgPong size={24} />
@@ -223,7 +222,7 @@ const Dialog: React.FC<{
 									pooler.inviteStatus === 'pending' ||
 									pooler.inviteStatus === 'declined'
 								}
-								loading={actionLoading || pooler.inviteStatus === 'pending'}
+								loading={pooler.inviteStatus === 'pending'}
 								className="bg-dark-700 w-full hover:bg-golden-500 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
 							>
 								<SvgDoom size={24} />
@@ -233,7 +232,7 @@ const Dialog: React.FC<{
 				</div>
 			</>
 		);
-	}, [actionLoading, error, friend, isLoading, pooler, router, send, user, username]);
+	}, [error, friend, isLoading, pooler, router, send, user, username]);
 
 	return (
 		<>

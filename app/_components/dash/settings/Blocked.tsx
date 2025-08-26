@@ -1,17 +1,24 @@
 'use client';
 
-import { useFriends } from '@/app/_service/friends/FriendContext';
+import { useBlockFriendCall } from '@/app/_service/friends/Mutaters';
 import { BlockedFriend } from '@/app/_service/friends/schema';
 import { useGET } from '@/app/_service/useFetcher';
 import { Card, Text } from '@radix-ui/themes';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { PongButton } from '../../buttons/ServerButtons';
 import { Spinner } from '../../mini/Loading';
+import { useNotification } from '../../mini/useNotify';
 import { User } from '../game/User';
 
 const Blocked: React.FC = () => {
+	const { notify } = useNotification();
 	const { isLoading, data } = useGET<BlockedFriend[]>({ url: `/friends/blocked` });
-	const { isLoading: blocking, declineCall } = useFriends();
+	const { isLoading: blocking, error: blockError, blockCall } = useBlockFriendCall();
+
+	useEffect(() => {
+		if (blockError) notify({ message: blockError.message, error: true });
+	}, [blockError, notify]);
+
 	if (isLoading) return <Spinner />;
 
 	return (
@@ -38,7 +45,7 @@ const Blocked: React.FC = () => {
 							/>
 							<PongButton
 								loading={blocking}
-								onClick={() => declineCall(ele.username)}
+								onClick={() => blockCall({ to: ele.username })}
 								className="bg-dark-900 hover:bg-red-600 hover:text-white"
 							>
 								Unblock

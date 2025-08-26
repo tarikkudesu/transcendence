@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 
 import FriendsProvider from '../_service/friends/FriendProvider';
+import UserProvider from '../_service/user/userProvider';
 
 export const metadata: Metadata = {
 	title: 'YingYangPong',
@@ -17,7 +18,9 @@ export default function RootLayout({
 }>) {
 	return (
 		<main className="min-h-screen relative pb-[100px]">
-			<FriendsProvider>{children}</FriendsProvider>
+			<UserProvider>
+				<FriendsProvider>{children}</FriendsProvider>
+			</UserProvider>
 		</main>
 	);
 }

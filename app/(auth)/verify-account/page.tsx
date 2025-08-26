@@ -3,18 +3,19 @@
 import { PongButton } from '@/app/_components/buttons/ServerButtons';
 import Logo from '@/app/_components/mini/Logo';
 import { useNotification } from '@/app/_components/mini/useNotify';
-import { useAuth } from '@/app/_service/auth/authContext';
+import { useVerifyAccountCall } from '@/app/_service/auth/Fetchers';
 import { Box, Text } from '@radix-ui/themes';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { ChangeEvent, useEffect, useState } from 'react';
+import { ResendCode } from '../2fa-authentication/page';
 
 const SignUpVerify: React.FC<unknown> = () => {
 	const router = useRouter();
 	const { notify } = useNotification();
 	const searchParams = useSearchParams();
-	const { verifyaccountcall, resendotp, isLoading, data, error } = useAuth();
-	const [email, setEmail] = useState<string>('');
 	const [code, setCode] = useState<string>('');
+	const [email, setEmail] = useState<string>('');
+	const { verifyaccountcall, data, error, isLoading } = useVerifyAccountCall();
 
 	useEffect(() => {
 		if (data) {
@@ -62,9 +63,7 @@ const SignUpVerify: React.FC<unknown> = () => {
 						></input>
 					</label>
 					<Box height="20px" />
-					<button onClick={() => resendotp({ email })} className="text-sm text-dark-200 hover:text-accent-300">
-						resend code?
-					</button>
+					<ResendCode email={email} />
 					<Box height="20px" />
 					<PongButton
 						loading={isLoading}

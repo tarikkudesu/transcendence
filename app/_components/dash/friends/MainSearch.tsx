@@ -23,7 +23,7 @@ const Search: React.FC<{ search: string; clear: () => void }> = memo(({ search, 
 
 	return (
 		<>
-			{data && data.length && (
+			{data?.length && (
 				<div className="py-2 rounded-md bg-dark-950 absolute top-0 left-0 translate-y-[60px] w-[400px] text-white shadow-xl z-10 border border-dark-500">
 					{isLoading && <Spinner />}
 					{!isLoading && (

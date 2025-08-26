@@ -1,12 +1,10 @@
 'use client';
 
 import LoadingIndicator from '@/app/_components/mini/Loading';
-import { usePathname, useRouter } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
-import { protectedroutes } from '../consts';
-import { useGET } from '../useFetcher';
-import { UserProfile } from './schema';
+import { useGetMe } from './getUser';
 import { userContext } from './userContext';
 
 const contextClass = {
@@ -21,37 +19,18 @@ const contextClass = {
 const UserProvider: React.FC<{
 	children: React.ReactNode;
 }> = ({ children }) => {
-	const { data, isLoading: userLoading, error: userError } = useGET<UserProfile>({ url: `/users/me` });
-	const [user, setUser] = useState<UserProfile>({ created_at: '', username: '', avatar: '', email: '', bio: '' });
-	const [authenticated, setAuthenticated] = useState<boolean>(false);
-	const pathname = usePathname();
 	const router = useRouter();
-
-	console.log(user);
-
-	const setAuth = useCallback(() => {
-		setAuthenticated(true);
-	}, []);
-
-	const reset = useCallback(() => {
-		setUser({ created_at: '', username: '', avatar: '', email: '', bio: '' });
-		setAuthenticated(false);
-	}, []);
-
-	useEffect(() => {
-		if (protectedroutes.some((ele) => ele === pathname) && !authenticated) router.push('/login');
-		// else if (!protectedroutes.some((ele) => ele === pathname) && authenticated) router.push('/main');
-	}, [pathname, router, authenticated]);
+	const { data: user, isLoading: userLoading, error: userError } = useGetMe();
 
 	useEffect(() => {
 		if (userError) router.push('/login');
-		else if (data) setUser({ ...data });
-	}, [data, reset, router, userError]);
+	}, [router, userError]);
 
 	if (userLoading) return <LoadingIndicator size="md" />;
+	if (!user) return null;
 
 	return (
-		<userContext.Provider value={{ ...user, reset, setAuthenticated: setAuth }}>
+		<userContext.Provider value={{ ...user }}>
 			<ToastContainer
 				position="bottom-right"
 				autoClose={5000}

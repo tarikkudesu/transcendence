@@ -100,7 +100,7 @@ const RemotePong: React.FC<{ gid: string; opponent: string }> = ({ gid, opponent
 					{pooler && (
 						<>
 							<PongButton
-								onClick={() => send(InviteMessage('pong', username))}
+								onClick={() => send(InviteMessage('pong', opponent))}
 								disabled={
 									pooler.playerStatus === 'playing' ||
 									pooler.inviteStatus === 'pending' ||
@@ -127,7 +127,7 @@ const RemotePong: React.FC<{ gid: string; opponent: string }> = ({ gid, opponent
 					{pooler && (
 						<>
 							<PongButton
-								onClick={() => send(InviteMessage('pong', username))}
+								onClick={() => send(InviteMessage('pong', opponent))}
 								disabled={
 									pooler.playerStatus === 'playing' ||
 									pooler.inviteStatus === 'pending' ||

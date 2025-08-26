@@ -64,6 +64,7 @@ const ConversationProvider: React.FC<ConversationProviderProps> = ({ children, f
 
 	useEffect(
 		function () {
+			if (open) return;
 			try {
 				console.log('creating Conversation WebSocket connection ' + API_BASE + friend);
 				if (API_BASE) {
@@ -78,7 +79,7 @@ const ConversationProvider: React.FC<ConversationProviderProps> = ({ children, f
 				setError(true);
 			}
 		},
-		[error, close, onmessage, onerror, onclose, onopen, friend]
+		[error, close]
 	);
 
 	function content() {

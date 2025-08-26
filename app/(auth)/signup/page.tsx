@@ -3,7 +3,7 @@
 import { PongButton } from '@/app/_components/buttons/ServerButtons';
 import Logo from '@/app/_components/mini/Logo';
 import { useNotification } from '@/app/_components/mini/useNotify';
-import { useAuth } from '@/app/_service/auth/authContext';
+import { useSignupCall } from '@/app/_service/auth/Fetchers';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
 import { Box, Flex, Text } from '@radix-ui/themes';
 import Link from 'next/link';
@@ -16,7 +16,7 @@ const SignUp: React.FC<unknown> = () => {
 	const [email, setEmail] = useState<string>('');
 	const [password, setPass] = useState<string>('');
 	const [username, setUsername] = useState<string>('');
-	const { data, error, isLoading, signupcall } = useAuth();
+	const { signupcall, data, error, isLoading } = useSignupCall();
 	const [type, setType] = useState<'password' | 'text'>('password');
 
 	useEffect(() => {
@@ -110,10 +110,7 @@ const SignUp: React.FC<unknown> = () => {
 						<Box height="2px" className="bg-dark-600 w-full"></Box>
 					</Flex>
 					<Box height="20px" />
-					<PongButton
-						loading={isLoading}
-						className="w-full text-white hover:text-black bg-transparent hover:bg-accent-300 border border-accent-300"
-					>
+					<PongButton className="w-full text-white hover:text-black bg-transparent hover:bg-accent-300 border border-accent-300">
 						Sign up with Google
 					</PongButton>
 					<Box height="20px" />

@@ -76,7 +76,7 @@ const RemoteDoom: React.FC<{ gid: string; opponent: string }> = ({ gid, opponent
 					{pooler && (
 						<>
 							<PongButton
-								onClick={() => send(InviteMessage('card of doom', username))}
+								onClick={() => send(InviteMessage('card of doom', opponent))}
 								disabled={
 									pooler.playerStatus === 'playing' ||
 									pooler.inviteStatus === 'pending' ||
@@ -103,7 +103,7 @@ const RemoteDoom: React.FC<{ gid: string; opponent: string }> = ({ gid, opponent
 					{pooler && (
 						<>
 							<PongButton
-								onClick={() => send(InviteMessage('card of doom', username))}
+								onClick={() => send(InviteMessage('card of doom', opponent))}
 								disabled={
 									pooler.playerStatus === 'playing' ||
 									pooler.inviteStatus === 'pending' ||

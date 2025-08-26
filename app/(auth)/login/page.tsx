@@ -3,7 +3,7 @@
 import { PongButton } from '@/app/_components/buttons/ServerButtons';
 import Logo from '@/app/_components/mini/Logo';
 import { useNotification } from '@/app/_components/mini/useNotify';
-import { useAuth } from '@/app/_service/auth/authContext';
+import { useLoginCall } from '@/app/_service/auth/Fetchers';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
 import { Box, Flex, Text } from '@radix-ui/themes';
 import Link from 'next/link';
@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 
 const Login: React.FC<unknown> = () => {
-	const { logincall, isLoading, data, error, reset } = useAuth();
+	const { logincall, data, error, isLoading } = useLoginCall();
 	const [type, setType] = useState<'password' | 'text'>('password');
 	const [username, setUsername] = useState<string>('');
 	const [password, setPass] = useState<string>('');
@@ -22,13 +22,10 @@ const Login: React.FC<unknown> = () => {
 		if (data) {
 			notify({ message: data.message, success: true });
 			const email: string = data.email ?? '';
-			reset();
 			router.push(`2fa-authentication?email=${email ?? ''}`);
 		}
-		if (error) {
-			notify({ message: error.message, error: true });
-		}
-	}, [data, error, notify, reset, router]);
+		if (error) notify({ message: error.message, error: true });
+	}, [data, error, notify, router]);
 
 	const switchtype = useCallback(() => {
 		if (type === 'password') setType('text');
@@ -99,10 +96,7 @@ const Login: React.FC<unknown> = () => {
 						<Box height="2px" className="bg-dark-600 w-full"></Box>
 					</Flex>
 					<Box height="20px" />
-					<PongButton
-						loading={isLoading}
-						className="w-full text-white hover:text-black bg-transparent hover:bg-accent-300 border border-accent-300"
-					>
+					<PongButton className="w-full text-white hover:text-black bg-transparent hover:bg-accent-300 border border-accent-300">
 						Sign in with Google
 					</PongButton>
 					<Box height="20px" />

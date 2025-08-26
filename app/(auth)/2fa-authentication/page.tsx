@@ -3,11 +3,26 @@
 import { PongButton } from '@/app/_components/buttons/ServerButtons';
 import Logo from '@/app/_components/mini/Logo';
 import { useNotification } from '@/app/_components/mini/useNotify';
-import { useAuth } from '@/app/_service/auth/authContext';
-import { useUser } from '@/app/_service/user/userContext';
+import { useResendOtpCall, useTwofaCall } from '@/app/_service/auth/Fetchers';
 import { Box, Text } from '@radix-ui/themes';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { ChangeEvent, useEffect, useState } from 'react';
+
+export const ResendCode: React.FC<{ email: string }> = ({ email }) => {
+	const { notify } = useNotification();
+	const { resendotp, data, error, isLoading } = useResendOtpCall();
+
+	useEffect(() => {
+		if (data) notify({ message: data.message });
+		if (error) notify({ message: error.message, error: true });
+	}, [data, error, notify]);
+
+	return (
+		<button disabled={isLoading} onClick={() => resendotp({ email })} className="text-sm text-dark-200 hover:text-accent-300">
+			resend code?
+		</button>
+	);
+};
 
 const LoginVerify: React.FC<unknown> = () => {
 	const router = useRouter();
@@ -15,20 +30,17 @@ const LoginVerify: React.FC<unknown> = () => {
 	const searchParams = useSearchParams();
 	const [code, setCode] = useState<string>('');
 	const [email, setEmail] = useState<string>('');
-	const { resendotp, twofacall, isLoading, data, error, reset } = useAuth();
-	const { setAuthenticated } = useUser();
+	const { twofacall, data, error, isLoading } = useTwofaCall();
 
 	useEffect(() => {
 		if (data) {
-			notify({ message: data.message, success: true });
-			setAuthenticated();
-			reset();
+			notify({ message: data.message });
 			router.push('/main');
 		}
 		if (error) {
 			notify({ message: error.message, error: true });
 		}
-	}, [data, error, notify, reset, router, setAuthenticated]);
+	}, [data, error, notify, router]);
 
 	useEffect(() => {
 		const mail: string | null = searchParams.get('email');
@@ -66,9 +78,7 @@ const LoginVerify: React.FC<unknown> = () => {
 						></input>
 					</label>
 					<Box height="20px" />
-					<button onClick={() => resendotp({ email })} className="text-sm text-dark-200 hover:text-accent-300">
-						resend code?
-					</button>
+					<ResendCode email={email} />
 					<Box height="20px" />
 					<PongButton
 						loading={isLoading}

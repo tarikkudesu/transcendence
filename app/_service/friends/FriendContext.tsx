@@ -10,12 +10,6 @@ class FriendsState {
 	refetch: () => void = () => true;
 	friend: (u: string) => Friend | null = (u: string) => null;
 	request: (u: string) => FriendRequest | null = (u: string) => null;
-
-	isLoading: boolean = false;
-	addCall: (u: string) => void = (u: string) => null;
-	acceptCall: (u: string) => void = (u: string) => null;
-	declineCall: (u: string) => void = (u: string) => null;
-	blockCall: (u: string) => void = (u: string) => null;
 }
 
 export const friendsContext = createContext(new FriendsState());

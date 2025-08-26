@@ -3,7 +3,7 @@
 import { PongButton } from '@/app/_components/buttons/ServerButtons';
 import Logo from '@/app/_components/mini/Logo';
 import { useNotification } from '@/app/_components/mini/useNotify';
-import { useAuth } from '@/app/_service/auth/authContext';
+import { useResetPasswordCall } from '@/app/_service/auth/Fetchers';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
 import { Box, Flex, Text } from '@radix-ui/themes';
 import Link from 'next/link';
@@ -17,9 +17,9 @@ const ResetPassword: React.FC<unknown> = () => {
 	const searchParams = useSearchParams();
 	const [token, setToken] = useState<string>('');
 	const [newPassword, setNewPass] = useState<string>('');
-	const { isLoading, resetpasscall, data, error } = useAuth();
 	const [repeatNewPassword, setRepeatNewPass] = useState<string>('');
 	const [type, setType] = useState<'password' | 'text'>('password');
+	const { resetpasscall, data, error, isLoading } = useResetPasswordCall();
 
 	const switchtype = useCallback(() => {
 		if (type === 'password') setType('text');
@@ -31,9 +31,7 @@ const ResetPassword: React.FC<unknown> = () => {
 			notify({ message: data.message, success: true });
 			router.push('/main');
 		}
-		if (error) {
-			notify({ message: error.message, error: true });
-		}
+		if (error) notify({ message: error.message, error: true });
 	}, [data, error, notify]);
 
 	useEffect(() => {

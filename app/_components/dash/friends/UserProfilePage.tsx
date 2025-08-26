@@ -1,6 +1,7 @@
 'use client';
 
 import { useFriends } from '@/app/_service/friends/FriendContext';
+import { useAcceptFriendCall, useAddFriendCall, useBlockFriendCall, useDeclineFriendCall } from '@/app/_service/friends/Mutaters';
 import { Friend, FriendRequest } from '@/app/_service/friends/schema';
 import { useGET } from '@/app/_service/useFetcher';
 import { UserProfile } from '@/app/_service/user/schema';
@@ -9,16 +10,82 @@ import { SvgAddFriend, SvgBan, SvgChat, SvgDoom, SvgInfo, SvgPong } from '@/app/
 import { Callout, Text } from '@radix-ui/themes';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { PongButton } from '../../buttons/ServerButtons';
 import { Spinner } from '../../mini/Loading';
 import SafeImage from '../../mini/SafeImage';
+import { useNotification } from '../../mini/useNotify';
+
+const AddFriend: React.FC<{ username: string }> = ({ username }) => {
+	const { error, isLoading, addCall } = useAddFriendCall();
+	const { notify } = useNotification();
+	useEffect(() => {
+		if (error) notify({ message: error.message, error: true });
+	}, [error, notify]);
+	return (
+		<PongButton
+			loading={isLoading}
+			onClick={() => addCall({ to: username })}
+			className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black"
+		>
+			<SvgAddFriend size={24} />
+		</PongButton>
+	);
+};
+const AcceptFriend: React.FC<{ username: string }> = ({ username }) => {
+	const { error, isLoading, acceptCall } = useAcceptFriendCall();
+	const { notify } = useNotification();
+	useEffect(() => {
+		if (error) notify({ message: error.message, error: true });
+	}, [error, notify]);
+	return (
+		<PongButton
+			loading={isLoading}
+			onClick={() => acceptCall({ to: username })}
+			className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black"
+		>
+			Accept
+		</PongButton>
+	);
+};
+const DeclineFriend: React.FC<{ username: string }> = ({ username }) => {
+	const { error, isLoading, declineCall } = useDeclineFriendCall();
+	const { notify } = useNotification();
+	useEffect(() => {
+		if (error) notify({ message: error.message, error: true });
+	}, [error, notify]);
+	return (
+		<PongButton
+			loading={isLoading}
+			onClick={() => declineCall({ to: username })}
+			className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black"
+		>
+			Remove
+		</PongButton>
+	);
+};
+const BlockFriend: React.FC<{ username: string }> = ({ username }) => {
+	const { error, isLoading, blockCall } = useBlockFriendCall();
+	const { notify } = useNotification();
+	useEffect(() => {
+		if (error) notify({ message: error.message, error: true });
+	}, [error, notify]);
+	return (
+		<PongButton
+			loading={isLoading}
+			onClick={() => blockCall({ to: username })}
+			className="bg-dark-700 w-full hover:bg-red-600 hover:text-white"
+		>
+			<SvgBan size={24} />
+		</PongButton>
+	);
+};
 
 const UserProfilePage: React.FC<{ username: string }> = ({ username }) => {
 	const { pooler: getPooler, send } = useGameSocket();
-	const { request: getRequest, friend: getFriend, addCall, acceptCall, declineCall, blockCall, isLoading: actionLoading } = useFriends();
+	const { request: getRequest, friend: getFriend } = useFriends();
 	const { data: user, error, isLoading } = useGET<UserProfile>({ url: `/users/${username}` });
-	const router = useRouter();
+	const router = useRouter()
 
 	const pooler: ClientPlayer | undefined = getPooler(username);
 	const request: FriendRequest | null = getRequest(username);
@@ -71,49 +138,22 @@ const UserProfilePage: React.FC<{ username: string }> = ({ username }) => {
 							<Callout.Text>This Profile is restricted</Callout.Text>
 						</Callout.Root>
 					)}
-					{!friend && (
-						<PongButton
-							loading={actionLoading}
-							onClick={() => addCall(user.username)}
-							className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black"
-						>
-							<SvgAddFriend size={24} />
-						</PongButton>
-					)}
+					{!friend && <AddFriend username={username} />}
 					{request && request.stat === 'pending' && (
 						<>
-							<PongButton
-								loading={actionLoading}
-								onClick={() => acceptCall(user.username)}
-								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black"
-							>
-								Accept
-							</PongButton>
-							<PongButton
-								loading={actionLoading}
-								onClick={() => declineCall(user.username)}
-								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black"
-							>
-								Remove
-							</PongButton>
+							<AcceptFriend username={username} />
+							<DeclineFriend username={username} />
 						</>
 					)}
 					{friend && friend.stat === 'accepted' && (
 						<>
 							<PongButton
 								onClick={() => router.push(`/main/dashboard/chat?chatemate=${friend.username}`)}
-								loading={actionLoading}
 								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black"
 							>
 								<SvgChat size={24} />
 							</PongButton>
-							<PongButton
-								loading={actionLoading}
-								onClick={() => blockCall(user.username)}
-								className="bg-dark-700 w-full hover:bg-red-600 hover:text-white"
-							>
-								<SvgBan size={24} />
-							</PongButton>
+							<BlockFriend username={username} />
 						</>
 					)}
 					{friend && friend.stat === 'accepted' && pooler && (
@@ -125,7 +165,7 @@ const UserProfilePage: React.FC<{ username: string }> = ({ username }) => {
 									pooler.inviteStatus === 'pending' ||
 									pooler.inviteStatus === 'declined'
 								}
-								loading={actionLoading || pooler.playerStatus === 'playing'}
+								loading={pooler.playerStatus === 'playing'}
 								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black disabled:text-white disabled:bg-dark-700"
 							>
 								<SvgPong size={24} />
@@ -137,7 +177,7 @@ const UserProfilePage: React.FC<{ username: string }> = ({ username }) => {
 									pooler.inviteStatus === 'pending' ||
 									pooler.inviteStatus === 'declined'
 								}
-								loading={actionLoading || pooler.playerStatus === 'playing'}
+								loading={pooler.playerStatus === 'playing'}
 								className="bg-dark-700 w-full hover:bg-golden-500 hover:text-black disabled:text-white disabled:bg-dark-700"
 							>
 								<SvgDoom size={24} />
@@ -147,22 +187,7 @@ const UserProfilePage: React.FC<{ username: string }> = ({ username }) => {
 				</div>
 			</>
 		);
-	}, [
-		acceptCall,
-		actionLoading,
-		addCall,
-		blockCall,
-		declineCall,
-		error,
-		friend,
-		isLoading,
-		pooler,
-		request,
-		router,
-		send,
-		user,
-		username,
-	]);
+	}, [error, friend, isLoading, pooler, request, router, send, user, username]);
 
 	return <div className="bg-dark-950 rounded-md shadow-xl my-8">{Node()}</div>;
 };

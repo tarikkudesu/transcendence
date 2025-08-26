@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback } from 'react';
-import { useGET, useMutate } from '../useFetcher';
+import { useGET } from '../useFetcher';
 import { friendsContext } from './FriendContext';
 import { Friend, FriendRequest } from './schema';
 
@@ -12,7 +12,6 @@ interface FriendsProviderProps {
 const FriendsProvider: React.FC<FriendsProviderProps> = ({ children }) => {
 	const { data: friends, refetch: friendsRefetch } = useGET<Friend[]>({ url: `/friends` });
 	const { data: requests, refetch: requestsRefetch } = useGET<FriendRequest[]>({ url: `/friends/request` });
-	const { isLoading, fetchData } = useMutate<{ to: string }>();
 
 	const friend = useCallback(
 		(username: string): Friend | null => {
@@ -39,38 +38,6 @@ const FriendsProvider: React.FC<FriendsProviderProps> = ({ children }) => {
 		requestsRefetch();
 	}, [friendsRefetch, requestsRefetch]);
 
-	const addCall = useCallback(
-		async (username: string) => {
-			await fetchData({ url: `/friends/add`, method: 'POST', body: { to: username } });
-			refetch();
-		},
-		[fetchData, refetch]
-	);
-
-	const acceptCall = useCallback(
-		async (username: string) => {
-			await fetchData({ url: `/friends/accept`, method: 'PUT', body: { to: username } });
-			refetch();
-		},
-		[fetchData, refetch]
-	);
-
-	const declineCall = useCallback(
-		async (username: string) => {
-			await fetchData({ url: `/friends/remove`, method: 'DELETE', body: { to: username } });
-			refetch();
-		},
-		[fetchData, refetch]
-	);
-
-	const blockCall = useCallback(
-		async (username: string) => {
-			await fetchData({ url: `/friends/block`, method: 'PUT', body: { to: username } });
-			refetch();
-		},
-		[fetchData, refetch]
-	);
-
 	return (
 		<friendsContext.Provider
 			value={{
@@ -79,11 +46,6 @@ const FriendsProvider: React.FC<FriendsProviderProps> = ({ children }) => {
 				friend,
 				request,
 				refetch,
-				isLoading,
-				acceptCall,
-				declineCall,
-				blockCall,
-				addCall,
 			}}
 		>
 			{children}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuth } from '@/app/_service/auth/authContext';
+import { useLogoutCall } from '@/app/_service/auth/Fetchers';
 import { Flex } from '@radix-ui/themes';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
@@ -11,7 +11,7 @@ import { useNotification } from './useNotify';
 const Header: React.FC = ({}) => {
 	const router = useRouter();
 	const { notify } = useNotification();
-	const { logoutcall, isLoading, data, error } = useAuth();
+	const { data, error, isLoading, logoutcall } = useLogoutCall();
 
 	useEffect(() => {
 		if (data) {

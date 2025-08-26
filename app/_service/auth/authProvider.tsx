@@ -103,7 +103,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	const updateusernamecall = useCallback(
 		async (body: UpdateUsernameRequest) => {
 			reset();
-			await fetchData({ url: 'users/profile/username', method: 'PUT', body });
+			await fetchData({ url: '/users/profile/username', method: 'PUT', body });
 		},
 		[fetchData, reset]
 	);
