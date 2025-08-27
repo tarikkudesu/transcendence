@@ -1,7 +1,7 @@
 'use client';
 
 import { useMutate } from '@/app/_service/useFetcher';
-import { UpdatePasswordRequest } from '@/app/_service/user/schema';
+import { UpdatePasswordRequest } from '@/app/_service/schema';
 import { useUser } from '@/app/_service/user/userContext';
 import { CheckCircledIcon } from '@radix-ui/react-icons';
 import { Box, Card, Flex, Text } from '@radix-ui/themes';

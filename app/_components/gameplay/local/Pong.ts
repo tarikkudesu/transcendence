@@ -291,7 +291,7 @@ class Pong {
 	drawRightPaddles() {
 		if (this.ctx === null) return;
 		this.ctx.beginPath();
-		this.ctx.fillStyle = '#FFC000';
+		this.ctx.fillStyle = '#b3ec4b';
 		this.ctx.rect(
 			this.rightPaddle.pos.x - Main.PaddleRadius,
 			this.rightPaddle.pos.y - Main.PaddleHeight,
@@ -303,7 +303,7 @@ class Pong {
 	}
 	drawLeftPaddles() {
 		if (this.ctx === null) return;
-		this.ctx.fillStyle = '#FFC000';
+		this.ctx.fillStyle = '#b3ec4b';
 		this.ctx.rect(
 			this.leftPaddle.pos.x - Main.PaddleRadius,
 			this.leftPaddle.pos.y - Main.PaddleHeight,
@@ -315,7 +315,7 @@ class Pong {
 	}
 	drawBall() {
 		if (this.ctx === null) return;
-		this.ctx.fillStyle = '#FFC000';
+		this.ctx.fillStyle = '#b3ec4b';
 		this.ctx.rect(this.ball.pos.x - Main.BallRadius, this.ball.pos.y - Main.BallRadius, Main.BallRadius * 2, Main.BallRadius * 2);
 		this.ctx.fill();
 		this.ctx.beginPath();
@@ -324,7 +324,7 @@ class Pong {
 		if (this.ctx === null) return;
 		this.ctx.save();
 		this.ctx.setLineDash([5, 5]);
-		this.ctx.strokeStyle = '#FFC000';
+		this.ctx.strokeStyle = '#b3ec4b';
 		this.ctx.lineWidth = 2;
 		this.ctx.beginPath();
 		this.ctx.moveTo(Main.PongWidth / 2, 0);
@@ -336,7 +336,7 @@ class Pong {
 		if (this.ctx === null) return;
 		this.ctx.save();
 		this.ctx.setLineDash([5, 5]);
-		this.ctx.strokeStyle = '#FFC000';
+		this.ctx.strokeStyle = '#b3ec4b';
 		this.ctx.lineWidth = 2;
 		this.ctx.beginPath();
 		this.ctx.arc(Main.PongWidth / 2, Main.PongHeight / 2, 50, 0, Math.PI * 2);

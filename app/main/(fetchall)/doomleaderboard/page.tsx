@@ -1,8 +1,17 @@
 import DoomLeaderBoard from '@/app/_components/dash/fetchall/DoomLeaderBoard';
 import Footer from '@/app/_components/mini/Footer';
 import Header from '@/app/_components/mini/Header';
+import { baseMetadata, mainAppMetadata } from '@/app/_service/consts';
 import { Text } from '@radix-ui/themes';
+import { Metadata } from 'next';
 import React from 'react';
+
+
+export const metadata: Metadata = {
+	...baseMetadata,
+	...mainAppMetadata.doomLeaderboard,
+};
+
 
 const Page: React.FC<unknown> = () => {
 	return (

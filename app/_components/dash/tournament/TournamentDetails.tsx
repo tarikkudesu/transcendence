@@ -1,6 +1,6 @@
 'use client';
 
-import { TournamentDetailsType } from '@/app/_service/game/schemas';
+import { TournamentDetailsType } from '@/app/_service/schema';
 import { useGET } from '@/app/_service/useFetcher';
 import { Box, Flex, Text, Tooltip } from '@radix-ui/themes';
 import { formatDistanceToNow } from 'date-fns';

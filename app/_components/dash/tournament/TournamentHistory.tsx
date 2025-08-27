@@ -1,6 +1,6 @@
 'use client';
 
-import { TournamentHistoryEntry } from '@/app/_service/game/schemas';
+import { TournamentHistoryEntry } from '@/app/_service/schema';
 import { useGET } from '@/app/_service/useFetcher';
 import { Flex, Text } from '@radix-ui/themes';
 import { formatDistanceToNow } from 'date-fns';
@@ -23,7 +23,6 @@ const TournamentHistory: React.FC = ({}) => {
 				Browse past tournaments, view winners, scores, and match highlights.
 			</Text>
 			{tournaments &&
-				tournaments.length &&
 				tournaments.map((ele, index) => {
 					return (
 						<div key={index} className="bg-dark-950 px-[10%] py-[40px] mb-[10px]">

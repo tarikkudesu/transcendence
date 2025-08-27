@@ -30,7 +30,7 @@ const Header: React.FC = ({}) => {
 				<PongButton
 					onClick={() => logoutcall()}
 					loading={isLoading}
-					className="bg-dark-700 text-dark-200 hover:text-white hover:bg-dark-600"
+					className="bg-dark-700 text-dark-200 hover:bg-accent-300 hover:text-black"
 				>
 					Log Out
 				</PongButton>

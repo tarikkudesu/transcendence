@@ -1,9 +1,16 @@
-import OnlinePlayers from '@/app/_components/dash/game/OnlinePlayers';
-import React from 'react';
-import { Text } from '@radix-ui/themes';
 import { PongButton } from '@/app/_components/buttons/ServerButtons';
-import Link from 'next/link';
+import OnlinePlayers from '@/app/_components/dash/game/OnlinePlayers';
 import ProfileWrapper from '@/app/_components/dash/profile/ProfileWrapper';
+import { baseMetadata, mainAppMetadata } from '@/app/_service/consts';
+import { Text } from '@radix-ui/themes';
+import { Metadata } from 'next';
+import Link from 'next/link';
+import React from 'react';
+
+export const metadata: Metadata = {
+	...baseMetadata,
+	...mainAppMetadata.playground,
+};
 
 const Playground: React.FC<unknown> = () => {
 	return (

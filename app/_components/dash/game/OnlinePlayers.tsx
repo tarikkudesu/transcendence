@@ -1,9 +1,9 @@
 'use client';
 
 import { useFriends } from '@/app/_service/friends/FriendContext';
-import { Friend } from '@/app/_service/friends/schema';
+import { Friend } from '@/app/_service/schema';
 import { useGameSocket } from '@/app/_service/ws/game';
-import {  Text } from '@radix-ui/themes';
+import { Text } from '@radix-ui/themes';
 import { useSearchParams } from 'next/navigation';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { User } from './User';
@@ -82,7 +82,7 @@ const OnlinePlayers: React.FC = ({}) => {
 										Online
 									</Text>
 								) : online(player.username) === 'playing' ? (
-									<Text as="div" size="1" className="font-medium text-golden-500">
+									<Text as="div" size="1" className="font-medium text-orange-600">
 										Playing
 									</Text>
 								) : (

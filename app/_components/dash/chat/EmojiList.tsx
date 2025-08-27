@@ -870,14 +870,14 @@ const emojies = [
 
 const EmojiList: React.FC<EmojiListProps> = ({ set }) => {
 	return (
-		<div className="bg-dark-900 p-3 rounded-lg absolute bottom-[70px] left-[10px] shadow-lg border border-dark-600">
+		<div className="bg-accent-900/40 p-3 rounded-lg absolute bottom-[70px] left-[10px] shadow-lg border border-dark-600">
 			<div className=""></div>
 			<ScrollArea type="auto" style={{ height: 280, width: 300 }} scrollbars="vertical">
 				<div className="grid grid-cols-6 gap-2 select-none">
 					{emojies.map((ele, index) => (
 						<div
 							key={index}
-							className="w-10 h-10 flex justify-center items-center rounded-md hover:bg-dark-700 transition-colors cursor-pointer text-xl"
+							className="w-10 h-10 flex justify-center items-center rounded-md hover:bg-accent-900/40 transition-colors cursor-pointer text-xl"
 							onClick={() => set(ele)}
 						>
 							<div className="translate-y-0.5">{ele}</div>

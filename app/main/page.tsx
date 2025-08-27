@@ -16,6 +16,15 @@ import Footer from '../_components/mini/Footer';
 import Header from '../_components/mini/Header';
 import TitleSubTitle from '../_components/mini/TitleSubTitle';
 import Username from '../_components/mini/Username';
+import { Metadata } from 'next';
+import { baseMetadata, mainAppMetadata } from '../_service/consts';
+
+
+export const metadata: Metadata = {
+	...baseMetadata,
+	...mainAppMetadata.dashboard,
+};
+
 
 const Dashboard: React.FC<unknown> = () => {
 	return (

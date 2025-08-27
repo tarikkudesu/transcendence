@@ -1,6 +1,6 @@
 'use client';
 
-import { PongHistoryEntry } from '@/app/_service/game/schemas';
+import { PongHistoryEntry } from '@/app/_service/schema';
 import { useGET } from '@/app/_service/useFetcher';
 import { SvgClockArrow, SvgMore } from '@/app/_svg/svg';
 import { Badge, Flex, Text } from '@radix-ui/themes';

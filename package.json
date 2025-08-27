@@ -19,6 +19,7 @@
 		"date-fns": "^4.1.0",
 		"lodash": "^4.17.21",
 		"next": "15.4.6",
+		"next-list": "^1.0.18",
 		"react": "19.1.0",
 		"react-dom": "19.1.0",
 		"react-toastify": "^11.0.5"

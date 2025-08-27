@@ -1,8 +1,16 @@
 import DoomLeaderBoard from '@/app/_components/dash/leaderboard/DoomLeaderBoard';
 import PongLeaderBoard from '@/app/_components/dash/leaderboard/PongLeaderBoard';
+import { baseMetadata, mainAppMetadata } from '@/app/_service/consts';
 import { Flex, Text, Tooltip } from '@radix-ui/themes';
+import { Metadata } from 'next';
 import Link from 'next/link';
 import React from 'react';
+
+export const metadata: Metadata = {
+	...baseMetadata,
+	...mainAppMetadata.leaderboard,
+};
+
 
 const LeaderBoard: React.FC<unknown> = () => {
 	return (

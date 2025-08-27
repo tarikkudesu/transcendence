@@ -13,18 +13,6 @@ const client = axios.create({
 	},
 });
 
-// axiosRetry(axios, {
-// 	retries: 3,
-// 	retryDelay(retryCount) {
-// 		console.log(`retry attempt ${retryCount}`);
-// 		return 1000;
-// 	},
-// 	retryCondition(error) {
-// 		console.log(error.response?.status, 'retry condition');
-// 		return error.response?.status === 401;
-// 	},
-// });
-
 client.interceptors.response.use(
 	(response) => response,
 	async (error) => {

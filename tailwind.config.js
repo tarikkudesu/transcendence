@@ -63,10 +63,10 @@ const config = {
 				},
 			},
 			animation: {
-				cardenter: 'cardenter 0.1s ease-out forwards',
+				cardenter: 'cardenter 0.3s ease-out forwards',
 				spin: 'spin 1s linear infinite',
 				'spin-reverse': 'spin-reverse 1s linear infinite',
-				zoomBounce: 'zoomInOutBounce 0.5s cubic-bezier(0.68,-0.55,0.265,1.55)',
+				'zoom-bounce': 'zoomInOutBounce 0.5s cubic-bezier(0.68,-0.55,0.265,1.55)',
 			},
 			keyframes: {
 				cardenter: {

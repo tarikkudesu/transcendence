@@ -2,7 +2,7 @@ import { AxiosError, AxiosResponse } from 'axios';
 import { useCallback, useState } from 'react';
 import client from '../axios/client';
 import { PongError } from '../useFetcher';
-import { MutateResponse } from '../user/schema';
+import { MutateResponse } from '../schema';
 import { useFriends } from './FriendContext';
 
 export function useAddFriendCall() {

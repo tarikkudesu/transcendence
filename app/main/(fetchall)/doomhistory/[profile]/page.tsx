@@ -1,8 +1,23 @@
 import DoomHistory from '@/app/_components/dash/fetchall/DoomHistory';
 import Footer from '@/app/_components/mini/Footer';
 import Header from '@/app/_components/mini/Header';
+import { baseMetadata, mainAppMetadata } from '@/app/_service/consts';
 import { Text } from '@radix-ui/themes';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+
+type Props = {
+	params: Promise<{ profile: string }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+	const { profile } = await params;
+	if (!profile) return { ...baseMetadata };
+	return {
+		...baseMetadata,
+		...mainAppMetadata.doomHistory(profile),
+	};
+}
 
 const Page: React.FC<{ params: Promise<{ profile: string }> }> = async ({ params }) => {
 	const { profile } = await params;

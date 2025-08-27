@@ -1,11 +1,12 @@
 'use client';
 
-import { FriendSearch } from '@/app/_service/friends/schema';
+import { FriendSearch } from '@/app/_service/schema';
 import { useGET } from '@/app/_service/useFetcher';
 import { ScrollArea } from '@radix-ui/themes';
 import { useRouter } from 'next/navigation';
 import React, { ChangeEvent, memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { Spinner } from '../../mini/Loading';
+import SafeImage from '../../mini/SafeImage';
 import { User } from '../game/User';
 
 const Search: React.FC<{ search: string; clear: () => void }> = memo(({ search, clear }) => {
@@ -117,10 +118,18 @@ const MainSearch: React.FC = () => {
 			{active && <div className="fixed top-0 left-0 right-0 bottom-0 z-10" onClick={closeAndClear} />}
 			<div
 				onClick={open}
-				className={`rounded-md bg-dark-950 flex justify-start items-center my-1 mx-6 w-[400px] relative ${
-					active && 'border border-accent-300'
+				className={`rounded-full flex justify-start items-center my-1 mx-6 w-[400px] relative border ${
+					active ? 'border-accent-300' : 'border-transparent'
 				}`}
 			>
+				<SafeImage
+					src="/search.png"
+					fallbackSrc=""
+					alt="cover image"
+					fill
+					className="opacity-50 -z-10"
+					style={{ objectFit: 'contain', objectPosition: 'right' }}
+				/>
 				{active && search && <Search search={search} clear={closeAndClear} />}
 				<SearchInput setSearch={setSearch} />
 			</div>

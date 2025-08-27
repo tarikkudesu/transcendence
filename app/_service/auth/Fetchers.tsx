@@ -3,22 +3,32 @@
 import { AxiosError, AxiosResponse } from 'axios';
 import { useCallback, useState } from 'react';
 import client from '../axios/client';
-import { PongError } from '../useFetcher';
-import { MutateResponse, UpdateAvatarRequest, UpdateBioRequest, UpdatePasswordRequest, UpdateUsernameRequest } from '../user/schema';
 import {
 	ForgotPasswordRequest,
 	LoginRequest,
+	MutateResponse,
 	ResendOtpRequest,
 	ResetPasswordRequest,
 	SignupRequest,
+	UpdateAvatarRequest,
+	UpdateBioRequest,
+	UpdatePasswordRequest,
+	UpdateUsernameRequest,
 	Verify2FARequest,
 	VerifyAccountRequest,
-} from './schema';
+} from '../schema';
+import { PongError } from '../useFetcher';
 
 export function useLoginCall() {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [error, setError] = useState<PongError | null>(null);
 	const [data, setData] = useState<MutateResponse | null>(null);
+
+	const reset = useCallback(() => {
+		setData(null);
+		setError(null);
+		setIsLoading(false);
+	}, []);
 
 	const fetchData = useCallback(async (body: LoginRequest) => {
 		try {
@@ -44,13 +54,19 @@ export function useLoginCall() {
 		}
 	}, []);
 
-	return { isLoading, error, data, logincall: fetchData };
+	return { isLoading, error, data, logincall: fetchData, reset };
 }
 
 export function useLogoutCall() {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [error, setError] = useState<PongError | null>(null);
 	const [data, setData] = useState<MutateResponse | null>(null);
+
+	const reset = useCallback(() => {
+		setData(null);
+		setError(null);
+		setIsLoading(false);
+	}, []);
 
 	const fetchData = useCallback(async () => {
 		try {
@@ -76,13 +92,19 @@ export function useLogoutCall() {
 		}
 	}, []);
 
-	return { isLoading, error, data, logoutcall: fetchData };
+	return { isLoading, error, data, logoutcall: fetchData, reset };
 }
 
 export function useSignupCall() {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [error, setError] = useState<PongError | null>(null);
 	const [data, setData] = useState<MutateResponse | null>(null);
+
+	const reset = useCallback(() => {
+		setData(null);
+		setError(null);
+		setIsLoading(false);
+	}, []);
 
 	const fetchData = useCallback(async (body: SignupRequest) => {
 		try {
@@ -108,13 +130,19 @@ export function useSignupCall() {
 		}
 	}, []);
 
-	return { isLoading, error, data, signupcall: fetchData };
+	return { isLoading, error, data, signupcall: fetchData, reset };
 }
 
 export function useResendOtpCall() {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [error, setError] = useState<PongError | null>(null);
 	const [data, setData] = useState<MutateResponse | null>(null);
+
+	const reset = useCallback(() => {
+		setData(null);
+		setError(null);
+		setIsLoading(false);
+	}, []);
 
 	const fetchData = useCallback(async (body: ResendOtpRequest) => {
 		try {
@@ -140,13 +168,19 @@ export function useResendOtpCall() {
 		}
 	}, []);
 
-	return { isLoading, error, data, resendotp: fetchData };
+	return { isLoading, error, data, resendotp: fetchData, reset };
 }
 
 export function useTwofaCall() {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [error, setError] = useState<PongError | null>(null);
 	const [data, setData] = useState<MutateResponse | null>(null);
+
+	const reset = useCallback(() => {
+		setData(null);
+		setError(null);
+		setIsLoading(false);
+	}, []);
 
 	const fetchData = useCallback(async (body: Verify2FARequest) => {
 		try {
@@ -172,13 +206,19 @@ export function useTwofaCall() {
 		}
 	}, []);
 
-	return { isLoading, error, data, twofacall: fetchData };
+	return { isLoading, error, data, twofacall: fetchData, reset };
 }
 
 export function useResetPasswordCall() {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [error, setError] = useState<PongError | null>(null);
 	const [data, setData] = useState<MutateResponse | null>(null);
+
+	const reset = useCallback(() => {
+		setData(null);
+		setError(null);
+		setIsLoading(false);
+	}, []);
 
 	const fetchData = useCallback(async (body: ResetPasswordRequest) => {
 		try {
@@ -204,13 +244,19 @@ export function useResetPasswordCall() {
 		}
 	}, []);
 
-	return { isLoading, error, data, resetpasscall: fetchData };
+	return { isLoading, error, data, resetpasscall: fetchData, reset };
 }
 
 export function useForgotPasswordCall() {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [error, setError] = useState<PongError | null>(null);
 	const [data, setData] = useState<MutateResponse | null>(null);
+
+	const reset = useCallback(() => {
+		setData(null);
+		setError(null);
+		setIsLoading(false);
+	}, []);
 
 	const fetchData = useCallback(async (body: ForgotPasswordRequest) => {
 		try {
@@ -236,13 +282,19 @@ export function useForgotPasswordCall() {
 		}
 	}, []);
 
-	return { isLoading, error, data, forgotpasscall: fetchData };
+	return { isLoading, error, data, forgotpasscall: fetchData, reset };
 }
 
 export function useVerifyAccountCall() {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [error, setError] = useState<PongError | null>(null);
 	const [data, setData] = useState<MutateResponse | null>(null);
+
+	const reset = useCallback(() => {
+		setData(null);
+		setError(null);
+		setIsLoading(false);
+	}, []);
 
 	const fetchData = useCallback(async (body: VerifyAccountRequest) => {
 		try {
@@ -268,13 +320,19 @@ export function useVerifyAccountCall() {
 		}
 	}, []);
 
-	return { isLoading, error, data, verifyaccountcall: fetchData };
+	return { isLoading, error, data, verifyaccountcall: fetchData, reset };
 }
 
 export function useDeleteAccoutCall() {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [error, setError] = useState<PongError | null>(null);
 	const [data, setData] = useState<MutateResponse | null>(null);
+
+	const reset = useCallback(() => {
+		setData(null);
+		setError(null);
+		setIsLoading(false);
+	}, []);
 
 	const fetchData = useCallback(async () => {
 		try {
@@ -300,13 +358,19 @@ export function useDeleteAccoutCall() {
 		}
 	}, []);
 
-	return { isLoading, error, data, deleteaccountcall: fetchData };
+	return { isLoading, error, data, deleteaccountcall: fetchData, reset };
 }
 
 export function useUpdatePassCall() {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [error, setError] = useState<PongError | null>(null);
 	const [data, setData] = useState<MutateResponse | null>(null);
+
+	const reset = useCallback(() => {
+		setData(null);
+		setError(null);
+		setIsLoading(false);
+	}, []);
 
 	const fetchData = useCallback(async (body: UpdatePasswordRequest) => {
 		try {
@@ -332,13 +396,19 @@ export function useUpdatePassCall() {
 		}
 	}, []);
 
-	return { isLoading, error, data, updatepasscall: fetchData };
+	return { isLoading, error, data, updatepasscall: fetchData, reset };
 }
 
 export function useUpdateUsernameCall() {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [error, setError] = useState<PongError | null>(null);
 	const [data, setData] = useState<MutateResponse | null>(null);
+
+	const reset = useCallback(() => {
+		setData(null);
+		setError(null);
+		setIsLoading(false);
+	}, []);
 
 	const fetchData = useCallback(async (body: UpdateUsernameRequest) => {
 		try {
@@ -364,13 +434,19 @@ export function useUpdateUsernameCall() {
 		}
 	}, []);
 
-	return { isLoading, error, data, updateusernamecall: fetchData };
+	return { isLoading, error, data, updateusernamecall: fetchData, reset };
 }
 
 export function useUpdateBioCall() {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [error, setError] = useState<PongError | null>(null);
 	const [data, setData] = useState<MutateResponse | null>(null);
+
+	const reset = useCallback(() => {
+		setData(null);
+		setError(null);
+		setIsLoading(false);
+	}, []);
 
 	const fetchData = useCallback(async (body: UpdateBioRequest) => {
 		try {
@@ -396,13 +472,19 @@ export function useUpdateBioCall() {
 		}
 	}, []);
 
-	return { isLoading, error, data, updatebiocall: fetchData };
+	return { isLoading, error, data, updatebiocall: fetchData, reset };
 }
 
 export function useUpdateAvatarCall() {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [error, setError] = useState<PongError | null>(null);
 	const [data, setData] = useState<MutateResponse | null>(null);
+
+	const reset = useCallback(() => {
+		setData(null);
+		setError(null);
+		setIsLoading(false);
+	}, []);
 
 	const fetchData = useCallback(async (body: UpdateAvatarRequest) => {
 		try {
@@ -428,5 +510,5 @@ export function useUpdateAvatarCall() {
 		}
 	}, []);
 
-	return { isLoading, error, data, updateavatarcall: fetchData };
+	return { isLoading, error, data, updateavatarcall: fetchData, reset };
 }

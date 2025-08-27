@@ -4,11 +4,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { PongButton } from '@/app/_components/buttons/ServerButtons';
 import { useUser } from '@/app/_service/user/userContext';
-import { ClientPlayer, EngageMessage, HookMessage, InviteMessage, useGameSocket } from '@/app/_service/ws/game';
-import { SvgChat, SvgPong, SvgSoundOff, SvgSoundOn } from '@/app/_svg/svg';
+import { ClientPlayer, DisconnectMessage, EngageMessage, HookMessage, InviteMessage, useGameSocket } from '@/app/_service/ws/game';
+import { SvgChat, SvgGameBoy, SvgPong, SvgSoundOff, SvgSoundOn } from '@/app/_svg/svg';
 import { useRouter } from 'next/navigation';
+import { User } from '../../dash/game/User';
 import { Disconnected, Lost, Waiting, Won } from '../Cards';
-import GameInfo from './Info';
 import Pong from './Pong';
 
 const Ping: React.FC<{ sound: boolean; gid: string }> = ({ sound, gid }) => {
@@ -81,8 +81,11 @@ const RemotePong: React.FC<{ gid: string; opponent: string }> = ({ gid, opponent
 
 	useEffect(() => {
 		reset();
-		return () => reset();
-	}, [reset]);
+		return () => {
+			send(DisconnectMessage());
+			reset();
+		};
+	}, [reset, send]);
 
 	useEffect(() => {
 		if (open && gid) send(EngageMessage('pong', gid));
@@ -154,6 +157,11 @@ const RemotePong: React.FC<{ gid: string; opponent: string }> = ({ gid, opponent
 
 	return (
 		<div>
+			<div className="w-[812px] mx-auto flex justify-between mb-1">
+				<User.Username username={opponent} className="font-bold" />
+				<div className="text-dark-300">First to 7 wins</div>
+				<User.Username username={username} className="font-bold" />
+			</div>
 			<div className="w-[812px] bg-dark-950 aspect-[4/3] relative overflow-hidden mx-auto rounded-md border-[6px] border-accent-300 shadow-xl mb-6">
 				{Content()}
 			</div>
@@ -162,20 +170,18 @@ const RemotePong: React.FC<{ gid: string; opponent: string }> = ({ gid, opponent
 					className="bg-accent-300 hover:bg-accent-200 text-black"
 					onClick={() => router.push('/main/dashboard/playground')}
 				>
-					Playground
+					<SvgGameBoy size={18} />
 				</PongButton>
 				{sound ? (
 					<PongButton className="bg-dark-500 hover:bg-dark-400" onClick={switchSound}>
 						<SvgSoundOff size={18} />
-						Mute
 					</PongButton>
 				) : (
 					<PongButton className="bg-dark-500 hover:bg-dark-400" onClick={switchSound}>
-						<SvgSoundOn size={18} /> Unmute
+						<SvgSoundOn size={18} />
 					</PongButton>
 				)}
 			</div>
-			<GameInfo player={username} opponent={opponent} />
 		</div>
 	);
 };

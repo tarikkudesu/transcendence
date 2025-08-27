@@ -1,6 +1,6 @@
 'use client';
 
-import { DoomHistoryEntry } from '@/app/_service/game/schemas';
+import { DoomHistoryEntry } from '@/app/_service/schema';
 import { useGET } from '@/app/_service/useFetcher';
 import { Badge, Text } from '@radix-ui/themes';
 import { formatDistanceToNow } from 'date-fns';

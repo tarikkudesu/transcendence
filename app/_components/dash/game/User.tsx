@@ -1,7 +1,8 @@
 import { useFriends } from '@/app/_service/friends/FriendContext';
-import { Friend } from '@/app/_service/friends/schema';
+import { Friend } from '@/app/_service/schema';
 import { useGET } from '@/app/_service/useFetcher';
-import { UserProfile } from '@/app/_service/user/schema';
+import { useGetUser } from '@/app/_service/user/getUser';
+import { UserProfile } from '@/app/_service/schema';
 import { ClientPlayer, InviteMessage, useGameSocket } from '@/app/_service/ws/game';
 import { SvgChat, SvgDoom, SvgPong, SvgProfile } from '@/app/_svg/svg';
 import { Badge, Link, Text } from '@radix-ui/themes';
@@ -11,7 +12,6 @@ import { PongButton } from '../../buttons/ServerButtons';
 import Error from '../../mini/Error';
 import { Spinner } from '../../mini/Loading';
 import SafeImage from '../../mini/SafeImage';
-import { useGetUser } from '@/app/_service/user/getUser';
 
 const Username: React.FC<{ username: string; className?: string }> = ({ username, className }) => {
 	return (
@@ -170,7 +170,7 @@ const Dialog: React.FC<{
 									Online
 								</Text>
 							) : (
-								<Text as="div" size="1" className="font-medium text-golden-500">
+								<Text as="div" size="1" className="font-medium text-orange-600">
 									Playing
 								</Text>
 							)
@@ -210,7 +210,7 @@ const Dialog: React.FC<{
 									pooler.inviteStatus === 'pending' ||
 									pooler.inviteStatus === 'declined'
 								}
-								loading={pooler.inviteStatus === 'pending'}
+								loading={pooler.inviteStatus === 'pending' && pooler.game === 'pong'}
 								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
 							>
 								<SvgPong size={24} />
@@ -222,8 +222,8 @@ const Dialog: React.FC<{
 									pooler.inviteStatus === 'pending' ||
 									pooler.inviteStatus === 'declined'
 								}
-								loading={pooler.inviteStatus === 'pending'}
-								className="bg-dark-700 w-full hover:bg-golden-500 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
+								loading={pooler.inviteStatus === 'pending' && pooler.game === 'card of doom'}
+								className="bg-dark-700 w-full hover:bg-orange-600 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
 							>
 								<SvgDoom size={24} />
 							</PongButton>

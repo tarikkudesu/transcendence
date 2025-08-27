@@ -4,7 +4,7 @@ import { AxiosError, AxiosResponse } from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import client from '../axios/client';
 import { PongError } from '../useFetcher';
-import { UserProfile } from './schema';
+import { UserProfile } from '../schema';
 
 export function useGetMe() {
 	const [isLoading, setIsLoading] = useState<boolean>(false);

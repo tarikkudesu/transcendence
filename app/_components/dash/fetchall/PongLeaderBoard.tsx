@@ -1,6 +1,6 @@
 'use client';
 
-import { LeaderboardEntry } from '@/app/_service/game/schemas';
+import { LeaderboardEntry } from '@/app/_service/schema';
 import { useGET } from '@/app/_service/useFetcher';
 import { Text } from '@radix-ui/themes';
 import { Spinner } from '../../mini/Loading';

@@ -3,7 +3,7 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import axiosRetry from 'axios-retry';
 import { useCallback, useEffect, useState } from 'react';
-import { MutateResponse } from './user/schema';
+import { MutateResponse } from './schema';
 
 export const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { LeaderboardEntry } from '@/app/_service/game/schemas';
+import { LeaderboardEntry } from '@/app/_service/schema';
 import { Box, Flex, Text } from '@radix-ui/themes';
 
 import { useGET } from '@/app/_service/useFetcher';
@@ -56,7 +56,7 @@ const PongLeaderBoardSecondPlayer: React.FC<PongLeaderBoardPlayerProps> = ({ pla
 				<SafeImage
 					fallbackSrc="/Logo.png"
 					priority
-					className="rounded-full border-4 border-orange-500 absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/4"
+					className="rounded-full border-4 border-orange-600 absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/4"
 					src={player.avatar_url}
 					alt="player card"
 					width={100}
@@ -64,7 +64,7 @@ const PongLeaderBoardSecondPlayer: React.FC<PongLeaderBoardPlayerProps> = ({ pla
 				></SafeImage>
 				<Text as="div" align="center" size="4" weight="bold" className="text-white absolute bottom-2 left-1/2 -translate-x-1/2 ">
 					{player.username}
-					<Text as="div" align="center" size="6" weight="bold" className="text-orange-500 my-2">
+					<Text as="div" align="center" size="6" weight="bold" className="text-orange-600 my-2">
 						{player.winns}
 					</Text>
 				</Text>

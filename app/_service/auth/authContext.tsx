@@ -1,15 +1,19 @@
 import { createContext, useContext } from 'react';
-import { PongError } from '../useFetcher';
-import { MutateResponse, UpdateAvatarRequest, UpdateBioRequest, UpdatePasswordRequest, UpdateUsernameRequest } from '../user/schema';
 import {
 	ForgotPasswordRequest,
 	LoginRequest,
+	MutateResponse,
 	ResendOtpRequest,
 	ResetPasswordRequest,
 	SignupRequest,
+	UpdateAvatarRequest,
+	UpdateBioRequest,
+	UpdatePasswordRequest,
+	UpdateUsernameRequest,
 	Verify2FARequest,
 	VerifyAccountRequest,
-} from './schema';
+} from '../schema';
+import { PongError } from '../useFetcher';
 
 interface authState {
 	reset: () => void;

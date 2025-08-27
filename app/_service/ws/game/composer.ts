@@ -36,3 +36,6 @@ export function FlipMessage(game: 'pong' | 'card of doom', gid: string, pos: num
 export function RegisterMessage(game: 'pong' | 'card of doom', name: string): string {
 	return JSON.stringify(new Main.Message({ message: 'REGISTER', game, data: new Main.Register(name) }));
 }
+export function DisconnectMessage(): string {
+	return JSON.stringify(new Main.Message({ message: 'DISCONNECT', game: 'pong', data: {} }));
+}

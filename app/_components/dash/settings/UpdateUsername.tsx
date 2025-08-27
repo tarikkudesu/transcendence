@@ -1,7 +1,7 @@
 'use client';
 
 import { useMutate } from '@/app/_service/useFetcher';
-import { UpdateUsernameRequest } from '@/app/_service/user/schema';
+import { UpdateUsernameRequest } from '@/app/_service/schema';
 import { useUser } from '@/app/_service/user/userContext';
 import { Card, Flex, Text } from '@radix-ui/themes';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';

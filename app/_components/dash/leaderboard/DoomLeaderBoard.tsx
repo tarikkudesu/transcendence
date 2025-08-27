@@ -1,6 +1,6 @@
 'use client';
 
-import { LeaderboardEntry } from '@/app/_service/game/schemas';
+import { LeaderboardEntry } from '@/app/_service/schema';
 import { Box, Flex, Text } from '@radix-ui/themes';
 
 import { useGET } from '@/app/_service/useFetcher';
@@ -57,7 +57,7 @@ const DoomLeaderBoardSecondPlayer: React.FC<DoomLeaderBoardPlayerProps> = ({ pla
 				<SafeImage
 					fallbackSrc="/Logo.png"
 					priority
-					className="rounded-full border-4 border-orange-500 absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/4"
+					className="rounded-full border-4 border-orange-600 absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/4"
 					src={player.avatar_url}
 					alt="player card"
 					width={120}
@@ -65,7 +65,7 @@ const DoomLeaderBoardSecondPlayer: React.FC<DoomLeaderBoardPlayerProps> = ({ pla
 				></SafeImage>
 				<Text as="div" align="center" size="4" weight="bold" className="text-white absolute bottom-4 left-1/2 -translate-x-1/2 ">
 					<UserCallout username={player.username}>{player.username}</UserCallout>
-					<Text as="div" align="center" size="6" weight="bold" className="text-orange-500 my-4">
+					<Text as="div" align="center" size="6" weight="bold" className="text-orange-600 my-4">
 						{player.winns}
 					</Text>
 				</Text>

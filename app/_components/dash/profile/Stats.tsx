@@ -1,6 +1,6 @@
 'use client';
 
-import { DoomSummary, PongSummary } from '@/app/_service/game/schemas';
+import { DoomSummary, PongSummary } from '@/app/_service/schema';
 import { useGET } from '@/app/_service/useFetcher';
 import { SvgChart } from '@/app/_svg/svg';
 import { Separator, Text } from '@radix-ui/themes';

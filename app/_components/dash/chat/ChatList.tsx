@@ -1,13 +1,14 @@
 'use client';
 
 import { useFriends } from '@/app/_service/friends/FriendContext';
-import { Friend } from '@/app/_service/friends/schema';
+import { Friend } from '@/app/_service/schema';
 import { useChatSocket } from '@/app/_service/ws/chat/chatContext';
 import ConversationProvider from '@/app/_service/ws/chat/conversationProvider';
 import { OuterMessage } from '@/app/_service/ws/chat/schemas';
 import { Box, ScrollArea, Text } from '@radix-ui/themes';
 import { useSearchParams } from 'next/navigation';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import SafeImage from '../../mini/SafeImage';
 import ChatConversation, { EmptyConversation } from './ChatConversation';
 import ChatEntry from './ChatEntry';
 
@@ -38,11 +39,28 @@ const ChatList: React.FC = ({}) => {
 
 	return (
 		<>
-			<div className="row-span-5 py-6 shadow-lg bg-dark-700 border-r-[1px] border-dark-500 h-full select-none">
+			<SafeImage
+				fill
+				fallbackSrc=""
+				draggable={false}
+				alt="cover image"
+				src="/chatback.png"
+				className="opacity-25"
+				style={{ objectFit: 'cover', objectPosition: 'right' }}
+			/>
+			<div className="row-span-5 py-6 shadow-lg bg-accent-900/10 border-r-[1px] border-accent-700 h-full select-none relative">
 				<Text as="div" my="4" size="4" weight="bold" className="mx-6">
 					Messages
 				</Text>
-				<div className="rounded-md bg-dark-700 flex justify-start items-center my-1 mx-3 relative">
+				<div className="flex justify-start items-center my-1 mx-3 relative">
+					<SafeImage
+						src="/search.png"
+						fallbackSrc=""
+						alt="cover image"
+						fill
+						className="opacity-50 -z-10"
+						style={{ objectFit: 'contain', objectPosition: 'right' }}
+					/>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						viewBox="0 0 640 640"
@@ -61,7 +79,7 @@ const ChatList: React.FC = ({}) => {
 						value={search}
 						autoComplete="off"
 						placeholder="Search..."
-						className="w-full outline-none pr-3 pb-2 pt-2.5 pl-10 text-sm text-white rounded-md bg-transparent"
+						className="w-full outline-none pr-3 pb-2 pt-2.5 pl-10 text-sm text-white rounded-md bg-transparent relative"
 						onChange={(e: ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
 						type="text"
 						name="text"
@@ -87,8 +105,8 @@ const ChatList: React.FC = ({}) => {
 						))}
 				</ScrollArea>
 			</div>
-			<div className="row-span-5 h-full min-w-[300px]">
-				{box ? (
+			<div className="row-span-5 h-full min-w-[300px] relative">
+				{box && box[0] && box[1] ? (
 					<ConversationProvider friend={box[0]}>
 						<ChatConversation chatemate={box[0]} avatar={box[1]} />
 					</ConversationProvider>

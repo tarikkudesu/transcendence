@@ -27,13 +27,16 @@ export default function RootLayout({
 					<Header />
 				</NotificationProvider>
 				<div className="grid grid-cols-[250px_1fr] grid-rows-5 gap-2 mx-[50px] pt-[80px]">
-					<div className="bg-dark-950 rounded-md row-span-5 p-4 shadow-xl">
-						<DashboardProfile />
-						<Box height="36px" />
-						<Navigation />
-						<Box height="180px" />
+					<div className="bg-dark-950 rounded-md row-span-5 shadow-xl relative overflow-hidden">
+						<div className="bg-[url('/ProfileCard.png')] bg-contain bg-no-repeat bg-top opacity-10 absolute inset-0"></div>
+						<div className="p-4 relative">
+							<DashboardProfile />
+							<Box height="36px" />
+							<Navigation />
+							<Box height="180px" />
+						</div>
 					</div>
-					<div className="mt-[60px] p-4 row-span-5 rounded-md">
+					<div className="mt-[60px] p-4 row-span-5 rounded-md relative">
 						<MiniNavigation />
 						{children}
 					</div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useFriends } from '@/app/_service/friends/FriendContext';
-import { Friend } from '@/app/_service/friends/schema';
+import { Friend } from '@/app/_service/schema';
 import { useGameSocket } from '@/app/_service/ws/game';
 import { Text } from '@radix-ui/themes';
 import React, { useState } from 'react';

@@ -1,5 +1,6 @@
 'use client';
 
+import { useUser } from '@/app/_service/user/userContext';
 import { ChatMessage } from '@/app/_service/ws/chat/composer';
 import { useConversationSocket } from '@/app/_service/ws/chat/conversationContext';
 import { InviteMessage, useGameSocket } from '@/app/_service/ws/game';
@@ -11,13 +12,12 @@ import { PongButton } from '../../buttons/ServerButtons';
 import { User } from '../game/User';
 import { ChatMyMessage, ChatOtherMessage } from './ChatMessage';
 import EmojiList from './EmojiList';
-import { useUser } from '@/app/_service/user/userContext';
 
 export const EmptyConversation: React.FC = () => {
 	return (
 		<div className="h-full flex flex-col justify-between items-center">
-			<div className="p-4 h-[80px] bg-dark-700 border-b-[1px] border-dark-500 w-full flex gap-4 justify-start items-center"></div>
-			<div className="flex-grow w-full bg-dark-950">
+			<div className="p-4 h-[80px] border-b-[1px] bg-accent-900/10 border-accent-700 w-full flex gap-4 justify-start items-center"></div>
+			<div className="flex-grow w-full">
 				<div
 					className="overflow-y-auto scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
 					style={{ height: 660 }}
@@ -27,28 +27,22 @@ export const EmptyConversation: React.FC = () => {
 					</Text>
 				</div>
 			</div>
-			<div className="h-[60px] bg-dark-700  border-t-[1px] border-dark-500 w-full flex justify-between items-center relative">
-				<div
-					role="button"
-					className="h-[36px] w-[36px] bg-dark-600 hover:bg-accent-300 rounded-md ml-4 text-dark-300 flex justify-center items-center hover:text-black duration-150"
-				>
+			<div className="h-[60px] space-x-2 bg-accent-900/10 border-t-[1px] border-accent-700 w-full flex justify-between items-center relative px-2">
+				<PongButton className="h-[40px] bg-accent-900/20 hover:bg-accent-300 rounded-md text-dark-100 hover:text-black disabled:text-dark-400 disabled:bg-dark-700">
 					<SvgEmojis size={18} className="translate-x-0.5 translate-y-0.5" />
-				</div>
-				<div className="mx-2 rounded-md bg-dark-600 flex justify-start items-center flex-grow">
+				</PongButton>
+				<div className="rounded-md bg-accent-900/20 flex justify-start items-center flex-grow">
 					<input
 						type="text"
 						name="text"
 						maxLength={2000}
 						placeholder="Search Conversations..."
-						className="w-full outline-none px-3 pb-2 pt-3 text-sm text-white bg-dark-600 rounded-md"
+						className="h-[40px] w-full outline-none py-[9px] px-[12px] text-sm text-white bg-transparent rounded-md"
 					></input>
 				</div>
-				<div
-					role="button"
-					className="h-[36px] w-[36px] bg-dark-600 hover:bg-accent-300 rounded-md mr-4 text-dark-300 flex justify-center items-center hover:text-black duration-150"
-				>
+				<PongButton className="h-[40px] bg-accent-900/20 hover:bg-accent-300 rounded-md text-dark-100 hover:text-black disabled:text-dark-400 disabled:bg-dark-700">
 					<SvgChat size={18} />
-				</div>
+				</PongButton>
 			</div>
 		</div>
 	);
@@ -101,7 +95,7 @@ const ChatConversation: React.FC<ChatConversationProps> = ({ chatemate, avatar }
 	const state = useCallback((): React.ReactNode => {
 		if (!pooler)
 			return (
-				<Text as="div" size="1" className="font-medium text-dark-300">
+				<Text as="div" size="1" className="font-medium text-dark-100">
 					Offline
 				</Text>
 			);
@@ -122,10 +116,10 @@ const ChatConversation: React.FC<ChatConversationProps> = ({ chatemate, avatar }
 
 	return (
 		<div className="h-full flex flex-col justify-between items-center">
-			<div className="p-4 h-[80px] bg-dark-700 border-b-[1px] border-dark-500 w-full flex gap-4 justify-start items-center">
+			<div className="p-4 h-[80px] border-b-[1px] bg-accent-900/10 border-accent-700 w-full flex gap-4 justify-start items-center">
 				{chatemate && avatar && <User.Trigger username={chatemate} avatar={avatar} extra={state()} />}
 			</div>
-			<div className="flex-grow w-full bg-dark-950">
+			<div className="flex-grow w-full">
 				<div
 					className="overflow-y-auto scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
 					style={{ height: 660 }}
@@ -147,7 +141,7 @@ const ChatConversation: React.FC<ChatConversationProps> = ({ chatemate, avatar }
 					<div ref={endRef} />
 				</div>
 			</div>
-			<div className="h-[60px] space-x-2 bg-dark-700  border-t-[1px] border-dark-500 w-full flex justify-between items-center relative px-2">
+			<div className="h-[60px] space-x-2 bg-accent-900/10 border-t-[1px] border-accent-700 w-full flex justify-between items-center relative px-2">
 				{active && chatemate && (
 					<>
 						<div className="fixed top-0 left-0 right-0 bottom-0" onClick={() => setActive(false)}></div>
@@ -156,11 +150,11 @@ const ChatConversation: React.FC<ChatConversationProps> = ({ chatemate, avatar }
 				)}
 				<PongButton
 					onClick={() => setActive((stat) => !stat)}
-					className="h-[40px] bg-dark-600 hover:bg-accent-300 rounded-md text-dark-300 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
+					className="h-[40px] bg-accent-900/20 hover:bg-accent-300 rounded-md text-dark-100 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
 				>
 					<SvgEmojis size={18} className="translate-x-0.5 translate-y-0.5" />
 				</PongButton>
-				<div className="rounded-md bg-dark-600 flex justify-start items-center flex-grow">
+				<div className="rounded-md bg-accent-900/20 flex justify-start items-center flex-grow">
 					<input
 						type="text"
 						name="text"
@@ -170,11 +164,11 @@ const ChatConversation: React.FC<ChatConversationProps> = ({ chatemate, avatar }
 						onKeyDown={handleEnter}
 						placeholder="Search Conversations..."
 						onChange={(e: ChangeEvent<HTMLInputElement>) => setMessage(e.target.value)}
-						className="h-[40px] w-full outline-none py-[9px] px-[12px] text-sm text-white bg-dark-600 rounded-md"
+						className="h-[40px] w-full outline-none py-[9px] px-[12px] text-sm text-white bg-transparent rounded-md"
 					></input>
 				</div>
 				<PongButton
-					className="h-[40px] bg-dark-600 hover:bg-accent-300 rounded-md text-dark-300 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
+					className="h-[40px] bg-accent-900/20 hover:bg-accent-300 rounded-md text-dark-100 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
 					onClick={sendMessage}
 				>
 					<SvgChat size={18} />
@@ -187,7 +181,7 @@ const ChatConversation: React.FC<ChatConversationProps> = ({ chatemate, avatar }
 								pooler.playerStatus === 'playing' || (pooler.inviteStatus === 'pending' && pooler.game === 'card of doom')
 							}
 							loading={pooler.inviteStatus === 'pending' && pooler.game === 'pong'}
-							className="h-[40px] w-[50px] bg-dark-600 hover:bg-accent-300 text-dark-300 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
+							className="h-[40px] w-[50px] bg-accent-900/20 hover:bg-accent-300 text-dark-100 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
 						>
 							<SvgPong size={18} />
 						</PongButton>
@@ -195,7 +189,7 @@ const ChatConversation: React.FC<ChatConversationProps> = ({ chatemate, avatar }
 							onClick={() => gameSend(InviteMessage('card of doom', pooler.username))}
 							disabled={pooler.playerStatus === 'playing' || (pooler.inviteStatus === 'pending' && pooler.game === 'pong')}
 							loading={pooler.inviteStatus === 'pending' && pooler.game === 'card of doom'}
-							className="h-[40px] bg-dark-600 hover:bg-golden-500 text-dark-300 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
+							className="h-[40px] bg-accent-900/20 hover:bg-orange-600 text-dark-100 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
 						>
 							<SvgDoom size={18} />
 						</PongButton>

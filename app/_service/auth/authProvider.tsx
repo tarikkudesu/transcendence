@@ -1,18 +1,21 @@
 'use client';
 
 import { useCallback } from 'react';
-import { useMutate } from '../useFetcher';
-import { UpdateAvatarRequest, UpdateBioRequest, UpdatePasswordRequest, UpdateUsernameRequest } from '../user/schema';
-import { authContext } from './authContext';
 import {
 	ForgotPasswordRequest,
 	LoginRequest,
 	ResendOtpRequest,
 	ResetPasswordRequest,
 	SignupRequest,
+	UpdateAvatarRequest,
+	UpdateBioRequest,
+	UpdatePasswordRequest,
+	UpdateUsernameRequest,
 	Verify2FARequest,
 	VerifyAccountRequest,
-} from './schema';
+} from '../schema';
+import { useMutate } from '../useFetcher';
+import { authContext } from './authContext';
 
 interface AuthProviderProps {
 	children: React.ReactNode;

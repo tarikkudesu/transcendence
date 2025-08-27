@@ -4,6 +4,7 @@ import { Josefin_Sans } from 'next/font/google';
 
 import AuthProvider from './_service/auth/authProvider';
 import './globals.css';
+import Background from './_components/Background';
 
 const josefin = Josefin_Sans({
 	subsets: ['latin'],
@@ -32,13 +33,13 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body className="antialiased m-0 p-0">
+			<body className="antialiased m-0 p-0 bg-dark-900">
 				<Theme
 					panelBackground="translucent"
 					appearance="dark"
 					accentColor="lime"
 					hasBackground={false}
-					className={`${josefin.className} bg-dark-900 text-amber-50 m-0`}
+					className={`${josefin.className} text-amber-50 m-0`}
 				>
 					<AuthProvider>{children}</AuthProvider>
 				</Theme>

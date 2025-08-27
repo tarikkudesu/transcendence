@@ -2,9 +2,9 @@
 
 import { useFriends } from '@/app/_service/friends/FriendContext';
 import { useAcceptFriendCall, useAddFriendCall, useBlockFriendCall, useDeclineFriendCall } from '@/app/_service/friends/Mutaters';
-import { Friend, FriendRequest } from '@/app/_service/friends/schema';
+import { Friend, FriendRequest } from '@/app/_service/schema';
 import { useGET } from '@/app/_service/useFetcher';
-import { UserProfile } from '@/app/_service/user/schema';
+import { UserProfile } from '@/app/_service/schema';
 import { ClientPlayer, InviteMessage, useGameSocket } from '@/app/_service/ws/game';
 import { SvgAddFriend, SvgBan, SvgChat, SvgDoom, SvgInfo, SvgPong } from '@/app/_svg/svg';
 import { Callout, Text } from '@radix-ui/themes';
@@ -19,9 +19,9 @@ import { useNotification } from '../../mini/useNotify';
 const AddFriend: React.FC<{ username: string }> = ({ username }) => {
 	const { error, isLoading, addCall } = useAddFriendCall();
 	const { notify } = useNotification();
-	useEffect(() => {
-		if (error) notify({ message: error.message, error: true });
-	}, [error, notify]);
+	// useEffect(() => {
+	// 	if (error) notify({ message: error.message, error: true });
+	// }, [error, notify]);
 	return (
 		<PongButton
 			loading={isLoading}
@@ -35,9 +35,9 @@ const AddFriend: React.FC<{ username: string }> = ({ username }) => {
 const AcceptFriend: React.FC<{ username: string }> = ({ username }) => {
 	const { error, isLoading, acceptCall } = useAcceptFriendCall();
 	const { notify } = useNotification();
-	useEffect(() => {
-		if (error) notify({ message: error.message, error: true });
-	}, [error, notify]);
+	// useEffect(() => {
+	// 	if (error) notify({ message: error.message, error: true });
+	// }, [error, notify]);
 	return (
 		<PongButton
 			loading={isLoading}
@@ -51,9 +51,9 @@ const AcceptFriend: React.FC<{ username: string }> = ({ username }) => {
 const DeclineFriend: React.FC<{ username: string }> = ({ username }) => {
 	const { error, isLoading, declineCall } = useDeclineFriendCall();
 	const { notify } = useNotification();
-	useEffect(() => {
-		if (error) notify({ message: error.message, error: true });
-	}, [error, notify]);
+	// useEffect(() => {
+	// 	if (error) notify({ message: error.message, error: true });
+	// }, [error, notify]);
 	return (
 		<PongButton
 			loading={isLoading}
@@ -67,9 +67,9 @@ const DeclineFriend: React.FC<{ username: string }> = ({ username }) => {
 const BlockFriend: React.FC<{ username: string }> = ({ username }) => {
 	const { error, isLoading, blockCall } = useBlockFriendCall();
 	const { notify } = useNotification();
-	useEffect(() => {
-		if (error) notify({ message: error.message, error: true });
-	}, [error, notify]);
+	// useEffect(() => {
+	// 	if (error) notify({ message: error.message, error: true });
+	// }, [error, notify]);
 	return (
 		<PongButton
 			loading={isLoading}
@@ -85,7 +85,7 @@ const UserProfilePage: React.FC<{ username: string }> = ({ username }) => {
 	const { pooler: getPooler, send } = useGameSocket();
 	const { request: getRequest, friend: getFriend } = useFriends();
 	const { data: user, error, isLoading } = useGET<UserProfile>({ url: `/users/${username}` });
-	const router = useRouter()
+	const router = useRouter();
 
 	const pooler: ClientPlayer | undefined = getPooler(username);
 	const request: FriendRequest | null = getRequest(username);
@@ -108,7 +108,7 @@ const UserProfilePage: React.FC<{ username: string }> = ({ username }) => {
 							friend && pooler
 								? pooler.playerStatus === 'free'
 									? 'border-accent-300'
-									: 'border-golden-500'
+									: 'border-orange-600'
 								: 'border-dark-400'
 						}`}
 					></SafeImage>
@@ -165,7 +165,7 @@ const UserProfilePage: React.FC<{ username: string }> = ({ username }) => {
 									pooler.inviteStatus === 'pending' ||
 									pooler.inviteStatus === 'declined'
 								}
-								loading={pooler.playerStatus === 'playing'}
+								loading={pooler.inviteStatus === 'pending' && pooler.game === 'pong'}
 								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black disabled:text-white disabled:bg-dark-700"
 							>
 								<SvgPong size={24} />
@@ -177,8 +177,8 @@ const UserProfilePage: React.FC<{ username: string }> = ({ username }) => {
 									pooler.inviteStatus === 'pending' ||
 									pooler.inviteStatus === 'declined'
 								}
-								loading={pooler.playerStatus === 'playing'}
-								className="bg-dark-700 w-full hover:bg-golden-500 hover:text-black disabled:text-white disabled:bg-dark-700"
+								loading={pooler.inviteStatus === 'pending' && pooler.game === 'card of doom'}
+								className="bg-dark-700 w-full hover:bg-orange-600 hover:text-black disabled:text-white disabled:bg-dark-700"
 							>
 								<SvgDoom size={24} />
 							</PongButton>

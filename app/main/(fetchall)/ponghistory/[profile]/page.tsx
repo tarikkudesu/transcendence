@@ -1,8 +1,23 @@
 import PongHistory from '@/app/_components/dash/fetchall/PongHistory';
 import Footer from '@/app/_components/mini/Footer';
 import Header from '@/app/_components/mini/Header';
+import { baseMetadata, mainAppMetadata } from '@/app/_service/consts';
 import { Text } from '@radix-ui/themes';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+
+type Props = {
+	params: Promise<{ profile: string }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+	const { profile } = await params;
+	if (!profile) return { ...baseMetadata };
+	return {
+		...baseMetadata,
+		...mainAppMetadata.pongHistory(profile),
+	};
+}
 
 const Page: React.FC<{ params: Promise<{ profile: string }> }> = async ({ params }) => {
 	const { profile } = await params;

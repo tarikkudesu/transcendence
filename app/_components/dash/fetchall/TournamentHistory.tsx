@@ -1,6 +1,6 @@
 'use client';
 
-import { TournamentHistoryEntry } from '@/app/_service/game/schemas';
+import { TournamentHistoryEntry } from '@/app/_service/schema';
 import { useGET } from '@/app/_service/useFetcher';
 import { Flex, Text } from '@radix-ui/themes';
 import Link from 'next/link';

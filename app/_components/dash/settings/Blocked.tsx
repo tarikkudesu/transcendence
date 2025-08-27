@@ -1,7 +1,7 @@
 'use client';
 
 import { useBlockFriendCall } from '@/app/_service/friends/Mutaters';
-import { BlockedFriend } from '@/app/_service/friends/schema';
+import { BlockedFriend } from '@/app/_service/schema';
 import { useGET } from '@/app/_service/useFetcher';
 import { Card, Text } from '@radix-ui/themes';
 import React, { useEffect } from 'react';

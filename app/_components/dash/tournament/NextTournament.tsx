@@ -1,5 +1,6 @@
 'use client';
 
+import { useUser } from '@/app/_service/user/userContext';
 import { RegisterMessage, useGameSocket } from '@/app/_service/ws/game';
 import { Badge, Box, Text } from '@radix-ui/themes';
 import { useRouter } from 'next/navigation';
@@ -7,9 +8,10 @@ import React, { ChangeEvent, useState } from 'react';
 import { PongButton } from '../../buttons/ServerButtons';
 
 const NextTournament: React.FC = ({}) => {
-	const { tournament, send } = useGameSocket();
-	const [alias, setAlias] = useState<string>('');
 	const router = useRouter();
+	const { username } = useUser();
+	const { tournament, send } = useGameSocket();
+	const [alias, setAlias] = useState<string>(username);
 
 	return (
 		<>

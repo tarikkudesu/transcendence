@@ -3,7 +3,7 @@
 import { useCallback } from 'react';
 import { useGET } from '../useFetcher';
 import { friendsContext } from './FriendContext';
-import { Friend, FriendRequest } from './schema';
+import { Friend, FriendRequest } from '../schema';
 
 interface FriendsProviderProps {
 	children: React.ReactNode;

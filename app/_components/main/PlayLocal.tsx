@@ -9,7 +9,7 @@ const PlayLocal: React.FC = () => {
 	return (
 		<>
 			<Card className="relative overflow-hidden p-8 mb-[20px]">
-				<div className="h-[350px] w-[350px] bg-golden-500 rounded-full absolute bottom-0 left-0 -translate-x-1/2 translate-y-1/2 blur-3xl opacity-45 -z-10"></div>
+				<div className="h-[350px] w-[350px] bg-orange-600 rounded-full absolute bottom-0 left-0 -translate-x-1/2 translate-y-1/2 blur-3xl opacity-45 -z-10"></div>
 				<SafeImage
 					fallbackSrc="/Logo.png"
 					priority
@@ -29,7 +29,7 @@ const PlayLocal: React.FC = () => {
 				</Text>
 				<Box height="20px" />
 				<Link href="/main/dashboard/gameplay/local">
-					<button className="py-3 px-4 text-center bg-golden-500 text-xs text-black rounded-md cursor-pointer font-bold">
+					<button className="py-3 px-4 text-center bg-orange-600 text-xs text-black rounded-md cursor-pointer font-bold">
 						Play Now
 					</button>
 				</Link>
