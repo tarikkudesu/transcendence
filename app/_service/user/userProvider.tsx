@@ -35,10 +35,10 @@ const UserProvider: React.FC<{
 				position="bottom-right"
 				autoClose={5000}
 				hideProgressBar
-				closeOnClick={false}
+				closeOnClick
 				rtl={false}
-				pauseOnFocusLoss
 				draggable
+				pauseOnFocusLoss
 				pauseOnHover
 				theme="dark"
 				toastClassName={(context) =>

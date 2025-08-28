@@ -87,7 +87,7 @@ const NotificationProvider: React.FC<NotificationProviderProps> = ({ children })
 
 	useEffect(
 		function () {
-			if (open) return;
+			if (socketRef.current?.OPEN) return;
 			try {
 				console.log('Connecting to Notification WebSocket ' + API_BASE);
 				if (API_BASE) {

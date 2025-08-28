@@ -25,12 +25,12 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 	const [invitations, setInvitations] = useState<Main.ClientInvitation[]>([]);
 	const [tournament, setTournament] = useState<Main.ClientTournament>(Main.ClientTournament.instance);
 
-	const [pong, setPong] = useState<Main.ClientPong>(Main.ClientPong.instance);
-	const [doom, setDoom] = useState<Main.ClientCardOfDoom>(Main.ClientCardOfDoom.instance);
+	const [pong, setPong] = useState<Main.ClientPong | null>(null);
+	const [doom, setDoom] = useState<Main.ClientCardOfDoom | null>(null);
 
 	const online = useCallback(
 		(username: string): 'playing' | 'free' | undefined => {
-			return pool.find((ele) => ele.username === username)?.playerStatus;
+			return pool.find((ele) => ele.username === username) ? 'free' : undefined;
 		},
 		[pool]
 	);
@@ -43,8 +43,8 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 	);
 
 	const reset = useCallback(() => {
-		setPong(Main.ClientPong.instance);
-		setDoom(Main.ClientCardOfDoom.instance);
+		setPong(null);
+		setDoom(null);
 	}, []);
 
 	const parse = useCallback(
@@ -62,9 +62,10 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 					break;
 				}
 				case 'PLAY': {
+					reset();
 					const p: Main.Play = Main.Json({ message, target: Main.Play.instance });
-					if (game === 'pong') router.push(`/main/dashboard/gameplay/pong/${p.gid}/${p.opponent}`);
-					else router.push(`/main/dashboard/gameplay/doom/${p.gid}/${p.opponent}`);
+					if (game === 'pong') router.push(`/main/dashboard/gameplay/pong/${p.opponent}/${p.gid}`);
+					else router.push(`/main/dashboard/gameplay/doom/${p.opponent}/${p.gid}`);
 					break;
 				}
 				// ? Game
@@ -92,7 +93,7 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 					break;
 			}
 		},
-		[notify]
+		[notify, reset]
 	);
 
 	const send = useCallback(
@@ -136,7 +137,7 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 
 	useEffect(
 		function () {
-			if (open) return;
+			if (socketRef.current?.OPEN) return;
 			try {
 				console.log('creating Game WebSocket connection ' + API_BASE);
 				if (API_BASE) {
@@ -153,6 +154,16 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 		},
 		[error, close]
 	);
+
+	useEffect(() => {
+		return () => {
+			setClose(false);
+			setOpen(false);
+			setError(false);
+			reset();
+			socketRef.current?.close();
+		};
+	}, [reset]);
 
 	function content() {
 		if (error)

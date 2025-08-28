@@ -54,10 +54,11 @@ const ChatList: React.FC = ({}) => {
 				</Text>
 				<div className="flex justify-start items-center my-1 mx-3 relative">
 					<SafeImage
+						fill
+						priority
 						src="/search.png"
 						fallbackSrc=""
 						alt="cover image"
-						fill
 						className="opacity-50 -z-10"
 						style={{ objectFit: 'contain', objectPosition: 'right' }}
 					/>

@@ -1,5 +1,6 @@
-import RemotePong from '@/app/_components/gameplay/pong/remote';
+import RemoteDoom from '@/app/_components/gameplay/doom/remote';
 import { baseMetadata, mainAppMetadata } from '@/app/_service/consts';
+import DoomProvider from '@/app/_service/ws/game/doomProvider';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import React from 'react';
@@ -13,7 +14,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	if (!opponent) return { ...baseMetadata };
 	return {
 		...baseMetadata,
-		...mainAppMetadata.pongGameplay(opponent),
+		...mainAppMetadata.doomGameplay(opponent),
 	};
 }
 
@@ -23,7 +24,9 @@ const Page: React.FC<{ params: Promise<{ gid: string; opponent: string }> }> = a
 
 	return (
 		<div className="rounded-md p-[20px]">
-			<RemotePong gid={gid} opponent={opponent} />
+			<DoomProvider gid={gid}>
+				<RemoteDoom opponent={opponent} />
+			</DoomProvider>
 		</div>
 	);
 };

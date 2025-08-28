@@ -4,9 +4,9 @@ import { DoomHistoryEntry } from '@/app/_service/schema';
 import { useGET } from '@/app/_service/useFetcher';
 import { SvgClockArrow, SvgMore } from '@/app/_svg/svg';
 import { Badge, Flex, Text } from '@radix-ui/themes';
-import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
 import { Spinner } from '../../mini/Loading';
+import { formatDate } from '../chat/ChatMessage';
 import { User } from '../game/User';
 
 const DoomHistory: React.FC<{ username: string }> = ({ username }) => {
@@ -49,14 +49,10 @@ const DoomHistory: React.FC<{ username: string }> = ({ username }) => {
 								<User.Username className="text-white" username={ele.opponent_username} />
 							</Text>
 							<Text className="row-span-5 col-start-4">
-								{ele.player_username === ele.winner_username ? (
-									<Badge color="green">Won</Badge>
-								) : (
-									<Badge color="red">Lost</Badge>
-								)}
+								{username === ele.winner_username ? <Badge color="green">Won</Badge> : <Badge color="red">Lost</Badge>}
 							</Text>
 							<Text as="div" size="2" className="text-dark-50 col-span-2 row-span-5 col-start-5">
-								{formatDistanceToNow(Number(ele.game_date), { addSuffix: true })}
+								{formatDate(Number(ele.game_date))}
 							</Text>
 						</div>
 					))}

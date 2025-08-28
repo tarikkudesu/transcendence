@@ -28,20 +28,13 @@ export class WSError {
 export class ClientPlayer {
 	public username: string;
 	public game: 'pong' | 'card of doom';
-	public playerStatus: 'playing' | 'free';
 	public inviteStatus: 'unsent' | 'pending' | 'accepted' | 'declined';
-	constructor(
-		username: string,
-		game: 'pong' | 'card of doom',
-		playerStatus: 'playing' | 'free',
-		inviteStatus: 'unsent' | 'pending' | 'accepted' | 'declined'
-	) {
+	constructor(username: string, game: 'pong' | 'card of doom', inviteStatus: 'unsent' | 'pending' | 'accepted' | 'declined') {
 		this.inviteStatus = inviteStatus;
-		this.playerStatus = playerStatus;
 		this.username = username;
 		this.game = game;
 	}
-	static instance = new ClientPlayer('', 'pong', 'free', 'unsent');
+	static instance = new ClientPlayer('', 'pong', 'unsent');
 }
 
 export class ClientInvitation {
@@ -195,10 +188,6 @@ export class Invitations {
 // * Game
 
 export class ClientPong {
-	public start: boolean = false;
-	public stop: boolean = false;
-	public lost: boolean = false;
-	public won: boolean = false;
 	public sound: number = 0;
 	public playerScore: number = 0;
 	public opponentScore: number = 0;
@@ -209,7 +198,6 @@ export class ClientPong {
 	public rightPaddlePosX: number = 0;
 	public rightPaddlePosY: number = 0;
 	public paddleHeight: number = 0;
-
 	public leftPaddlePosX: number = 0;
 	public leftPaddlePosY: number = 0;
 	constructor() {}
@@ -217,12 +205,8 @@ export class ClientPong {
 }
 
 export class ClientCardOfDoom {
-	public cards: string[] = [];
 	public myturn: boolean = false;
-	public start: boolean = false;
-	public stop: boolean = false;
-	public lost: boolean = false;
-	public won: boolean = false;
+	public cards: string[] = [];
 	public timer: number = 0;
 	constructor() {}
 	public static instance = new ClientCardOfDoom();

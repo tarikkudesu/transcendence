@@ -12,8 +12,8 @@ class SocketState {
 	invitations: Main.ClientInvitation[] = [];
 	tournament: Main.ClientTournament = Main.ClientTournament.instance;
 
-	pong: Main.ClientPong = Main.ClientPong.instance;
-	doom: Main.ClientCardOfDoom = Main.ClientCardOfDoom.instance;
+	pong: Main.ClientPong | null = null;
+	doom: Main.ClientCardOfDoom | null = null;
 
 	pooler: (username: string) => Main.ClientPlayer | undefined = (u: string) => Main.ClientPlayer.instance;
 	online: (username: string) => 'playing' | 'free' | undefined = (u: string) => undefined;

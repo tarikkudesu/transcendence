@@ -4,15 +4,16 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { PongButton } from '@/app/_components/buttons/ServerButtons';
 import { useUser } from '@/app/_service/user/userContext';
-import { ClientPlayer, DisconnectMessage, EngageMessage, HookMessage, InviteMessage, useGameSocket } from '@/app/_service/ws/game';
-import { SvgChat, SvgGameBoy, SvgPong, SvgSoundOff, SvgSoundOn } from '@/app/_svg/svg';
+import { HookMessage } from '@/app/_service/ws/game';
+import { usePongSocket } from '@/app/_service/ws/game/pongContext';
+import { SvgChat, SvgGameBoy, SvgSoundOff, SvgSoundOn } from '@/app/_svg/svg';
 import { useRouter } from 'next/navigation';
 import { User } from '../../dash/game/User';
-import { Disconnected, Lost, Waiting, Won } from '../Cards';
+import { Disconnected, Lost, Nothing, Waiting, Won } from '../Cards';
 import Pong from './Pong';
 
-const Ping: React.FC<{ sound: boolean; gid: string }> = ({ sound, gid }) => {
-	const { send, pong: game } = useGameSocket();
+const Ping: React.FC<{ sound: boolean }> = ({ sound }) => {
+	const { send, pong: game, gid } = usePongSocket();
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
 	const pong: Pong = useMemo(() => {
 		return new Pong();
@@ -21,8 +22,6 @@ const Ping: React.FC<{ sound: boolean; gid: string }> = ({ sound, gid }) => {
 	useEffect(() => {
 		pong.updateSound(sound);
 	}, [pong, sound]);
-
-	pong.draw(game);
 
 	const keyUp = useCallback(
 		(e: KeyboardEvent) => {
@@ -57,7 +56,11 @@ const Ping: React.FC<{ sound: boolean; gid: string }> = ({ sound, gid }) => {
 			}
 			pong.clear();
 		};
-	}, [keyDown, keyUp, pong, sound]);
+	}, [keyDown, keyUp, pong, sound, canvasRef]);
+
+	if (!game) return null;
+
+	pong.draw(game);
 
 	return (
 		<canvas
@@ -71,89 +74,15 @@ const Ping: React.FC<{ sound: boolean; gid: string }> = ({ sound, gid }) => {
 	);
 };
 
-const RemotePong: React.FC<{ gid: string; opponent: string }> = ({ gid, opponent }) => {
+const RemotePong: React.FC<{ opponent: string }> = ({ opponent }) => {
 	const router = useRouter();
 	const { username } = useUser();
 	const [sound, setSound] = useState<boolean>(true);
-	const { pooler: getPooler, send, pong: game, open, reset } = useGameSocket();
-
-	const pooler: ClientPlayer | undefined = getPooler(opponent);
-
-	useEffect(() => {
-		reset();
-		return () => {
-			send(DisconnectMessage());
-			reset();
-		};
-	}, [reset, send]);
-
-	useEffect(() => {
-		if (open && gid) send(EngageMessage('pong', gid));
-	}, [gid, open, send]);
+	const { pong: game, open, won, lost, disconnected } = usePongSocket();
 
 	const switchSound = useCallback(() => {
 		setSound((state) => !state);
 	}, []);
-
-	function Content(): React.ReactNode {
-		if (game.stop) return <Disconnected player={username} opponent={opponent} />;
-		if (game.won)
-			return (
-				<Won player={username} opponent={opponent}>
-					{pooler && (
-						<>
-							<PongButton
-								onClick={() => send(InviteMessage('pong', opponent))}
-								disabled={
-									pooler.playerStatus === 'playing' ||
-									pooler.inviteStatus === 'pending' ||
-									pooler.inviteStatus === 'declined'
-								}
-								loading={pooler.inviteStatus === 'pending'}
-								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
-							>
-								<SvgPong size={24} />
-							</PongButton>
-							<PongButton
-								onClick={() => router.push(`/main/dashboard/chat?chatemate=${opponent}`)}
-								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black"
-							>
-								<SvgChat size={24} />
-							</PongButton>
-						</>
-					)}
-				</Won>
-			);
-		if (game.lost)
-			return (
-				<Lost player={username} opponent={opponent}>
-					{pooler && (
-						<>
-							<PongButton
-								onClick={() => send(InviteMessage('pong', opponent))}
-								disabled={
-									pooler.playerStatus === 'playing' ||
-									pooler.inviteStatus === 'pending' ||
-									pooler.inviteStatus === 'declined'
-								}
-								loading={pooler.inviteStatus === 'pending'}
-								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
-							>
-								<SvgPong size={24} />
-							</PongButton>
-							<PongButton
-								onClick={() => router.push(`/main/dashboard/chat?chatemate=${opponent}`)}
-								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black"
-							>
-								<SvgChat size={24} />
-							</PongButton>
-						</>
-					)}
-				</Lost>
-			);
-		if (!game.start) return <Waiting player={username} opponent={opponent} />;
-		return <Ping sound={sound} gid={gid} />;
-	}
 
 	return (
 		<div>
@@ -163,9 +92,20 @@ const RemotePong: React.FC<{ gid: string; opponent: string }> = ({ gid, opponent
 				<User.Username username={username} className="font-bold" />
 			</div>
 			<div className="w-[812px] bg-dark-950 aspect-[4/3] relative overflow-hidden mx-auto rounded-md border-[6px] border-accent-300 shadow-xl mb-6">
-				{Content()}
+				{<Ping sound={sound} />}
+				{!open && <Waiting player={username} opponent={opponent} />}
+				{disconnected && <Disconnected player={username} opponent={opponent} />}
+				{lost && <Lost player={username} opponent={opponent} />}
+				{won && <Won player={username} opponent={opponent} />}
+				{!game && <Nothing />}
 			</div>
 			<div className="flex justify-center items-center gap-4">
+				<PongButton
+					onClick={() => router.push(`/main/dashboard/chat?chatemate=${opponent}`)}
+					className="bg-accent-300 hover:bg-accent-200 text-black"
+				>
+					<SvgChat size={18} />
+				</PongButton>
 				<PongButton
 					className="bg-accent-300 hover:bg-accent-200 text-black"
 					onClick={() => router.push('/main/dashboard/playground')}

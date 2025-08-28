@@ -100,9 +100,11 @@ const Login: React.FC<unknown> = () => {
 						<Box height="2px" className="bg-dark-600 w-full"></Box>
 					</Flex>
 					<Box height="20px" />
-					<PongButton className="w-full text-white hover:text-black bg-transparent hover:bg-accent-300 border border-accent-300">
-						Sign in with Google
-					</PongButton>
+					<Link href="http://localhost/api/v1/auth/google">
+						<PongButton className="w-full text-white hover:text-black bg-transparent hover:bg-accent-300 border border-accent-300">
+							Sign in with Google
+						</PongButton>
+					</Link>
 					<Box height="20px" />
 					<Link href="/signup" className="text-sm text-dark-200">
 						New to YingYangPong? <Text className="text-accent-300">Create Account</Text>

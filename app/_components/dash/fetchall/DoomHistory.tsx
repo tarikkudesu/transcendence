@@ -36,11 +36,7 @@ const DoomHistory: React.FC<{ username: string }> = ({ username }) => {
 							<Link href={`/main/dashboard/${ele.opponent_username}`}>{ele.opponent_username}</Link>
 						</Text>
 						<Text className="row-span-5 col-start-4">
-							{ele.player_username === ele.winner_username ? (
-								<Badge color="green">Won</Badge>
-							) : (
-								<Badge color="red">Lost</Badge>
-							)}
+							{username === ele.winner_username ? <Badge color="green">Won</Badge> : <Badge color="red">Lost</Badge>}
 						</Text>
 						<Text as="div" size="2" className="text-dark-50 col-span-2 row-span-5 col-start-5">
 							{formatDistanceToNow(Number(ele.game_date), { addSuffix: true })}

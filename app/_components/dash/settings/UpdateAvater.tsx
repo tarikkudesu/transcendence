@@ -4,8 +4,10 @@ import { Card, Flex, Text } from '@radix-ui/themes';
 import { useCallback, useRef, useState } from 'react';
 import { PongButton } from '../../buttons/ServerButtons';
 import SafeImage from '../../mini/SafeImage';
+import { useUser } from '@/app/_service/user/userContext';
 
 const UpdateAvatar: React.FC = () => {
+	const { avatar } = useUser();
 	const [file, setFile] = useState<File | null>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -29,7 +31,15 @@ const UpdateAvatar: React.FC = () => {
 				<Flex justify="between" align="center" p="4" gap="9">
 					<Card onClick={triggerFileSelect} className="flex justify-start items-start gap-4 p-4 flex-grow cursor-pointer">
 						<Card>
-							<SafeImage fallbackSrc="/Logo.png" priority src="/Logo.png" height={40} width={40} alt="Logo as avatar" />
+							<SafeImage
+								priority
+								src={avatar}
+								height={40}
+								width={40}
+								alt="Logo as avatar"
+								fallbackSrc="/Logo.png"
+								className="rounded-full"
+							/>
 						</Card>
 						<Text as="div" weight="bold" size="1" className="text-white">
 							Upload your avatar

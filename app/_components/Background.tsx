@@ -10,10 +10,11 @@ export default function Background() {
 
 	return (
 		<SafeImage
+			fill
+			priority
 			src={bgImage}
 			fallbackSrc=""
 			alt="cover image"
-			fill
 			className="opacity-[0.05]"
 			style={{ objectFit: 'cover', objectPosition: 'top' }}
 		/>

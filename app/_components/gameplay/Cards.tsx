@@ -5,6 +5,28 @@ interface CardsProps {
 	opponent: string;
 }
 
+export const WaitingDoom: React.FC<CardsProps> = ({ player }) => {
+	return (
+		<div className="w-[300px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-cardenter">
+			<div className="relative">
+				<div className="bg-dark-950 rounded-md p-8 shadow-2xl border border-dark-500 relative overflow-hidden">
+					<div className="absolute inset-0 bg-dark-900 rounded-md"></div>
+					<div className="absolute bottom-4 left-4 text-accent-500/20"></div>
+					<div className="relative z-10 text-center">
+						<div className="flex justify-center mb-6">
+							<div className={'p-4 rounded-full shadow-lg bg-orange-500'}>
+								<SvgSpinner size={32} className="text-black animate-spin" />
+							</div>
+						</div>
+						<h2 className="text-2xl font-bold mb-2 text-orange-500">Connecting...</h2>
+						<p className="text-sm font-bold text-white">Waiting for {player}</p>
+						<p className="text-xs font-bold text-dark-300 pt-1">Please wait while we establish connection</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	);
+};
 export const Waiting: React.FC<CardsProps> = ({ player }) => {
 	return (
 		<div className="w-[300px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-cardenter">
@@ -28,11 +50,34 @@ export const Waiting: React.FC<CardsProps> = ({ player }) => {
 	);
 };
 
+export const WonDoom: React.FC<{
+	player: string;
+	opponent: string;
+}> = ({ player }) => {
+	return (
+		<div className="w-[300px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-cardenter">
+			<div className="relative">
+				<div className="bg-dark-950 rounded-md p-8 shadow-2xl border border-dark-500 relative overflow-hidden">
+					<div className="absolute top-0 left-0 right-0 flex justify-center items-center h-[100px] shadow-lg bg-orange-500">
+						<SvgTrophy size={40} />
+					</div>
+					<div className="mt-[100px] relative z-10 text-center">
+						<h2 className="text-2xl font-bold mb-2 text-orange-500">Victory 🎊</h2>
+						<p className="text-sm font-bold text-white">
+							Congratulations, <span className="text-orange-500">{player}</span>!
+						</p>
+						<p className="text-xs font-bold text-dark-300 pt-1">Every match you win is a step closer to greatness</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	);
+};
+
 export const Won: React.FC<{
 	player: string;
 	opponent: string;
-	children: React.ReactNode;
-}> = ({ player, children }) => {
+}> = ({ player }) => {
 	return (
 		<div className="w-[300px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-cardenter">
 			<div className="relative">
@@ -46,7 +91,30 @@ export const Won: React.FC<{
 							Congratulations, <span className="text-accent-300">{player}</span>!
 						</p>
 						<p className="text-xs font-bold text-dark-300 pt-1">Every match you win is a step closer to greatness</p>
-						<div className="grid grid-cols-2 gap-3 mt-6">{children}</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	);
+};
+
+export const LostDoom: React.FC<{
+	player: string;
+	opponent: string;
+}> = ({ player }) => {
+	return (
+		<div className="w-[300px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-cardenter">
+			<div className="relative">
+				<div className="bg-dark-950 rounded-md p-8 shadow-2xl border border-dark-500 relative overflow-hidden">
+					<div className="absolute top-0 left-0 right-0 flex justify-center items-center h-[100px] shadow-lg bg-dark-500">
+						<SvgInfo size={40} />
+					</div>
+					<div className="mt-[100px] relative z-10 text-center">
+						<h2 className="text-2xl font-bold mb-2 text-orange-500">Good Effort 💪</h2>
+						<p className="text-sm font-bold text-white">
+							Keep trying, <span className="text-orange-500">{player}</span>!
+						</p>
+						<p className="text-xs font-bold text-dark-300 pt-1">There is always a chance to revenge</p>
 					</div>
 				</div>
 			</div>
@@ -57,8 +125,7 @@ export const Won: React.FC<{
 export const Lost: React.FC<{
 	player: string;
 	opponent: string;
-	children: React.ReactNode;
-}> = ({ player, children }) => {
+}> = ({ player }) => {
 	return (
 		<div className="w-[300px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-cardenter">
 			<div className="relative">
@@ -72,7 +139,6 @@ export const Lost: React.FC<{
 							Keep trying, <span className="text-accent-300">{player}</span>!
 						</p>
 						<p className="text-xs font-bold text-dark-300 pt-1">There is always a chance to revenge</p>
-						<div className="grid grid-cols-2 gap-3 mt-6">{children}</div>
 					</div>
 				</div>
 			</div>
@@ -114,8 +180,8 @@ export const Nothing: React.FC = () => {
 								<SvgExclamation size={24} />
 							</div>
 						</div>
-						<h2 className="text-2xl font-bold mb-2 text-red-600">Lost !!</h2>
-						<p className="text-xs font-bold text-white">🤔🤔🤔</p>
+						<h2 className="text-2xl font-bold mb-2 text-red-600">Nothing here!!</h2>
+						<p className="text-xs font-bold text-white">Are you lost 🤔🤔🤔</p>
 						<p className="text-xs font-bold text-dark-300 pt-1">It seems that this room doesn&apos;t exist</p>
 					</div>
 				</div>

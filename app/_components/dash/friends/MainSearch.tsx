@@ -123,6 +123,7 @@ const MainSearch: React.FC = () => {
 				}`}
 			>
 				<SafeImage
+					priority
 					src="/search.png"
 					fallbackSrc=""
 					alt="cover image"

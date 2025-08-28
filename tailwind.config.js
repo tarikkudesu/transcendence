@@ -83,7 +83,7 @@ const config = {
 				},
 				zoomInOutBounce: {
 					'0%': { transform: 'scale(0)', opacity: '0' },
-					'60%': { transform: 'scale(1.15)', opacity: '1' },
+					'60%': { transform: 'scale(1.10)', opacity: '1' },
 					'80%': { transform: 'scale(0.95)' },
 					'100%': { transform: 'scale(1)', opacity: '1' },
 				},
