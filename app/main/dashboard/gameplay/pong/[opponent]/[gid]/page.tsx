@@ -23,7 +23,7 @@ const Page: React.FC<{ params: Promise<{ gid: string; opponent: string }> }> = a
 	if (!gid || !opponent) notFound();
 
 	return (
-		<div className="rounded-md p-[20px]">
+		<div className="rounded-md p-[20px] min-h-[600px] relative">
 			<PongProvider gid={gid}>
 				<RemotePong opponent={opponent} />
 			</PongProvider>

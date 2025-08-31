@@ -1,5 +1,6 @@
 'use client';
 
+import { Nothing } from '@/app/_components/gameplay/Cards';
 import { useNotification } from '@/app/_components/mini/useNotify';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useWebsocketInterceptor } from '../useWebsocketInterceptor';
@@ -20,11 +21,19 @@ const PongProvider: React.FC<PongProviderProps> = ({ children, gid }) => {
 
 	const [won, setWon] = useState<boolean>(false);
 	const [lost, setLost] = useState<boolean>(false);
-	const [open, setOpen] = useState<boolean>(true);
+	const [error, setError] = useState<boolean>(false);
+	const [waiting, setWaiting] = useState<boolean>(true);
+	const [nothing, setNothing] = useState<boolean>(false);
 	const [disconnected, setDisonnected] = useState<boolean>(false);
 	const [pong, setPong] = useState<Main.ClientPong | null>(null);
 
 	const reset = useCallback(() => {
+		setWon(false);
+		setLost(false);
+		setError(false);
+		setWaiting(true);
+		setNothing(false);
+		setDisonnected(false);
 		setPong(null);
 	}, []);
 
@@ -33,14 +42,31 @@ const PongProvider: React.FC<PongProviderProps> = ({ children, gid }) => {
 			switch (event) {
 				case 'PONG': {
 					const p: Main.ClientPong = Main.Json({ message, target: Main.ClientPong.instance });
+					setWaiting(false);
 					setPong(p);
 					break;
 				}
+				case 'DISCONNECTED': {
+					setDisonnected(true);
+					setWaiting(false);
+					break;
+				}
+				case 'WAITING': {
+					setWaiting(true);
+					break;
+				}
+				case 'NOTHING': {
+					setWaiting(false);
+					setNothing(true);
+					break;
+				}
 				case 'LOST': {
+					setWaiting(false);
 					setLost(true);
 					break;
 				}
 				case 'WON': {
+					setWaiting(false);
 					setWon(true);
 					break;
 				}
@@ -62,17 +88,16 @@ const PongProvider: React.FC<PongProviderProps> = ({ children, gid }) => {
 
 	const onopen = useCallback(() => {
 		console.log('Pong WebSocket connection opened');
-		setOpen(true);
 	}, []);
 
 	const onerror = useCallback(() => {
 		console.log(`Pong WebSocket connection gave an error`);
-		setDisonnected(true);
+		setError(true);
 	}, []);
 
 	const onclose = useCallback((event: CloseEvent) => {
 		console.log(`Pong WebSocket connection closed: ${event?.reason ?? ''}`);
-		setDisonnected(true);
+		setError(true);
 	}, []);
 
 	const onmessage = useCallback(
@@ -107,9 +132,11 @@ const PongProvider: React.FC<PongProviderProps> = ({ children, gid }) => {
 					socketRef.current.onopen = onopen;
 				} else throw new Error('API_BASE not defined');
 			} catch (err: unknown) {
+				setError(true);
 				console.log('Error creating Pong WebSocket connection:', err);
 			}
 		} else {
+			setError(true);
 			notify({ message: 'Something went wrong, Please refresh the page', error: true });
 		}
 	}, [gid]);
@@ -120,13 +147,8 @@ const PongProvider: React.FC<PongProviderProps> = ({ children, gid }) => {
 	}, [initiateConnection]);
 
 	return (
-		<pongContext.Provider value={{ won, lost, disconnected, send, pong, gid, open }}>
-			{!open && (
-				<div className="fixed top-0 left-4 right-4 rounded-b-md bg-red-500 p-6 text-white z-50 font-bold">
-					You are not connected, Please refresh the page
-				</div>
-			)}
-			{children}
+		<pongContext.Provider value={{ won, lost, disconnected, send, pong, gid, waiting, nothing }}>
+			{error ? <Nothing /> : children}
 		</pongContext.Provider>
 	);
 };

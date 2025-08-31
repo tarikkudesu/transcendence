@@ -122,7 +122,7 @@ const DoomProvider: React.FC<DoomProviderProps> = ({ children, gid }) => {
 	return (
 		<doomContext.Provider value={{ won, lost, disconnected, send, doom, gid, open }}>
 			{!open && (
-				<div className="fixed top-0 left-4 right-4 rounded-b-md bg-red-500 p-6 text-white z-50 font-bold">
+				<div className="fixed top-0 left-4 right-4 rounded-b-md bg-red-500 px-6 py-1  text-white z-50 font-bold">
 					You are not connected, Please refresh the page
 				</div>
 			)}

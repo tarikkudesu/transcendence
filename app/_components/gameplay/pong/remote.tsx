@@ -9,7 +9,8 @@ import { usePongSocket } from '@/app/_service/ws/game/pongContext';
 import { SvgChat, SvgGameBoy, SvgSoundOff, SvgSoundOn } from '@/app/_svg/svg';
 import { useRouter } from 'next/navigation';
 import { User } from '../../dash/game/User';
-import { Disconnected, Lost, Nothing, Waiting, Won } from '../Cards';
+import { Spinner } from '../../mini/Loading';
+import { Disconnected, Lost, Waiting, Won } from '../Cards';
 import Pong from './Pong';
 
 const Ping: React.FC<{ sound: boolean }> = ({ sound }) => {
@@ -78,34 +79,19 @@ const RemotePong: React.FC<{ opponent: string }> = ({ opponent }) => {
 	const router = useRouter();
 	const { username } = useUser();
 	const [sound, setSound] = useState<boolean>(true);
-	const { pong: game, open, won, lost, disconnected } = usePongSocket();
+	const { won, lost, disconnected, waiting } = usePongSocket();
 
 	const switchSound = useCallback(() => {
 		setSound((state) => !state);
 	}, []);
 
 	const node = useCallback(() => {
-		if (!open) return <Waiting player={username} opponent={opponent} />;
-		if (won) {
-			return (
-				<>
-					<Won player={username} opponent={opponent} />
-					<Ping sound={sound} />
-				</>
-			);
-		}
-		if (lost) {
-			return (
-				<>
-					<Lost player={username} opponent={opponent} />
-					<Ping sound={sound} />
-				</>
-			);
-		}
-		if (disconnected && !won && !lost) return <Disconnected player={username} opponent={opponent} />;
-		if (game) return <Ping sound={sound} />;
-		return <Nothing />;
-	}, [disconnected, game, lost, open, opponent, sound, username, won]);
+		if (won) return <Won player={username} opponent={opponent} />;
+		if (lost) return <Lost player={username} opponent={opponent} />;
+		if (waiting) return <Waiting player={username} opponent={opponent} />;
+		if (disconnected) return <Disconnected player={username} opponent={opponent} />;
+		return <Spinner />;
+	}, [disconnected, lost, opponent, username, waiting, won]);
 
 	return (
 		<div>
@@ -115,6 +101,7 @@ const RemotePong: React.FC<{ opponent: string }> = ({ opponent }) => {
 				<User.Username username={username} className="font-bold" />
 			</div>
 			<div className="w-[812px] bg-dark-950 aspect-[4/3] relative overflow-hidden mx-auto rounded-md border-[6px] border-accent-300 shadow-xl mb-6">
+				<Ping sound={sound} />
 				{node()}
 			</div>
 			<div className="flex justify-center items-center gap-4">
