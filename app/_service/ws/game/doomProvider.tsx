@@ -1,8 +1,8 @@
 'use client';
 
 import { useNotification } from '@/app/_components/mini/useNotify';
-import { Badge } from '@radix-ui/themes';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useWebsocketInterceptor } from '../useWebsocketInterceptor';
 import { doomContext } from './doomContext';
 import * as Main from './index';
 
@@ -15,15 +15,13 @@ const API_BASE = process.env.NEXT_PUBLIC_WS_DOOM_URL;
 
 const DoomProvider: React.FC<DoomProviderProps> = ({ children, gid }) => {
 	const { notify } = useNotification();
+	const { intercept } = useWebsocketInterceptor();
 	const socketRef = useRef<WebSocket | null>(null);
-	const [error, setError] = useState<boolean>(false);
-	const [close, setClose] = useState<boolean>(false);
-	const [open, setOpen] = useState<boolean>(false);
 
 	const [won, setWon] = useState<boolean>(false);
 	const [lost, setLost] = useState<boolean>(false);
+	const [open, setOpen] = useState<boolean>(true);
 	const [disconnected, setDisonnected] = useState<boolean>(false);
-
 	const [doom, setDoom] = useState<Main.ClientCardOfDoom | null>(null);
 
 	const reset = useCallback(() => {
@@ -48,7 +46,7 @@ const DoomProvider: React.FC<DoomProviderProps> = ({ children, gid }) => {
 				}
 				case 'ERROR': {
 					const r: Main.WSError = Main.Json({ message, target: Main.WSError.instance });
-						notify({ message: r.message, error: true });
+					notify({ message: r.message, error: true });
 					break;
 				}
 				default:
@@ -58,26 +56,22 @@ const DoomProvider: React.FC<DoomProviderProps> = ({ children, gid }) => {
 		[notify]
 	);
 
-	const send = useCallback(
-		(message: string) => {
-			if (socketRef.current?.OPEN && message) socketRef.current?.send(message);
-			else notify({ message: "connection hasn't been established", error: true });
-		},
-		[notify]
-	);
+	const send = useCallback((message: string) => {
+		if (socketRef.current?.OPEN && message) socketRef.current?.send(message);
+	}, []);
+
+	const onopen = useCallback(() => {
+		console.log('Doom WebSocket connection opened');
+		setOpen(true);
+	}, []);
 
 	const onerror = useCallback(() => {
-		setOpen(false);
-		setClose(true);
-		setError(true);
+		console.log(`Doom WebSocket connection gave an error`);
 		setDisonnected(true);
 	}, []);
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const onclose = useCallback((event: any) => {
+	const onclose = useCallback((event: CloseEvent) => {
 		console.log(`Doom WebSocket connection closed: ${event?.reason ?? ''}`);
-		setOpen(false);
-		setClose(true);
 		setDisonnected(true);
 	}, []);
 
@@ -86,76 +80,53 @@ const DoomProvider: React.FC<DoomProviderProps> = ({ children, gid }) => {
 			try {
 				const m: Main.Message = Main.Json({ message: e.data, target: Main.Message.instance });
 				parse(m.message, m.data);
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			} catch (err: any) {
-				notify({ message: err.message, error: true });
+			} catch (err: unknown) {
+				if (err instanceof Error) notify({ message: err.message, error: true });
+				else notify({ message: 'message error, pong socket', error: true });
 			}
 		},
 		[notify, parse]
 	);
 
-	const onopen = useCallback(() => {
-		console.log('Doom WebSocket connection opened');
-		setOpen(true);
-	}, []);
-
 	useEffect(() => {
-		return () => {
-			socketRef.current?.close();
-		};
+		return () => socketRef.current?.close();
 	}, [reset]);
 
-	useEffect(
-		function () {
-			if (socketRef.current?.OPEN) return;
+	const initiateConnection = useCallback(async () => {
+		const result = await intercept();
+		if (result === 'success') {
+			socketRef.current?.close();
 			reset();
 			try {
-				console.log('creating Doom WebSocket connection ' + API_BASE + gid);
+				console.log('creating Pong WebSocket connection ' + API_BASE + gid);
 				if (API_BASE) {
 					socketRef.current = new WebSocket(`${API_BASE}${gid}`);
 					socketRef.current.onmessage = onmessage;
 					socketRef.current.onerror = onerror;
 					socketRef.current.onclose = onclose;
 					socketRef.current.onopen = onopen;
-				} else setError(true);
+				} else throw new Error('API_BASE not defined');
 			} catch (err: unknown) {
-				console.log('Error creating Doom WebSocket connection:', err);
-				setError(true);
+				console.log('Error creating Pong WebSocket connection:', err);
 			}
-		},
-		[error, close, gid]
-	);
+		} else {
+			notify({ message: 'Something went wrong, Please refresh the page', error: true });
+		}
+	}, [gid]);
 
-	function content() {
-		if (error)
-			return (
-				<Badge color="red" variant="soft" radius="full" className="fixed top-12 z-100 right-4">
-					Doom: Error
-				</Badge>
-			);
-		if (close)
-			return (
-				<Badge color="yellow" variant="soft" radius="full" className="fixed top-12 z-100 right-4">
-					Doom: Closed
-				</Badge>
-			);
-		if (open)
-			return (
-				<Badge color="jade" variant="soft" radius="full" className="fixed top-12 z-100 right-4">
-					Doom: Open
-				</Badge>
-			);
-		return (
-			<Badge color="red" variant="soft" radius="full" className="fixed top-12 z-100 right-4">
-				Doom: Disconnected
-			</Badge>
-		);
-	}
+	useEffect(() => {
+		initiateConnection();
+		return () => socketRef.current?.close();
+	}, [initiateConnection]);
 
 	return (
 		<doomContext.Provider value={{ won, lost, disconnected, send, doom, gid, open }}>
+			{!open && (
+				<div className="fixed top-0 left-4 right-4 rounded-b-md bg-red-500 p-6 text-white z-50 font-bold">
+					You are not connected, Please refresh the page
+				</div>
+			)}
 			{children}
-			{content()}
 		</doomContext.Provider>
 	);
 };

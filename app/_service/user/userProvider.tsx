@@ -1,10 +1,12 @@
 'use client';
 
 import LoadingIndicator from '@/app/_components/mini/Loading';
+import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
-import { useGetMe } from './getUser';
+import client from '../axios/client';
+import { UserProfile } from '../schema';
 import { userContext } from './userContext';
 
 const contextClass = {
@@ -20,14 +22,18 @@ const UserProvider: React.FC<{
 	children: React.ReactNode;
 }> = ({ children }) => {
 	const router = useRouter();
-	const { data: user, isLoading: userLoading, error: userError } = useGetMe();
+	const fetchData = (): Promise<UserProfile> => client.get(`/users/me`).then((response) => response.data);
+	const { data: user, error: userError, isPending: userLoading } = useQuery({
+		queryKey: ['usersme'],
+		queryFn: fetchData,
+	});
 
 	useEffect(() => {
 		if (userError) router.push('/login');
 	}, [router, userError]);
 
-	if (userLoading) return <LoadingIndicator size="md" />;
-	if (!user) return null;
+	if (userLoading) return <LoadingIndicator />;
+	if (userError || !user) return null;
 
 	return (
 		<userContext.Provider value={{ ...user }}>

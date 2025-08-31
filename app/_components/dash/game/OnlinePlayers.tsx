@@ -81,9 +81,13 @@ const OnlinePlayers: React.FC = ({}) => {
 									<Text as="div" size="1" className="font-medium text-accent-300">
 										Online
 									</Text>
-								) : online(player.username) === 'playing' ? (
+								) : online(player.username) === 'pong' ? (
 									<Text as="div" size="1" className="font-medium text-orange-600">
-										Playing
+										Playing Pong
+									</Text>
+								) : online(player.username) === 'doom' ? (
+									<Text as="div" size="1" className="font-medium text-orange-600">
+										Playing Doom
 									</Text>
 								) : (
 									<Text as="div" size="1" className="font-medium text-dark-300">

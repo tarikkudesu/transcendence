@@ -1,26 +1,16 @@
 import { Theme } from '@radix-ui/themes';
-import type { Metadata, Viewport } from 'next';
+import type { Metadata } from 'next';
 import { Josefin_Sans } from 'next/font/google';
-
-import AuthProvider from './_service/auth/authProvider';
 import './globals.css';
-import Background from './_components/Background';
 
 const josefin = Josefin_Sans({
 	subsets: ['latin'],
 	display: 'swap',
 });
 
-export const viewport: Viewport = {
-	width: 'device-width',
-	initialScale: 1,
-	maximumScale: 1,
-	userScalable: false,
-};
-
 export const metadata: Metadata = {
 	title: 'YingYangPong',
-	description: '',
+	description: 'The perfect place to play',
 	icons: {
 		icon: '/favicon.png',
 	},
@@ -41,7 +31,7 @@ export default function RootLayout({
 					hasBackground={false}
 					className={`${josefin.className} text-amber-50 m-0`}
 				>
-					<AuthProvider>{children}</AuthProvider>
+					{children}
 				</Theme>
 			</body>
 		</html>

@@ -1,38 +1,33 @@
 'use client';
 
-import { useMutate } from '@/app/_service/useFetcher';
-import { UpdatePasswordRequest } from '@/app/_service/schema';
-import { useUser } from '@/app/_service/user/userContext';
-import { CheckCircledIcon } from '@radix-ui/react-icons';
+import { useUpdatePassCall } from '@/app/_service/auth/Fetchers';
+import { SvgCheckCircle } from '@/app/_svg/svg';
 import { Box, Card, Flex, Text } from '@radix-ui/themes';
 import Link from 'next/link';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { PongButton } from '../../buttons/ServerButtons';
 import { useNotification } from '../../mini/useNotify';
+
 const UpdatePassword: React.FC = () => {
-	const { username } = useUser();
 	const { notify } = useNotification();
 	const [type, setType] = useState<'password' | 'text'>('password');
-	const { fetchData, isLoading, error, data } = useMutate<UpdatePasswordRequest>();
+	const { data, error, isLoading, reset, updatepasscall } = useUpdatePassCall();
 	const [password, setPassword] = useState<string>('');
 
 	const switchType = useCallback(() => {
 		setType((prev) => (prev === 'password' ? 'text' : 'password'));
 	}, []);
 
-	const updatePasswordCall = useCallback(async () => {
-		if (!password) return;
-		fetchData({
-			url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/profile/password/${username}`,
-			method: 'PUT',
-			body: { newpassword: password },
-		});
-	}, [fetchData, password, username]);
-
 	useEffect(() => {
-		if (error) notify({ message: error.message, error: true });
-		if (data) notify({ message: 'Password updated successfully', success: true });
-	}, [data, error, notify]);
+		if (data) {
+			notify({ message: data.message, success: true });
+			reset();
+		}
+		if (error) {
+			notify({ message: error.message, error: true });
+			reset();
+		}
+	}, [data, error, notify, reset]);
 
 	return (
 		<div className="my-[36px]">
@@ -66,14 +61,17 @@ const UpdatePassword: React.FC = () => {
 							<label className="flex items-center gap-2 cursor-pointer select-none">
 								<input type="checkbox" checked={type === 'text'} onChange={switchType} className="peer hidden" />
 								<span className="text-sm text-dark-200">show password</span>
-								<CheckCircledIcon className="peer-checked:bg-accent-300 peer-checked:text-black text-dark-200 rounded-full" />
+								<SvgCheckCircle
+									size={18}
+									className="peer-checked:bg-black peer-checked:text-accent-300 text-dark-700 bg-dark-200 rounded-full"
+								/>
 							</label>
 						</Flex>
 					</Box>
 					<PongButton
 						className="bg-accent-300 text-black disabled:bg-dark-600 disabled:text-dark-200"
-						disabled={!password}
-						onClick={updatePasswordCall}
+						onClick={() => updatepasscall({ newpassword: password })}
+						disabled={!password || isLoading}
 						loading={isLoading}
 					></PongButton>
 				</Flex>

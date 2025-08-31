@@ -1,52 +1,55 @@
 'use client';
 
+import client from '@/app/_service/axios/client';
 import { FriendSearch } from '@/app/_service/schema';
-import { useGET } from '@/app/_service/useFetcher';
 import { ScrollArea } from '@radix-ui/themes';
+import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import React, { ChangeEvent, memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, memo, useCallback, useState } from 'react';
 import { Spinner } from '../../mini/Loading';
 import SafeImage from '../../mini/SafeImage';
 import { User } from '../game/User';
 
 const Search: React.FC<{ search: string; clear: () => void }> = memo(({ search, clear }) => {
-	const controller = useMemo(() => new AbortController(), []);
 	const router = useRouter();
-
-	const { data, isLoading } = useGET<FriendSearch[]>({
-		url: `/friends/u/${encodeURIComponent(search)}`,
-		signal: controller.signal,
+	const fetchData = (): Promise<FriendSearch[]> =>
+		client.get(`/friends/u/${encodeURIComponent(search)}`).then((response) => response.data);
+	const { data, isPending } = useQuery({
+		queryKey: [`friendsu${encodeURIComponent(search)}`],
+		queryFn: fetchData,
 	});
 
-	useEffect(() => {
-		return () => controller.abort();
-	}, [controller]);
+	if (isPending)
+		return (
+			<div className="py-2 rounded-md bg-dark-950 absolute top-0 left-0 translate-y-[60px] w-[400px] text-white shadow-xl z-10 border border-dark-500">
+				<Spinner />
+			</div>
+		);
+
+	if (!data || data.length === 0) return null;
 
 	return (
 		<>
-			{data?.length && (
+			{
 				<div className="py-2 rounded-md bg-dark-950 absolute top-0 left-0 translate-y-[60px] w-[400px] text-white shadow-xl z-10 border border-dark-500">
-					{isLoading && <Spinner />}
-					{!isLoading && (
-						<ScrollArea type="always" scrollbars="vertical" style={{ maxHeight: 600 }}>
-							{data.map((ele) => (
-								<div
-									key={ele.username}
-									className="py-1 cursor-pointer hover:bg-dark-700"
-									onClick={() => {
-										clear();
-										router.push(`/main/dashboard/${ele.username}`);
-									}}
-								>
-									<div className="scale-90">
-										<User.Trigger username={ele.username} avatar={ele.avatar_url} extra="" />
-									</div>
+					<ScrollArea type="always" scrollbars="vertical" style={{ maxHeight: 600 }}>
+						{data.map((ele) => (
+							<div
+								key={ele.username}
+								className="py-1 cursor-pointer hover:bg-dark-700"
+								onClick={() => {
+									clear();
+									router.push(`/main/dashboard/${ele.username}`);
+								}}
+							>
+								<div className="scale-90">
+									<User.Trigger username={ele.username} avatar={ele.avatar_url} extra="" />
 								</div>
-							))}
-						</ScrollArea>
-					)}
+							</div>
+						))}
+					</ScrollArea>
 				</div>
-			)}
+			}
 		</>
 	);
 });

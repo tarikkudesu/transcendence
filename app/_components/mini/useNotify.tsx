@@ -9,7 +9,7 @@ interface useNotificationProps {
 	success?: boolean;
 }
 export function useNotification() {
-	const notify = useCallback(({ message, error, success }: useNotificationProps) => {
+	const notify = useCallback(({ message, error }: useNotificationProps) => {
 		if (error) toast.error(message);
 		else toast(message);
 	}, []);

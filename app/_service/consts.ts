@@ -1,24 +1,5 @@
 import type { Metadata } from 'next';
 
-export const protectedroutes = [
-	'/main',
-	'/add-bio',
-	'/main/tournaments',
-	'/add-profile-picture',
-	'/main/dashboard/chat',
-	'/main/pongleaderboard',
-	'/main/doomleaderboard',
-	'/main/dashboard/[profile]',
-	'/main/doomhistory/[profile]',
-	'/main/ponghistory/[profile]',
-	'/main/dashboard/gameplay/doom/[gid]/[opponent]',
-	'/main/dashboard/gameplay/pong/[gid]/[opponent]',
-	'/main/dashboard/tournament/[tournamentname]',
-	'/main/dashboard/gameplay/local',
-	'/main/dashboard/leaderboard',
-	'/main/dashboard/playground',
-	'/main/dashboard/tournament',
-];
 export const routes = [
 	'/main',
 	'/login',

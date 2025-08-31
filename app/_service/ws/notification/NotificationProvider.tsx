@@ -1,8 +1,8 @@
 'use client';
 
 import { useNotification } from '@/app/_components/mini/useNotify';
-import { Badge } from '@radix-ui/themes';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useWebsocketInterceptor } from '../useWebsocketInterceptor';
 import { notificationContext, NotificationType } from './notificationContext';
 
 interface NotificationProviderProps {
@@ -14,18 +14,20 @@ const API_BASE = process.env.NEXT_PUBLIC_WS_NOTIFICATION_URL;
 const NotificationProvider: React.FC<NotificationProviderProps> = ({ children }) => {
 	const { notify } = useNotification();
 	const socketRef = useRef<WebSocket | null>(null);
-	const [open, setOpen] = useState<boolean>(false);
+	const { intercept } = useWebsocketInterceptor();
+	const [open, setOpen] = useState<boolean>(true);
 	const [error, setError] = useState<boolean>(false);
 	const [close, setClose] = useState<boolean>(false);
 	const [notifications, setNotifications] = useState<NotificationType[]>([]);
 
-	const send = useCallback(
-		(message: string) => {
-			if (socketRef.current?.OPEN && message) socketRef.current?.send(message);
-			else notify({ message: "connection hasn't been established", error: true });
-		},
-		[notify]
-	);
+	const send = useCallback((message: string) => {
+		if (socketRef.current?.OPEN && message) socketRef.current?.send(message);
+	}, []);
+
+	const onopen = useCallback(() => {
+		console.log('Notification WebSocket connection opened');
+		setOpen(true);
+	}, []);
 
 	const onerror = useCallback(() => {
 		setOpen(false);
@@ -39,76 +41,59 @@ const NotificationProvider: React.FC<NotificationProviderProps> = ({ children })
 		setClose(true);
 	}, []);
 
-	const onmessage = useCallback((e: MessageEvent) => {
-		try {
-			const json: NotificationType[] = JSON.parse(e.data);
-			setNotifications(
-				json.sort((a, b) => {
-					const dateA = new Date(Number(a.date));
-					const dateB = new Date(Number(b.date));
-					return dateB.getTime() - dateA.getTime();
-				})
-			);
-		} catch (err) {
-			void err;
-		}
-	}, []);
-
-	const onopen = useCallback(() => {
-		console.log('Notification WebSocket connection opened');
-		setOpen(true);
-	}, []);
-
-	function content() {
-		if (error)
-			return (
-				<Badge color="red" variant="soft" radius="full" className="fixed top-4 z-100 right-4">
-					Notification: Error
-				</Badge>
-			);
-		if (close)
-			return (
-				<Badge color="yellow" variant="soft" radius="full" className="fixed top-4 z-100 right-4">
-					Notification: Closed
-				</Badge>
-			);
-		if (open)
-			return (
-				<Badge color="jade" variant="soft" radius="full" className="fixed top-4 z-100 right-4">
-					Notification: Open
-				</Badge>
-			);
-		return (
-			<Badge color="red" variant="soft" radius="full" className="fixed top-4 z-100 right-4">
-				Notification: Disconnected
-			</Badge>
-		);
-	}
-
-	useEffect(
-		function () {
-			if (socketRef.current?.OPEN) return;
+	const onmessage = useCallback(
+		(e: MessageEvent) => {
 			try {
-				console.log('Connecting to Notification WebSocket ' + API_BASE);
+				const json: NotificationType[] = JSON.parse(e.data);
+				setNotifications(
+					json.sort((a, b) => {
+						const dateA = new Date(Number(a.date));
+						const dateB = new Date(Number(b.date));
+						return dateB.getTime() - dateA.getTime();
+					})
+				);
+			} catch (err: unknown) {
+				if (err instanceof Error) notify({ message: err.message, error: true });
+				else notify({ message: 'message error, game socket', error: true });
+			}
+		},
+		[notify]
+	);
+
+	const initiateConnection = useCallback(async () => {
+		const result = await intercept();
+		if (result === 'success') {
+			socketRef.current?.close();
+			try {
+				console.log('creating Notification WebSocket connection ' + API_BASE);
 				if (API_BASE) {
 					socketRef.current = new WebSocket(API_BASE);
 					socketRef.current.onmessage = onmessage;
 					socketRef.current.onerror = onerror;
 					socketRef.current.onclose = onclose;
 					socketRef.current.onopen = onopen;
-				} else setError(true);
+				} else throw new Error('API_BASE not defined');
 			} catch (err: unknown) {
-				console.error('Error creating Notification WebSocket:', err);
-				setError(true);
+				console.log('Error creating Notification WebSocket connection:', err);
 			}
-		},
-		[error, close]
-	);
+		} else {
+			notify({ message: 'Something went wrong, Please refresh the page', error: true });
+		}
+	}, [error, close]);
+
+	useEffect(() => {
+		initiateConnection();
+		return () => socketRef.current?.close();
+	}, [initiateConnection]);
 
 	return (
-		<notificationContext.Provider value={{ close, error, open, send, notifications }}>
+		<notificationContext.Provider value={{ send, notifications }}>
+			{!open && (
+				<div className="fixed top-0 left-4 right-4 rounded-b-md bg-red-500 p-6 text-white z-50 font-bold">
+					You are not connected, Please refresh the page
+				</div>
+			)}
 			{children}
-			{content()}
 		</notificationContext.Provider>
 	);
 };

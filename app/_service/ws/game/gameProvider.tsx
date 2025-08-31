@@ -1,9 +1,9 @@
 'use client';
 
 import { useNotification } from '@/app/_components/mini/useNotify';
-import { Badge } from '@radix-ui/themes';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useWebsocketInterceptor } from '../useWebsocketInterceptor';
 import * as Main from './index';
 
 interface GameProviderProps {
@@ -15,22 +15,19 @@ const API_BASE = process.env.NEXT_PUBLIC_WS_GAME_URL;
 const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 	const router = useRouter();
 	const { notify } = useNotification();
+	const { intercept } = useWebsocketInterceptor();
 	const socketRef = useRef<WebSocket | null>(null);
+	const [open, setOpen] = useState<boolean>(true);
 	const [error, setError] = useState<boolean>(false);
 	const [close, setClose] = useState<boolean>(false);
-	const [open, setOpen] = useState<boolean>(false);
-
-	// * Data Holders
 	const [pool, setPool] = useState<Main.ClientPlayer[]>([]);
 	const [invitations, setInvitations] = useState<Main.ClientInvitation[]>([]);
 	const [tournament, setTournament] = useState<Main.ClientTournament>(Main.ClientTournament.instance);
 
-	const [pong, setPong] = useState<Main.ClientPong | null>(null);
-	const [doom, setDoom] = useState<Main.ClientCardOfDoom | null>(null);
-
 	const online = useCallback(
-		(username: string): 'playing' | 'free' | undefined => {
-			return pool.find((ele) => ele.username === username) ? 'free' : undefined;
+		(username: string): 'free' | 'pong' | 'doom' | undefined => {
+			const pooler = pool.find((ele) => ele.username === username);
+			return pooler ? pooler.playerStatus : undefined;
 		},
 		[pool]
 	);
@@ -42,15 +39,9 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 		[pool]
 	);
 
-	const reset = useCallback(() => {
-		setPong(null);
-		setDoom(null);
-	}, []);
-
 	const parse = useCallback(
 		(event: string, message: string, game: 'pong' | 'card of doom') => {
 			switch (event) {
-				// ? Pool
 				case 'POOL': {
 					const p: Main.Pool = Main.Json({ message, target: Main.Pool.instance });
 					setPool(p.pool);
@@ -62,21 +53,9 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 					break;
 				}
 				case 'PLAY': {
-					reset();
 					const p: Main.Play = Main.Json({ message, target: Main.Play.instance });
 					if (game === 'pong') router.push(`/main/dashboard/gameplay/pong/${p.opponent}/${p.gid}`);
 					else router.push(`/main/dashboard/gameplay/doom/${p.opponent}/${p.gid}`);
-					break;
-				}
-				// ? Game
-				case 'PONG': {
-					const p: Main.ClientPong = Main.Json({ message, target: Main.ClientPong.instance });
-					setPong(p);
-					break;
-				}
-				case 'DOOM': {
-					const d: Main.ClientCardOfDoom = Main.Json({ message, target: Main.ClientCardOfDoom.instance });
-					setDoom(d);
 					break;
 				}
 				case 'TOURNAMENT': {
@@ -93,25 +72,26 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 					break;
 			}
 		},
-		[notify, reset]
-	);
-
-	const send = useCallback(
-		(message: string) => {
-			if (socketRef.current?.OPEN && message) socketRef.current?.send(message);
-			else notify({ message: "connection hasn't been established", error: true });
-		},
 		[notify]
 	);
 
+	const send = useCallback((message: string) => {
+		if (socketRef.current?.OPEN && message) socketRef.current?.send(message);
+	}, []);
+
+	const onopen = useCallback(() => {
+		console.log('Game WebSocket connection opened');
+		setOpen(true);
+	}, []);
+
 	const onerror = useCallback(() => {
+		console.log(`Game WebSocket connection gave an error`);
 		setOpen(false);
 		setClose(true);
 		setError(true);
 	}, []);
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const onclose = useCallback((event: any) => {
+	const onclose = useCallback((event: CloseEvent) => {
 		console.log(`Game WebSocket connection closed: ${event?.reason ?? ''}`);
 		setOpen(false);
 		setClose(true);
@@ -122,22 +102,18 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 			try {
 				const m: Main.Message = Main.Json({ message: e.data, target: Main.Message.instance });
 				parse(m.message, m.data, m.game);
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			} catch (err: any) {
-				notify({ message: err.message, error: true });
+			} catch (err: unknown) {
+				if (err instanceof Error) notify({ message: err.message, error: true });
+				else notify({ message: 'message error, game socket', error: true });
 			}
 		},
 		[notify, parse]
 	);
 
-	const onopen = useCallback(() => {
-		console.log('Game WebSocket connection opened');
-		setOpen(true);
-	}, []);
-
-	useEffect(
-		function () {
-			if (socketRef.current?.OPEN) return;
+	const initiateConnection = useCallback(async () => {
+		const result = await intercept();
+		if (result === 'success') {
+			socketRef.current?.close();
 			try {
 				console.log('creating Game WebSocket connection ' + API_BASE);
 				if (API_BASE) {
@@ -146,55 +122,28 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 					socketRef.current.onerror = onerror;
 					socketRef.current.onclose = onclose;
 					socketRef.current.onopen = onopen;
-				} else setError(true);
+				} else throw new Error('API_BASE not defined');
 			} catch (err: unknown) {
 				console.log('Error creating Game WebSocket connection:', err);
-				setError(true);
 			}
-		},
-		[error, close]
-	);
+		} else {
+			notify({ message: 'Something went wrong, Please refresh the page', error: true });
+		}
+	}, [error, close]);
 
 	useEffect(() => {
-		return () => {
-			setClose(false);
-			setOpen(false);
-			setError(false);
-			reset();
-			socketRef.current?.close();
-		};
-	}, [reset]);
-
-	function content() {
-		if (error)
-			return (
-				<Badge color="red" variant="soft" radius="full" className="fixed top-20 z-100 right-4">
-					Game: Error
-				</Badge>
-			);
-		if (close)
-			return (
-				<Badge color="yellow" variant="soft" radius="full" className="fixed top-20 z-100 right-4">
-					Game: Closed
-				</Badge>
-			);
-		if (open)
-			return (
-				<Badge color="jade" variant="soft" radius="full" className="fixed top-20 z-100 right-4">
-					Game: Open
-				</Badge>
-			);
-		return (
-			<Badge color="red" variant="soft" radius="full" className="fixed top-20 z-100 right-4">
-				Game: Disconnected
-			</Badge>
-		);
-	}
+		initiateConnection();
+		return () => socketRef.current?.close();
+	}, [initiateConnection]);
 
 	return (
-		<Main.gameContext.Provider value={{ error, close, open, send, pool, invitations, tournament, pong, doom, online, pooler, reset }}>
+		<Main.gameContext.Provider value={{ send, pool, invitations, tournament, online, pooler }}>
+			{!open && (
+				<div className="fixed top-0 left-4 right-4 rounded-b-md bg-red-500 p-6 text-white z-50 font-bold">
+					You are not connected, Please refresh the page
+				</div>
+			)}
 			{children}
-			{content()}
 		</Main.gameContext.Provider>
 	);
 };

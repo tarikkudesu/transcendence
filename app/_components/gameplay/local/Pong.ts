@@ -230,7 +230,7 @@ class Pong {
 			this.collision_response(new Vector(0, 1));
 			if (this.sound) {
 				const audio = new Audio('/audio/arena-hit.mp3');
-				audio.play();
+				audio.play().catch(console.error);
 			}
 		}
 		// * BOTTOM
@@ -239,7 +239,7 @@ class Pong {
 			this.collision_response(new Vector(0, -1));
 			if (this.sound) {
 				const audio = new Audio('/audio/arena-hit.mp3');
-				audio.play();
+				audio.play().catch(console.error);
 			}
 		}
 		// * RIGHT
@@ -254,7 +254,7 @@ class Pong {
 				this.ball.direction = this.ball.direction.unit();
 				if (this.sound) {
 					const audio = new Audio('/audio/arena-hit.mp3');
-					audio.play();
+					audio.play().catch(console.error);
 				}
 			} else {
 				this.resetMatch();
@@ -262,7 +262,7 @@ class Pong {
 				this.opponentScore += 1;
 				if (this.sound) {
 					const audio = new Audio('/audio/arena-out.mp3');
-					audio.play();
+					audio.play().catch(console.error);
 				}
 			}
 		}
@@ -275,7 +275,7 @@ class Pong {
 				this.ball.direction = this.ball.direction.unit();
 				if (this.sound) {
 					const audio = new Audio('/audio/arena-hit.mp3');
-					audio.play();
+					audio.play().catch(console.error);
 				}
 			} else {
 				this.resetMatch();
@@ -283,7 +283,7 @@ class Pong {
 				this.playerScore += 1;
 				if (this.sound) {
 					const audio = new Audio('/audio/arena-out.mp3');
-					audio.play();
+					audio.play().catch(console.error);
 				}
 			}
 		}

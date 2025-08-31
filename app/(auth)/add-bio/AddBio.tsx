@@ -4,8 +4,10 @@ import { PongButton } from '@/app/_components/buttons/ServerButtons';
 import Logo from '@/app/_components/mini/Logo';
 import { useNotification } from '@/app/_components/mini/useNotify';
 import { useUpdateBioCall } from '@/app/_service/auth/Fetchers';
-import { useGetMe } from '@/app/_service/user/getUser';
+import client from '@/app/_service/axios/client';
+import { UserProfile } from '@/app/_service/schema';
 import { Box, Text } from '@radix-ui/themes';
+import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { ChangeEvent, useEffect, useState } from 'react';
@@ -15,7 +17,11 @@ const AddBio: React.FC<unknown> = () => {
 	const { notify } = useNotification();
 	const [bio, setBio] = useState<string>('');
 	const { data, error, isLoading, updatebiocall, reset } = useUpdateBioCall();
-	const { isLoading: userLoading, error: userError } = useGetMe();
+	const fetchData = (): Promise<UserProfile> => client.get(`/users/me`).then((response) => response.data);
+	const { error: userError, isPending: userLoading } = useQuery({
+		queryKey: ['usersme'],
+		queryFn: fetchData,
+	});
 
 	useEffect(() => {
 		if (userError) router.push('/login');

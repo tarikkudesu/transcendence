@@ -25,3 +25,4 @@ const SvgCard: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
 );
 
 export default SvgCard;
+ 

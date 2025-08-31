@@ -47,9 +47,9 @@ const Dashboard: React.FC<unknown> = () => {
 							</TitleSubTitle>
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 								<PlayPong />
-								<PlayLocal />
-								<PlayTournament />
 								<PlayDoom />
+								<PlayTournament />
+								<PlayLocal />
 							</div>
 						</Tabs.Content>
 

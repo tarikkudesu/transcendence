@@ -2,12 +2,12 @@ import { createContext, useContext } from 'react';
 
 export interface NotificationType {
 	event:
+		| 'FRIENDACCEPTEDYOURREQUEST'
+		| 'TOURNAMENTMATCHUP'
 		| 'NEWTOURNAMENTDATE'
 		| 'REGESTRATIONOPEN'
-		| 'TOURNAMENTMATCHUP'
 		| 'TOURNAMENTWON'
 		| 'FRIENDREQUEST'
-		| 'FRIENDACCEPTEDYOURREQUEST'
 		| 'CHATMESSAGE';
 	id: number;
 	date: number;
@@ -17,11 +17,6 @@ export interface NotificationType {
 }
 
 class SocketState {
-	// * Websocket vars
-	error: boolean = false;
-	close: boolean = false;
-	open: boolean = false;
-
 	notifications: NotificationType[] = [];
 	send: (message: string) => void = () => {};
 }

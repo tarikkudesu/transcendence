@@ -1,15 +1,10 @@
-import type { Metadata } from 'next';
+'use client';
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import FriendsProvider from '../_service/friends/FriendProvider';
 import UserProvider from '../_service/user/userProvider';
 
-export const metadata: Metadata = {
-	title: 'YingYangPong',
-	description: '',
-	icons: {
-		icon: '/favicon.png',
-	},
-};
+const queryClient = new QueryClient();
 
 export default function RootLayout({
 	children,
@@ -18,9 +13,11 @@ export default function RootLayout({
 }>) {
 	return (
 		<main className="min-h-screen relative pb-[100px]">
-			<UserProvider>
-				<FriendsProvider>{children}</FriendsProvider>
-			</UserProvider>
+			<QueryClientProvider client={queryClient}>
+				<UserProvider>
+					<FriendsProvider>{children}</FriendsProvider>
+				</UserProvider>
+			</QueryClientProvider>
 		</main>
 	);
 }

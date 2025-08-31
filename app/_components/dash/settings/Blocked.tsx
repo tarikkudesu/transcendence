@@ -1,9 +1,10 @@
 'use client';
 
+import client from '@/app/_service/axios/client';
 import { useBlockFriendCall } from '@/app/_service/friends/Mutaters';
 import { BlockedFriend } from '@/app/_service/schema';
-import { useGET } from '@/app/_service/useFetcher';
 import { Card, Text } from '@radix-ui/themes';
+import { useQuery } from '@tanstack/react-query';
 import React, { useEffect } from 'react';
 import { PongButton } from '../../buttons/ServerButtons';
 import { Spinner } from '../../mini/Loading';
@@ -12,14 +13,18 @@ import { User } from '../game/User';
 
 const Blocked: React.FC = () => {
 	const { notify } = useNotification();
-	const { isLoading, data } = useGET<BlockedFriend[]>({ url: `/friends/blocked` });
 	const { isLoading: blocking, error: blockError, blockCall } = useBlockFriendCall();
+	const fetchData = (): Promise<BlockedFriend[]> => client.get(`/friends/blocked`).then((response) => response.data);
+	const { data, isPending } = useQuery({
+		queryKey: ['friendsblocked'],
+		queryFn: fetchData,
+	});
 
 	useEffect(() => {
 		if (blockError) notify({ message: blockError.message, error: true });
 	}, [blockError, notify]);
 
-	if (isLoading) return <Spinner />;
+	if (isPending) return <Spinner />;
 
 	return (
 		<div className="my-[36px]">

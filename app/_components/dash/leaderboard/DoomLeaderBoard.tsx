@@ -1,9 +1,9 @@
 'use client';
 
+import client from '@/app/_service/axios/client';
 import { LeaderboardEntry } from '@/app/_service/schema';
 import { Box, Flex, Text } from '@radix-ui/themes';
-
-import { useGET } from '@/app/_service/useFetcher';
+import { useQuery } from '@tanstack/react-query';
 import { useCallback } from 'react';
 import { Spinner } from '../../mini/Loading';
 import SafeImage from '../../mini/SafeImage';
@@ -99,9 +99,15 @@ const DoomLeaderBoardThirdPlayer: React.FC<DoomLeaderBoardPlayerProps> = ({ play
 };
 
 const DoomLeaderBoard: React.FC = ({}) => {
-	const { isLoading, data: leaderBoard } = useGET<LeaderboardEntry[]>({ url: `/game/doom/leaderboard?end=10` });
+	const fetchData = (): Promise<LeaderboardEntry[]> =>
+		client.get(`/game/doom/leaderboard?begin=0&end=${10}`).then((response) => response.data);
+	const { data: leaderBoard, isPending } = useQuery({
+		queryKey: ['gamedoomleaderboard'],
+		queryFn: fetchData,
+	});
+
 	const content = useCallback(() => {
-		if (isLoading) return <Spinner />;
+		if (isPending) return <Spinner />;
 		return (
 			<>
 				{leaderBoard && leaderBoard.length && (
@@ -143,7 +149,7 @@ const DoomLeaderBoard: React.FC = ({}) => {
 				)}
 			</>
 		);
-	}, [isLoading, leaderBoard]);
+	}, [isPending, leaderBoard]);
 
 	return <>{content()}</>;
 };

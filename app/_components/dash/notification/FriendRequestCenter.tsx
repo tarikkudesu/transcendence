@@ -64,7 +64,6 @@ const FriendRequestCenter = () => {
 												className="w-full bg-dark-950 hover:bg-accent-300 hover:text-black text-sm"
 												onClick={() => {
 													refetch();
-													setActive(false);
 													send(ReadMessage(notification.id));
 													router.push(`/main/dashboard/${notification.sender}`);
 												}}

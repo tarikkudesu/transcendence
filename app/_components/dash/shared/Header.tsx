@@ -31,7 +31,7 @@ const Header: React.FC = ({}) => {
 	return (
 		<header className="w-full h-[150px] absolute top-0 left-0 right-0">
 			<div className="w-full h-[150px] absolute top-0 left-0 right-0 bg-dark-700 -z-10"></div>
-			<SafeImage src="/header.jpeg" fallbackSrc="" alt="cover image" fill className='opacity-25 -z-10' />
+			<SafeImage src="/header.jpeg" fallbackSrc="" alt="cover image" fill sizes='100vw' className='opacity-25 -z-10' />
 			<Flex justify="between" align="center" height="80px" mx="100px" className="z-10">
 				<Flex justify="start" align="center" gap="4">
 					<Logo />

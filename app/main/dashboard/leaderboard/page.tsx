@@ -29,7 +29,7 @@ const LeaderBoard: React.FC<unknown> = () => {
 						</Text>
 					</div>
 					<Tooltip content="See All">
-						<Link href="/main/pongleaderboard">
+						<Link href="/main/pongleaderboard/0">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								viewBox="0 0 640 640"
@@ -64,7 +64,7 @@ const LeaderBoard: React.FC<unknown> = () => {
 						</Text>
 					</div>
 					<Tooltip content="See All">
-						<Link href="/main/doomleaderboard">
+						<Link href="/main/doomleaderboard/0">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								viewBox="0 0 640 640"

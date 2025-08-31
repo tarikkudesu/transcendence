@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 const Chat: React.FC<unknown> = () => {
 	return (
-		<div className="grid grid-cols-[300px_1fr] grid-rows-5 h-[800px]">
+		<div className="grid grid-cols-[300px_1fr] grid-rows-5 h-[800px] relative">
 			<ChatList />
 		</div>
 	);

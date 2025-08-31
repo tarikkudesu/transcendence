@@ -26,6 +26,7 @@ const Ping: React.FC<{ updateWinner: (w: 'Player 1' | 'Player 2' | 'None') => vo
 	}, [pong, sound]);
 
 	useEffect(() => {
+		if (!canvasRef.current) return;
 		const canvas: HTMLCanvasElement = canvasRef.current as HTMLCanvasElement;
 		const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d');
 		canvasRef.current?.focus();
@@ -35,16 +36,16 @@ const Ping: React.FC<{ updateWinner: (w: 'Player 1' | 'Player 2' | 'None') => vo
 		}
 		if (sound) {
 			const audio = new Audio('/audio/arena-start.mp3');
-			audio.play();
+			audio.play().catch(console.error);
 		}
 		return () => {
 			if (sound) {
 				const audio = new Audio('/audio/arena-end.mp3');
-				audio.play();
+				audio.play().catch(console.error);
 			}
 			pong.clear();
 		};
-	}, [pong, sound, updateWinner]);
+	}, [pong, sound, updateWinner, canvasRef]);
 
 	return (
 		<canvas

@@ -62,24 +62,37 @@ const RemoteDoom: React.FC<{ opponent: string }> = ({ opponent }) => {
 	const { doom: game, open, won, lost, disconnected } = useDoomSocket();
 
 	function Content(): React.ReactNode {
-		return (
-			<>
-				<Doom />
-				<div className="flex justify-between p-2">
-					<User.Username username={opponent} className="font-bold text-orange-600 hover:text-orange-500" />
-					<User.Username username={username} className="font-bold text-orange-600 hover:text-orange-500" />
-				</div>
-				<Box height="12px" />
-				{!open && <WaitingDoom player={username} opponent={opponent} />}
-				{disconnected && <Disconnected player={username} opponent={opponent} />}
-				{lost && <LostDoom player={username} opponent={opponent} />}
-				{won && <WonDoom player={username} opponent={opponent} />}
-				{!game && <Nothing />}
-			</>
-		);
+		if (!open) return <WaitingDoom player={username} opponent={opponent} />;
+		if (won) {
+			return (
+				<>
+					<Doom />
+					<WonDoom player={username} opponent={opponent} />
+				</>
+			);
+		}
+		if (lost) {
+			return (
+				<>
+					<Doom />
+					<LostDoom player={username} opponent={opponent} />
+				</>
+			);
+		}
+		if (disconnected && !won && !lost) return <Disconnected player={username} opponent={opponent} />;
+		if (game) return <Doom />;
+		return <Nothing />;
 	}
 
-	return <div className="w-[800px] aspect-square relative mx-auto mb-6">{Content()}</div>;
+	return (
+		<div className="w-[800px] aspect-square relative mx-auto mb-6">
+			{Content()}
+			<div className="flex justify-between p-2">
+				<User.Username username={opponent} className="font-bold text-orange-600 hover:text-orange-500" />
+				<User.Username username={username} className="font-bold text-orange-600 hover:text-orange-500" />
+			</div>
+		</div>
+	);
 };
 
 export default RemoteDoom;

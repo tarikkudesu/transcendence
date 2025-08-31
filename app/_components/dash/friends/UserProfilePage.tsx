@@ -1,27 +1,23 @@
 'use client';
 
+import client from '@/app/_service/axios/client';
 import { useFriends } from '@/app/_service/friends/FriendContext';
 import { useAcceptFriendCall, useAddFriendCall, useBlockFriendCall, useDeclineFriendCall } from '@/app/_service/friends/Mutaters';
-import { Friend, FriendRequest } from '@/app/_service/schema';
-import { useGET } from '@/app/_service/useFetcher';
-import { UserProfile } from '@/app/_service/schema';
+import { Friend, FriendRequest, UserProfile } from '@/app/_service/schema';
 import { ClientPlayer, InviteMessage, useGameSocket } from '@/app/_service/ws/game';
 import { SvgAddFriend, SvgBan, SvgChat, SvgDoom, SvgInfo, SvgPong } from '@/app/_svg/svg';
 import { Callout, Text } from '@radix-ui/themes';
+import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { PongButton } from '../../buttons/ServerButtons';
 import { Spinner } from '../../mini/Loading';
 import SafeImage from '../../mini/SafeImage';
-import { useNotification } from '../../mini/useNotify';
 
 const AddFriend: React.FC<{ username: string }> = ({ username }) => {
-	const { error, isLoading, addCall } = useAddFriendCall();
-	const { notify } = useNotification();
-	// useEffect(() => {
-	// 	if (error) notify({ message: error.message, error: true });
-	// }, [error, notify]);
+	const { isLoading, addCall } = useAddFriendCall();
+
 	return (
 		<PongButton
 			loading={isLoading}
@@ -33,11 +29,8 @@ const AddFriend: React.FC<{ username: string }> = ({ username }) => {
 	);
 };
 const AcceptFriend: React.FC<{ username: string }> = ({ username }) => {
-	const { error, isLoading, acceptCall } = useAcceptFriendCall();
-	const { notify } = useNotification();
-	// useEffect(() => {
-	// 	if (error) notify({ message: error.message, error: true });
-	// }, [error, notify]);
+	const { isLoading, acceptCall } = useAcceptFriendCall();
+
 	return (
 		<PongButton
 			loading={isLoading}
@@ -49,11 +42,8 @@ const AcceptFriend: React.FC<{ username: string }> = ({ username }) => {
 	);
 };
 const DeclineFriend: React.FC<{ username: string }> = ({ username }) => {
-	const { error, isLoading, declineCall } = useDeclineFriendCall();
-	const { notify } = useNotification();
-	// useEffect(() => {
-	// 	if (error) notify({ message: error.message, error: true });
-	// }, [error, notify]);
+	const { isLoading, declineCall } = useDeclineFriendCall();
+
 	return (
 		<PongButton
 			loading={isLoading}
@@ -65,11 +55,8 @@ const DeclineFriend: React.FC<{ username: string }> = ({ username }) => {
 	);
 };
 const BlockFriend: React.FC<{ username: string }> = ({ username }) => {
-	const { error, isLoading, blockCall } = useBlockFriendCall();
-	const { notify } = useNotification();
-	// useEffect(() => {
-	// 	if (error) notify({ message: error.message, error: true });
-	// }, [error, notify]);
+	const { isLoading, blockCall } = useBlockFriendCall();
+
 	return (
 		<PongButton
 			loading={isLoading}
@@ -82,17 +69,26 @@ const BlockFriend: React.FC<{ username: string }> = ({ username }) => {
 };
 
 const UserProfilePage: React.FC<{ username: string }> = ({ username }) => {
+	const router = useRouter();
 	const { pooler: getPooler, send } = useGameSocket();
 	const { request: getRequest, friend: getFriend } = useFriends();
-	const { data: user, error, isLoading } = useGET<UserProfile>({ url: `/users/${username}` });
-	const router = useRouter();
+
+	const fetchData = (): Promise<UserProfile> => client.get(`/users/${username}`).then((response) => response.data);
+	const {
+		data: user,
+		error,
+		isPending,
+	} = useQuery({
+		queryKey: [`users${username}`],
+		queryFn: fetchData,
+	});
 
 	const pooler: ClientPlayer | undefined = getPooler(username);
 	const request: FriendRequest | null = getRequest(username);
 	const friend: Friend | null = getFriend(username);
 
 	const Node = useCallback((): React.ReactNode => {
-		if (isLoading) return <Spinner />;
+		if (isPending) return <Spinner />;
 		if (error || !user) return null;
 		return (
 			<>
@@ -104,13 +100,7 @@ const UserProfilePage: React.FC<{ username: string }> = ({ username }) => {
 						src={user.avatar}
 						alt="player card"
 						fallbackSrc="/Logo.png"
-						className={`rounded-full cursor-pointer border-4 ${
-							friend && pooler
-								? pooler.playerStatus === 'free'
-									? 'border-accent-300'
-									: 'border-orange-600'
-								: 'border-dark-400'
-						}`}
+						className={`rounded-full cursor-pointer border-4 ${friend && pooler ? 'border-accent-300' : 'border-dark-400'}`}
 					></SafeImage>
 					<Text as="div" size="7" weight="bold" align="center" className="mt-4 text-white font-bold">
 						{username}
@@ -161,7 +151,7 @@ const UserProfilePage: React.FC<{ username: string }> = ({ username }) => {
 							<PongButton
 								onClick={() => send(InviteMessage('pong', username))}
 								disabled={
-									pooler.playerStatus === 'playing' ||
+									pooler.playerStatus !== 'free' ||
 									pooler.inviteStatus === 'pending' ||
 									pooler.inviteStatus === 'declined'
 								}
@@ -173,7 +163,7 @@ const UserProfilePage: React.FC<{ username: string }> = ({ username }) => {
 							<PongButton
 								onClick={() => send(InviteMessage('card of doom', username))}
 								disabled={
-									pooler.playerStatus === 'playing' ||
+									pooler.playerStatus !== 'free' ||
 									pooler.inviteStatus === 'pending' ||
 									pooler.inviteStatus === 'declined'
 								}
@@ -187,7 +177,7 @@ const UserProfilePage: React.FC<{ username: string }> = ({ username }) => {
 				</div>
 			</>
 		);
-	}, [error, friend, isLoading, pooler, request, router, send, user, username]);
+	}, [error, friend, isPending, pooler, request, router, send, user, username]);
 
 	return <div className="bg-dark-950 rounded-md shadow-xl my-8">{Node()}</div>;
 };

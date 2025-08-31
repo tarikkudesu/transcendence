@@ -1,20 +1,27 @@
 'use client';
 
+import client from '@/app/_service/axios/client';
 import { TournamentDetailsType } from '@/app/_service/schema';
-import { useGET } from '@/app/_service/useFetcher';
 import { Box, Flex, Text, Tooltip } from '@radix-ui/themes';
+import { useQuery } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
 import React from 'react';
 import Error from '../../mini/Error';
 import { Spinner } from '../../mini/Loading';
 import { User } from '../game/User';
 
-const TournamentDetails: React.FC<{
-	name: string;
-}> = ({ name }) => {
-	const { isLoading, error, data: details } = useGET<TournamentDetailsType>({ url: `/game/tournament/${name}` });
+const TournamentDetails: React.FC<{ name: string }> = ({ name }) => {
+	const fetchData = (): Promise<TournamentDetailsType> => client.get(`/game/tournament/${name}`).then((response) => response.data);
+	const {
+		data: details,
+		error,
+		isPending,
+	} = useQuery({
+		queryKey: [`gametournament${name}`],
+		queryFn: fetchData,
+	});
 
-	if (isLoading) return <Spinner />;
+	if (isPending) return <Spinner />;
 	if (error) return <Error message={error?.message} />;
 
 	return (

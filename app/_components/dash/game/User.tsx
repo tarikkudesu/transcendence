@@ -1,11 +1,10 @@
+import client from '@/app/_service/axios/client';
 import { useFriends } from '@/app/_service/friends/FriendContext';
-import { Friend } from '@/app/_service/schema';
-import { useGET } from '@/app/_service/useFetcher';
-import { useGetUser } from '@/app/_service/user/getUser';
-import { UserProfile } from '@/app/_service/schema';
+import { Friend, UserProfile } from '@/app/_service/schema';
 import { ClientPlayer, InviteMessage, useGameSocket } from '@/app/_service/ws/game';
 import { SvgChat, SvgDoom, SvgPong, SvgProfile } from '@/app/_svg/svg';
 import { Badge, Link, Text } from '@radix-ui/themes';
+import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import React, { useCallback, useState } from 'react';
 import { PongButton } from '../../buttons/ServerButtons';
@@ -21,38 +20,46 @@ const Username: React.FC<{ username: string; className?: string }> = ({ username
 	);
 };
 const Avatar: React.FC<{ username: string }> = ({ username }) => {
-	const { data } = useGET<UserProfile>({ url: `/users/${username}` });
+	const fetchData = (): Promise<UserProfile> => client.get(`/users/${username}`).then((response) => response.data);
+	const { data } = useQuery({
+		queryKey: [`users${username}`],
+		queryFn: fetchData,
+	});
 
 	if (!data)
 		return (
 			<SafeImage
-				fallbackSrc="/Logo.png"
 				priority
+				fallbackSrc="/Logo.png"
 				className={`rounded-full cursor-pointer border-2 border-accent-300`}
 				src={'/Logo.png'}
 				alt="player card"
-				width={42}
 				height={42}
+				width={42}
 			></SafeImage>
 		);
 	return (
 		<>
 			<Link href={`/main/dashboard/${username}`}>
 				<SafeImage
-					fallbackSrc="/Logo.png"
 					priority
+					fallbackSrc="/Logo.png"
 					className={`rounded-full cursor-pointer border-2 border-accent-300`}
 					src={data.avatar}
 					alt="player card"
-					width={42}
 					height={42}
+					width={42}
 				></SafeImage>
 			</Link>
 		</>
 	);
 };
 const Profile: React.FC<{ username: string }> = ({ username }) => {
-	const { data } = useGET<UserProfile>({ url: `/users/${username}` });
+	const fetchData = (): Promise<UserProfile> => client.get(`/users/${username}`).then((response) => response.data);
+	const { data } = useQuery({
+		queryKey: [`users${username}`],
+		queryFn: fetchData,
+	});
 
 	if (!data)
 		return (
@@ -121,11 +128,19 @@ const Dialog: React.FC<{
 	children: React.ReactNode;
 	username: string;
 }> = ({ username, children }) => {
-	const { friend: getFriend } = useFriends();
-	const { data: user, error, isLoading } = useGetUser(username);
-	const { pooler: getPooler, send } = useGameSocket();
-	const [active, setActive] = useState<boolean>();
 	const router = useRouter();
+	const { friend: getFriend } = useFriends();
+	const [active, setActive] = useState<boolean>();
+	const { pooler: getPooler, send } = useGameSocket();
+	const fetchData = (): Promise<UserProfile> => client.get(`/users/${username}`).then((response) => response.data);
+	const {
+		error,
+		data: user,
+		isPending: isLoading,
+	} = useQuery({
+		queryKey: [`users${username}`],
+		queryFn: fetchData,
+	});
 
 	const pooler: ClientPlayer | undefined = getPooler(username);
 	const friend: Friend | null = getFriend(username);
@@ -169,9 +184,13 @@ const Dialog: React.FC<{
 								<Text as="div" size="1" className="font-medium text-accent-300">
 									Online
 								</Text>
+							) : pooler.playerStatus === 'pong' ? (
+								<Text as="div" size="1" className="font-medium text-orange-600">
+									Playing Pong
+								</Text>
 							) : (
 								<Text as="div" size="1" className="font-medium text-orange-600">
-									Playing
+									Playing Doom
 								</Text>
 							)
 						) : (
@@ -189,12 +208,12 @@ const Dialog: React.FC<{
 						<>
 							<PongButton
 								onClick={() => router.push(`/main/dashboard/chat?chatemate=${friend.username}`)}
-								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
+								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-white disabled:text-dark-400 disabled:bg-dark-700"
 							>
 								<SvgChat size={24} />
 							</PongButton>
 							<PongButton
-								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
+								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-white disabled:text-dark-400 disabled:bg-dark-700"
 								onClick={() => router.push(`/main/dashboard/${friend.username}`)}
 							>
 								<SvgProfile size={24} />
@@ -206,24 +225,24 @@ const Dialog: React.FC<{
 							<PongButton
 								onClick={() => send(InviteMessage('pong', username))}
 								disabled={
-									pooler.playerStatus === 'playing' ||
+									pooler.playerStatus !== 'free' ||
 									pooler.inviteStatus === 'pending' ||
 									pooler.inviteStatus === 'declined'
 								}
 								loading={pooler.inviteStatus === 'pending' && pooler.game === 'pong'}
-								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
+								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-white disabled:text-dark-400 disabled:bg-dark-700"
 							>
 								<SvgPong size={24} />
 							</PongButton>
 							<PongButton
 								onClick={() => send(InviteMessage('card of doom', username))}
 								disabled={
-									pooler.playerStatus === 'playing' ||
+									pooler.playerStatus !== 'free' ||
 									pooler.inviteStatus === 'pending' ||
 									pooler.inviteStatus === 'declined'
 								}
 								loading={pooler.inviteStatus === 'pending' && pooler.game === 'card of doom'}
-								className="bg-dark-700 w-full hover:bg-orange-600 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
+								className="bg-dark-700 w-full hover:bg-orange-600 hover:text-white disabled:text-dark-400 disabled:bg-dark-700"
 							>
 								<SvgDoom size={24} />
 							</PongButton>
@@ -237,7 +256,12 @@ const Dialog: React.FC<{
 	return (
 		<>
 			{active && <div className="fixed inset-0 z-40 bg-dark-800/25" onClick={() => setActive(false)}></div>}
-			<span className="flex items-center p-2 cursor-pointer relative" onClick={() => setActive(true)}>
+			<span
+				className="flex items-center p-2 cursor-pointer relative"
+				onClick={() => {
+					if (user) setActive(true);
+				}}
+			>
 				{children}
 				{active && user && (
 					<div className="absolute top-0 left-0 p-6 bg-dark-800 rounded-md border border-dark-500 w-[400px] shadow-xl z-50">
@@ -250,9 +274,9 @@ const Dialog: React.FC<{
 };
 
 export const User = {
-	Trigger,
-	Dialog,
 	Username,
 	Profile,
+	Trigger,
+	Dialog,
 	Avatar,
 };

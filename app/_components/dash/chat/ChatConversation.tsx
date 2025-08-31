@@ -28,7 +28,7 @@ export const EmptyConversation: React.FC = () => {
 				</div>
 			</div>
 			<div className="h-[60px] space-x-2 bg-accent-900/10 border-t-[1px] border-accent-700 w-full flex justify-between items-center relative px-2">
-				<PongButton className="h-[40px] bg-accent-900/20 hover:bg-accent-300 rounded-md text-dark-100 hover:text-black disabled:text-dark-400 disabled:bg-dark-700">
+				<PongButton className="h-[40px] bg-accent-900/20 hover:bg-accent-300 rounded-md text-dark-100 hover:text-white disabled:text-dark-400 disabled:bg-dark-700">
 					<SvgEmojis size={18} className="translate-x-0.5 translate-y-0.5" />
 				</PongButton>
 				<div className="rounded-md bg-accent-900/20 flex justify-start items-center flex-grow">
@@ -40,7 +40,7 @@ export const EmptyConversation: React.FC = () => {
 						className="h-[40px] w-full outline-none py-[9px] px-[12px] text-sm text-white bg-transparent rounded-md"
 					></input>
 				</div>
-				<PongButton className="h-[40px] bg-accent-900/20 hover:bg-accent-300 rounded-md text-dark-100 hover:text-black disabled:text-dark-400 disabled:bg-dark-700">
+				<PongButton className="h-[40px] bg-accent-900/20 hover:bg-accent-300 rounded-md text-dark-100 hover:text-white disabled:text-dark-400 disabled:bg-dark-700">
 					<SvgChat size={18} />
 				</PongButton>
 			</div>
@@ -56,7 +56,7 @@ interface ChatConversationProps {
 const ChatConversation: React.FC<ChatConversationProps> = ({ chatemate, avatar }) => {
 	const [message, setMessage] = useState<string>('');
 	const [active, setActive] = useState<boolean>(false);
-	const { conversation, send, open } = useConversationSocket();
+	const { conversation, send } = useConversationSocket();
 	const { pooler: getPooler, send: gameSend } = useGameSocket();
 	const pooler: ClientPlayer | undefined = getPooler(chatemate ?? '');
 	const inputRef = useRef<HTMLInputElement>(null);
@@ -99,10 +99,16 @@ const ChatConversation: React.FC<ChatConversationProps> = ({ chatemate, avatar }
 					Offline
 				</Text>
 			);
-		if (pooler.playerStatus === 'playing')
+		if (pooler.playerStatus === 'pong')
 			return (
 				<Text as="div" size="1" className="font-medium text-accent-300">
-					Playing
+					Playing Pong
+				</Text>
+			);
+		if (pooler.playerStatus === 'doom')
+			return (
+				<Text as="div" size="1" className="font-medium text-accent-300">
+					Playing Doom
 				</Text>
 			);
 		return (
@@ -150,7 +156,7 @@ const ChatConversation: React.FC<ChatConversationProps> = ({ chatemate, avatar }
 				)}
 				<PongButton
 					onClick={() => setActive((stat) => !stat)}
-					className="h-[40px] bg-accent-900/20 hover:bg-accent-300 rounded-md text-dark-100 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
+					className="h-[40px] bg-accent-900/20 hover:bg-accent-300 rounded-md text-dark-100 hover:text-white disabled:text-dark-400 disabled:bg-dark-700"
 				>
 					<SvgEmojis size={18} className="translate-x-0.5 translate-y-0.5" />
 				</PongButton>
@@ -168,7 +174,7 @@ const ChatConversation: React.FC<ChatConversationProps> = ({ chatemate, avatar }
 					></input>
 				</div>
 				<PongButton
-					className="h-[40px] bg-accent-900/20 hover:bg-accent-300 rounded-md text-dark-100 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
+					className="h-[40px] bg-accent-900/20 hover:bg-accent-300 rounded-md text-dark-100 hover:text-white disabled:text-dark-400 disabled:bg-dark-700"
 					onClick={sendMessage}
 				>
 					<SvgChat size={18} />
@@ -178,18 +184,18 @@ const ChatConversation: React.FC<ChatConversationProps> = ({ chatemate, avatar }
 						<PongButton
 							onClick={() => gameSend(InviteMessage('pong', pooler.username))}
 							disabled={
-								pooler.playerStatus === 'playing' || (pooler.inviteStatus === 'pending' && pooler.game === 'card of doom')
+								pooler.playerStatus !== 'free' || (pooler.inviteStatus === 'pending' && pooler.game === 'card of doom')
 							}
 							loading={pooler.inviteStatus === 'pending' && pooler.game === 'pong'}
-							className="h-[40px] w-[50px] bg-accent-900/20 hover:bg-accent-300 text-dark-100 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
+							className="h-[40px] w-[50px] bg-accent-900/20 hover:bg-accent-300 text-dark-100 hover:text-white disabled:text-dark-400 disabled:bg-dark-700"
 						>
 							<SvgPong size={18} />
 						</PongButton>
 						<PongButton
 							onClick={() => gameSend(InviteMessage('card of doom', pooler.username))}
-							disabled={pooler.playerStatus === 'playing' || (pooler.inviteStatus === 'pending' && pooler.game === 'pong')}
+							disabled={pooler.playerStatus !== 'free' || (pooler.inviteStatus === 'pending' && pooler.game === 'pong')}
 							loading={pooler.inviteStatus === 'pending' && pooler.game === 'card of doom'}
-							className="h-[40px] bg-accent-900/20 hover:bg-orange-600 text-dark-100 hover:text-black disabled:text-dark-400 disabled:bg-dark-700"
+							className="h-[40px] bg-accent-900/20 hover:bg-orange-600 text-dark-100 hover:text-white disabled:text-dark-400 disabled:bg-dark-700"
 						>
 							<SvgDoom size={18} />
 						</PongButton>

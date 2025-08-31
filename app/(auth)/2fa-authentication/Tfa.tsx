@@ -3,10 +3,88 @@
 import { PongButton } from '@/app/_components/buttons/ServerButtons';
 import Logo from '@/app/_components/mini/Logo';
 import { useNotification } from '@/app/_components/mini/useNotify';
-import { useResendOtpCall, useTwofaCall } from '@/app/_service/auth/Fetchers';
+import client from '@/app/_service/axios/client';
+import { MutateResponse, PongError, ResendOtpRequest, Verify2FARequest } from '@/app/_service/schema';
 import { Box, Text } from '@radix-ui/themes';
+import { AxiosError, AxiosResponse } from 'axios';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
+
+function useResendOtpCall() {
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [error, setError] = useState<PongError | null>(null);
+	const [data, setData] = useState<MutateResponse | null>(null);
+
+	const reset = useCallback(() => {
+		setData(null);
+		setError(null);
+		setIsLoading(false);
+	}, []);
+
+	const fetchData = useCallback(async (body: ResendOtpRequest) => {
+		try {
+			setIsLoading(true);
+			const response: AxiosResponse<MutateResponse> = await client.post('/auth/resend-otp', body);
+			setData(response.data);
+		} catch (err) {
+			if (err instanceof AxiosError && err.response) {
+				setError({
+					error: err.response.statusText,
+					statusCode: err.response.status,
+					message: err.response.data.message,
+				});
+			} else {
+				setError({
+					error: 'Unknown Error',
+					statusCode: 520,
+					message: 'Something went wrong, Please try again later',
+				});
+			}
+		} finally {
+			setIsLoading(false);
+		}
+	}, []);
+
+	return { isLoading, error, data, resendotp: fetchData, reset };
+}
+
+function useTwofaCall() {
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [error, setError] = useState<PongError | null>(null);
+	const [data, setData] = useState<MutateResponse | null>(null);
+
+	const reset = useCallback(() => {
+		setData(null);
+		setError(null);
+		setIsLoading(false);
+	}, []);
+
+	const fetchData = useCallback(async (body: Verify2FARequest) => {
+		try {
+			setIsLoading(true);
+			const response: AxiosResponse<MutateResponse> = await client.post('/auth/verify-2fa', body);
+			setData(response.data);
+		} catch (err) {
+			if (err instanceof AxiosError && err.response) {
+				setError({
+					error: err.response.statusText,
+					statusCode: err.response.status,
+					message: err.response.data.message,
+				});
+			} else {
+				setError({
+					error: 'Unknown Error',
+					statusCode: 520,
+					message: 'Something went wrong, Please try again later',
+				});
+			}
+		} finally {
+			setIsLoading(false);
+		}
+	}, []);
+
+	return { isLoading, error, data, twofacall: fetchData, reset };
+}
 
 export const ResendCode: React.FC<{ email: string }> = ({ email }) => {
 	const { notify } = useNotification();

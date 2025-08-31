@@ -149,3 +149,8 @@ export interface UserProfile {
 	email: string;
 	bio: string;
 }
+export interface PongError {
+	error: string;
+	message: string;
+	statusCode: number;
+}

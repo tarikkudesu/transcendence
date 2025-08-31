@@ -1,8 +1,8 @@
 'use client';
 
 import { useNotification } from '@/app/_components/mini/useNotify';
-import { Badge } from '@radix-ui/themes';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useWebsocketInterceptor } from '../useWebsocketInterceptor';
 import { chatContext } from './chatContext';
 import { Message, OuterMessage } from './schemas';
 
@@ -14,20 +14,20 @@ const API_BASE = process.env.NEXT_PUBLIC_WS_CHAT_URL;
 
 const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 	const { notify } = useNotification();
+	const { intercept } = useWebsocketInterceptor();
 	const socketRef = useRef<WebSocket | null>(null);
-	const [error, setError] = useState<boolean>(false);
-	const [close, setClose] = useState<boolean>(false);
-	const [open, setOpen] = useState<boolean>(false);
 
-	// * Data Holders
+	const [open, setOpen] = useState<boolean>(true);
+	const [close, setClose] = useState<boolean>(false);
+	const [error, setError] = useState<boolean>(false);
 	const [panel, setPanel] = useState<OuterMessage[]>([]);
 
-	const lastMessage = useCallback(
-		(u: string): Message | undefined => {
-			return panel.find((ele) => ele.friend === u)?.lastMessage;
-		},
-		[panel]
-	);
+	const lastMessage = useCallback((u: string): Message | undefined => panel.find((ele) => ele.friend === u)?.lastMessage, [panel]);
+
+	const onopen = useCallback(() => {
+		console.log('Chat WebSocket connection opened');
+		setOpen(true);
+	}, []);
 
 	const onerror = useCallback(() => {
 		setOpen(false);
@@ -53,22 +53,18 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 						return dateB.getTime() - dateA.getTime();
 					})
 				);
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			} catch (err: any) {
-				notify({ message: err.message, error: true });
+			} catch (err: unknown) {
+				if (err instanceof Error) notify({ message: err.message, error: true });
+				else notify({ message: 'message error, game socket', error: true });
 			}
 		},
 		[notify]
 	);
 
-	const onopen = useCallback(() => {
-		console.log('Chat WebSocket connection opened');
-		setOpen(true);
-	}, []);
-
-	useEffect(
-		function () {
-			if (socketRef.current?.OPEN) return;
+	const initiateConnection = useCallback(async () => {
+		const result = await intercept();
+		if (result === 'success') {
+			socketRef.current?.close();
 			try {
 				console.log('creating Chat WebSocket connection ' + API_BASE);
 				if (API_BASE) {
@@ -77,49 +73,28 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 					socketRef.current.onerror = onerror;
 					socketRef.current.onclose = onclose;
 					socketRef.current.onopen = onopen;
-				} else setError(true);
+				} else throw new Error('API_BASE not defined');
 			} catch (err: unknown) {
 				console.log('Error creating Chat WebSocket connection:', err);
-				setError(true);
 			}
-		},
-		[error, close, open]
-	);
+		} else {
+			notify({ message: 'Something went wrong, Please refresh the page', error: true });
+		}
+	}, [error, close]);
 
 	useEffect(() => {
+		initiateConnection();
 		return () => socketRef.current?.close();
-	}, []);
-
-	function content() {
-		if (error)
-			return (
-				<Badge color="red" variant="soft" radius="full" className="fixed top-28 right-4">
-					Chat: Error
-				</Badge>
-			);
-		if (close)
-			return (
-				<Badge color="yellow" variant="soft" radius="full" className="fixed top-28 right-4">
-					Chat: Closed
-				</Badge>
-			);
-		if (open)
-			return (
-				<Badge color="jade" variant="soft" radius="full" className="fixed top-28 right-4">
-					Chat: Open
-				</Badge>
-			);
-		return (
-			<Badge color="red" variant="soft" radius="full" className="fixed top-28 right-4">
-				Chat: Disconnected
-			</Badge>
-		);
-	}
+	}, [initiateConnection]);
 
 	return (
-		<chatContext.Provider value={{ error, close, open, panel, lastMessage }}>
+		<chatContext.Provider value={{ panel, lastMessage }}>
+			{!open && (
+				<div className="fixed top-0 left-4 right-4 rounded-b-md bg-red-500 p-6 text-white z-50 font-bold">
+					You are not connected, Please refresh the page
+				</div>
+			)}
 			{children}
-			{content()}
 		</chatContext.Provider>
 	);
 };

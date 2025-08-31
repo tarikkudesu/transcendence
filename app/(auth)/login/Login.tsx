@@ -3,12 +3,52 @@
 import { PongButton } from '@/app/_components/buttons/ServerButtons';
 import Logo from '@/app/_components/mini/Logo';
 import { useNotification } from '@/app/_components/mini/useNotify';
-import { useLoginCall } from '@/app/_service/auth/Fetchers';
-import { CheckCircledIcon } from '@radix-ui/react-icons';
+import client from '@/app/_service/axios/client';
+import { LoginRequest, MutateResponse, PongError } from '@/app/_service/schema';
+import { SvgCheckCircle } from '@/app/_svg/svg';
 import { Box, Flex, Text } from '@radix-ui/themes';
+import { AxiosError, AxiosResponse } from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
+
+function useLoginCall() {
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [error, setError] = useState<PongError | null>(null);
+	const [data, setData] = useState<MutateResponse | null>(null);
+
+	const reset = useCallback(() => {
+		setData(null);
+		setError(null);
+		setIsLoading(false);
+	}, []);
+
+	const fetchData = useCallback(async (body: LoginRequest) => {
+		try {
+			setIsLoading(true);
+			const response: AxiosResponse<MutateResponse> = await client.post('/auth/login', body);
+			setData(response.data);
+		} catch (err) {
+			if (err instanceof AxiosError && err.response) {
+				setError({
+					error: err.response.statusText,
+					statusCode: err.response.status,
+					message: err.response.data.message,
+				});
+			} else {
+				setError({
+					error: 'Unknown Error',
+					statusCode: 520,
+					message: 'Something went wrong, Please try again later',
+				});
+			}
+		} finally {
+			setIsLoading(false);
+		}
+	}, []);
+
+	return { isLoading, error, data, logincall: fetchData, reset };
+}
 
 const Login: React.FC<unknown> = () => {
 	const { logincall, data, error, isLoading, reset } = useLoginCall();
@@ -81,13 +121,16 @@ const Login: React.FC<unknown> = () => {
 						<label className="flex items-center gap-2 cursor-pointer select-none">
 							<input type="checkbox" checked={type === 'text'} onChange={switchtype} className="peer hidden" />
 							<span className="text-sm text-dark-200">show password</span>
-							<CheckCircledIcon className="peer-checked:bg-accent-300 peer-checked:text-black text-dark-200 rounded-full" />
+							<SvgCheckCircle
+								size={18}
+								className="peer-checked:bg-black peer-checked:text-accent-300 text-dark-700 bg-dark-200 rounded-full"
+							/>
 						</label>
 					</Flex>
 					<Box height="20px" />
 					<PongButton
 						loading={isLoading}
-						disabled={!password || !username}
+						disabled={!password || !username || isLoading}
 						onClick={() => logincall({ username, password })}
 						className="w-full disabled:bg-dark-600 disabled:text-white bg-accent-300 text-black hover:bg-accent-200"
 					>

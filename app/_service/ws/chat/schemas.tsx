@@ -10,17 +10,3 @@ export class OuterMessage {
 	avatar: string = '';
 	lastMessage: Message = new Message();
 }
-
-export interface AddMessage {
-	message: string;
-}
-
-export function isMessageArray(arr: unknown): arr is Message[] {
-	return (
-		Array.isArray(arr) &&
-		arr.every(
-			(item) =>
-				typeof item === 'object' && item !== null && 'message' in item && 'sender' in item && 'date' in item && 'avatar' in item
-		)
-	);
-}

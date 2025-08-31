@@ -1,8 +1,8 @@
 'use client';
 
 import { useNotification } from '@/app/_components/mini/useNotify';
-import { Badge } from '@radix-ui/themes';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useWebsocketInterceptor } from '../useWebsocketInterceptor';
 import { conversationContext } from './conversationContext';
 import { Message } from './schemas';
 
@@ -15,30 +15,32 @@ const API_BASE = process.env.NEXT_PUBLIC_WS_CONVERSATION_URL;
 
 const ConversationProvider: React.FC<ConversationProviderProps> = ({ children, friend }) => {
 	const { notify } = useNotification();
+	const { intercept } = useWebsocketInterceptor();
 	const socketRef = useRef<WebSocket | null>(null);
 	const [error, setError] = useState<boolean>(false);
 	const [close, setClose] = useState<boolean>(false);
-	const [open, setOpen] = useState<boolean>(false);
+	const [open, setOpen] = useState<boolean>(true);
 
 	// * Data Holders
 	const [conversation, setConversation] = useState<Message[]>([]);
 
-	const send = useCallback(
-		(message: string) => {
-			if (socketRef.current?.OPEN && message) socketRef.current?.send(message);
-			else notify({ message: "Conversation connection hasn't been established", error: true });
-		},
-		[notify]
-	);
+	const send = useCallback((message: string) => {
+		if (socketRef.current?.OPEN && message) socketRef.current?.send(message);
+	}, []);
+
+	const onopen = useCallback(() => {
+		console.log('Conversation WebSocket connection opened');
+		setOpen(true);
+	}, []);
 
 	const onerror = useCallback(() => {
+		console.log(`Conversation WebSocket connection gave an error`);
 		setOpen(false);
 		setClose(true);
 		setError(true);
 	}, []);
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const onclose = useCallback((event: any) => {
+	const onclose = useCallback((event: CloseEvent) => {
 		console.log(`Conversation WebSocket connection closed: ${event?.reason ?? ''}`);
 		setOpen(false);
 		setClose(true);
@@ -49,22 +51,18 @@ const ConversationProvider: React.FC<ConversationProviderProps> = ({ children, f
 			try {
 				const json: Message[] = JSON.parse(e.data);
 				setConversation(json as Message[]);
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			} catch (err: any) {
-				notify({ message: err.message, error: true });
+			} catch (err: unknown) {
+				if (err instanceof Error) notify({ message: err.message, error: true });
+				else notify({ message: 'message error, game socket', error: true });
 			}
 		},
 		[notify]
 	);
 
-	const onopen = useCallback(() => {
-		console.log('Conversation WebSocket connection opened');
-		setOpen(true);
-	}, []);
-
-	useEffect(
-		function () {
-			if (socketRef.current?.OPEN) return;
+	const initiateConnection = useCallback(async () => {
+		const result = await intercept();
+		if (result === 'success') {
+			socketRef.current?.close();
 			try {
 				console.log('creating Conversation WebSocket connection ' + API_BASE + friend);
 				if (API_BASE) {
@@ -73,49 +71,28 @@ const ConversationProvider: React.FC<ConversationProviderProps> = ({ children, f
 					socketRef.current.onerror = onerror;
 					socketRef.current.onclose = onclose;
 					socketRef.current.onopen = onopen;
-				} else setError(true);
+				} else throw new Error('API_BASE not defined');
 			} catch (err: unknown) {
 				console.log('Error creating Conversation WebSocket connection:', err);
-				setError(true);
 			}
-		},
-		[error, close]
-	);
+		} else {
+			notify({ message: 'Something went wrong, Please refresh the page', error: true });
+		}
+	}, [error, close]);
 
 	useEffect(() => {
+		initiateConnection();
 		return () => socketRef.current?.close();
-	}, []);
-
-	function content() {
-		if (error)
-			return (
-				<Badge color="red" variant="soft" radius="full" className="fixed top-12 right-4">
-					Conversation: Error {friend}
-				</Badge>
-			);
-		if (close)
-			return (
-				<Badge color="yellow" variant="soft" radius="full" className="fixed top-12 right-4">
-					Conversation: Closed {friend}
-				</Badge>
-			);
-		if (open)
-			return (
-				<Badge color="jade" variant="soft" radius="full" className="fixed top-12 right-4">
-					Conversation: Open {friend}
-				</Badge>
-			);
-		return (
-			<Badge color="red" variant="soft" radius="full" className="fixed top-12 right-4">
-				Conversation: Disconnected {friend}
-			</Badge>
-		);
-	}
+	}, [initiateConnection]);
 
 	return (
-		<conversationContext.Provider value={{ error, close, open, conversation, send }}>
+		<conversationContext.Provider value={{ conversation, send }}>
+			{!open && (
+				<div className="fixed top-0 left-4 right-4 rounded-b-md bg-red-500 p-6 text-white z-50 font-bold">
+					You are not connected, Please refresh the page
+				</div>
+			)}
 			{children}
-			{content()}
 		</conversationContext.Provider>
 	);
 };

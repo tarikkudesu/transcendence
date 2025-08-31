@@ -1,8 +1,9 @@
 'use client';
 
+import client from '@/app/_service/axios/client';
 import { TournamentHistoryEntry } from '@/app/_service/schema';
-import { useGET } from '@/app/_service/useFetcher';
 import { Flex, Text } from '@radix-ui/themes';
+import { useQuery } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
 import React from 'react';
@@ -10,9 +11,14 @@ import { PongButton } from '../../buttons/ServerButtons';
 import { Spinner } from '../../mini/Loading';
 
 const TournamentHistory: React.FC = ({}) => {
-	const { isLoading, data: tournaments } = useGET<TournamentHistoryEntry[]>({ url: `/game/tournament/history?end=10` });
+	const fetchData = (): Promise<TournamentHistoryEntry[]> =>
+		client.get(`/game/tournament/history?begin=0&end=${20}`).then((response) => response.data);
+	const { data, isPending } = useQuery({
+		queryKey: ['gametournamenthistory'],
+		queryFn: fetchData,
+	});
 
-	if (isLoading) return <Spinner />;
+	if (isPending) return <Spinner />;
 
 	return (
 		<div className="my-[80px]">
@@ -22,8 +28,8 @@ const TournamentHistory: React.FC = ({}) => {
 			<Text as="div" size="3" mb="8" align="center" className="text-dark-200">
 				Browse past tournaments, view winners, scores, and match highlights.
 			</Text>
-			{tournaments &&
-				tournaments.map((ele, index) => {
+			{data &&
+				data.map((ele, index) => {
 					return (
 						<div key={index} className="bg-dark-950 px-[10%] py-[40px] mb-[10px]">
 							<Flex justify="between" align="center">
@@ -40,8 +46,8 @@ const TournamentHistory: React.FC = ({}) => {
 						</div>
 					);
 				})}
-			{tournaments?.length === 10 && (
-				<Link href="/main/tournaments">
+			{data?.length === 10 && (
+				<Link href="/main/tournaments/0">
 					<Text as="div" align="center" size="1" mb="2" weight="bold" className="text-accent-300">
 						See full history
 					</Text>

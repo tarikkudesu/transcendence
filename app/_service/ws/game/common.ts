@@ -1,18 +1,15 @@
-import _ from 'lodash';
 import * as Main from './index';
 
 interface JsonProps {
 	message: string;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	target: any;
+	target: unknown;
 }
 
-// ? Comminication Helpers
 export function Json({ message, target }: JsonProps) {
 	const json = JSON.parse(message);
 	const properties = Object.getOwnPropertyNames(json);
 	Object.getOwnPropertyNames(target).forEach((property) => {
-		if (_.includes(properties, property) === false) throw new Error('Invalid JSON ' + message + JSON.stringify(target));
+		if (properties.some((ele) => ele === property) === false) throw new Error('Invalid JSON ' + message + JSON.stringify(target));
 	});
 	return json;
 }

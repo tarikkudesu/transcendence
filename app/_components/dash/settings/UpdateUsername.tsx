@@ -1,37 +1,29 @@
 'use client';
 
-import { useMutate } from '@/app/_service/useFetcher';
-import { UpdateUsernameRequest } from '@/app/_service/schema';
 import { useUser } from '@/app/_service/user/userContext';
 import { Card, Flex, Text } from '@radix-ui/themes';
-import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { PongButton } from '../../buttons/ServerButtons';
 import { useNotification } from '../../mini/useNotify';
-import { useAuth } from '@/app/_service/auth/authContext';
+import { useUpdateUsernameCall } from '@/app/_service/auth/Fetchers';
 
 const UpdateUsername: React.FC = () => {
 	const { username } = useUser();
 	const { notify } = useNotification();
-	const { fetchData, isLoading, error, data } = useMutate<UpdateUsernameRequest>();
 	const [newUsername, setNewUsername] = useState<string>('');
-	const { logoutcall } = useAuth();
-
-	const updateUsernameCall = useCallback(async () => {
-		if (!newUsername) return;
-		fetchData({
-			url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/profile/username/${username}`,
-			method: 'PUT',
-			body: { newusername: newUsername },
-		});
-	}, [fetchData, newUsername, username]);
+	const { data, error, isLoading, reset, updateusernamecall } = useUpdateUsernameCall();
 
 	useEffect(() => {
-		if (error) notify({ message: error.message, error: true });
 		if (data) {
-			notify({ message: 'Username updated successfully', success: true });
-			logoutcall();
+			notify({ message: data.message, success: true });
+			reset();
+			location.reload();
 		}
-	}, [data, error, logoutcall, notify]);
+		if (error) {
+			notify({ message: error.message, error: true });
+			reset();
+		}
+	}, [data, error, notify, reset]);
 
 	return (
 		<div className="my-[36px]">
@@ -56,9 +48,9 @@ const UpdateUsername: React.FC = () => {
 					/>
 					<PongButton
 						className="bg-accent-300 text-black disabled:bg-dark-600 disabled:text-dark-200"
-						disabled={!newUsername}
-						onClick={updateUsernameCall}
+						disabled={!newUsername || isLoading}
 						loading={isLoading}
+						onClick={() => updateusernamecall({ newusername: newUsername })}
 					>
 						Save
 					</PongButton>

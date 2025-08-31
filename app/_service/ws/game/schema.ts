@@ -28,13 +28,20 @@ export class WSError {
 export class ClientPlayer {
 	public username: string;
 	public game: 'pong' | 'card of doom';
+	public playerStatus: 'free' | 'doom' | 'pong';
 	public inviteStatus: 'unsent' | 'pending' | 'accepted' | 'declined';
-	constructor(username: string, game: 'pong' | 'card of doom', inviteStatus: 'unsent' | 'pending' | 'accepted' | 'declined') {
+	constructor(
+		username: string,
+		game: 'pong' | 'card of doom',
+		playerStatus: 'free' | 'doom' | 'pong',
+		inviteStatus: 'unsent' | 'pending' | 'accepted' | 'declined'
+	) {
 		this.inviteStatus = inviteStatus;
+		this.playerStatus = playerStatus;
 		this.username = username;
 		this.game = game;
 	}
-	static instance = new ClientPlayer('', 'pong', 'unsent');
+	static instance = new ClientPlayer('', 'pong', 'free', 'unsent');
 }
 
 export class ClientInvitation {

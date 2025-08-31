@@ -1,36 +1,58 @@
 'use client';
 
+import client from '@/app/_service/axios/client';
 import { PongHistoryEntry } from '@/app/_service/schema';
-import { useGET } from '@/app/_service/useFetcher';
-import { Badge, Text } from '@radix-ui/themes';
-import Link from 'next/link';
-
+import { Badge, Box, Text } from '@radix-ui/themes';
+import { useQuery } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useCallback } from 'react';
+import { PongButton } from '../../buttons/ServerButtons';
+import Error from '../../mini/Error';
 import { Spinner } from '../../mini/Loading';
 
-const PongHistory: React.FC<{ username: string }> = ({ username }) => {
-	const { data, isLoading } = useGET<PongHistoryEntry[]>({ url: `/game/pong/history/${username}` });
+const PongHistory: React.FC<{ username: string; page: number }> = ({ username, page }) => {
+	const router = useRouter();
+	const fetchData = (): Promise<PongHistoryEntry[]> =>
+		client.get(`/game/pong/history/${username}?begin=${page * 20}&end=${20}`).then((response) => response.data);
+	const { data, error, isPending } = useQuery({
+		queryKey: [`gameponghistory${username}all`],
+		queryFn: fetchData,
+	});
 
-	if (isLoading) return <Spinner />;
+	const changePage = useCallback(
+		(back: boolean) => {
+			if (back) {
+				if (page > 0) router.push(`/main/ponghistory/${username}/${page - 1}`);
+			} else {
+				if (data?.length === 20) router.push(`/main/ponghistory/${username}/${page + 1}`);
+			}
+		},
+		[data?.length, page]
+	);
+
+	if (isPending) return <Spinner />;
+	if (error || !data) return <Error />;
 
 	return (
-		<div className="bg-dark-950 p-8 rounded-md">
-			<div className="grid grid-cols-6 grid-rows-5 gap-2 text-sm">
-				<Text size="2" className="text-dark-200 col-span-2 row-span-5">
-					PLAYERS
-				</Text>
-				<Text size="2" className="text-dark-200 row-span-5 col-start-3">
-					SCORE
-				</Text>
-				<Text size="2" className="text-dark-200 row-span-5 col-start-4">
-					RESULT
-				</Text>
-				<Text size="2" className="text-dark-200 col-span-2 row-span-5 col-start-5">
-					DATE
-				</Text>
-			</div>
-			{data &&
-				data.map((ele, index) => (
+		<>
+			<div className="bg-dark-950 p-8 rounded-md">
+				<div className="grid grid-cols-6 grid-rows-5 gap-2 text-sm">
+					<Text size="2" className="text-dark-200 col-span-2 row-span-5">
+						PLAYERS
+					</Text>
+					<Text size="2" className="text-dark-200 row-span-5 col-start-3">
+						SCORE
+					</Text>
+					<Text size="2" className="text-dark-200 row-span-5 col-start-4">
+						RESULT
+					</Text>
+					<Text size="2" className="text-dark-200 col-span-2 row-span-5 col-start-5">
+						DATE
+					</Text>
+				</div>
+				{data.map((ele: PongHistoryEntry, index: number) => (
 					<div key={index} className="grid grid-cols-6 grid-rows-5 gap-2 text-nowrap">
 						<Text as="div" size="2" className="text-dark-50 col-span-2 row-span-5">
 							<Link href={`/main/dashboard/${ele.player_username}`}>{ele.player_username}</Link>
@@ -64,7 +86,18 @@ const PongHistory: React.FC<{ username: string }> = ({ username }) => {
 						</Text>
 					</div>
 				))}
-		</div>
+			</div>
+			<Box height="24px" />
+			<div className="flex justify-between items-center">
+				<PongButton onClick={() => changePage(true)} className="bg-dark-800 text-dark-200 hover:text-white">
+					Previous
+				</PongButton>
+				<div className="text-white">{page}</div>
+				<PongButton onClick={() => changePage(false)} className="bg-dark-800 text-dark-200 hover:text-white">
+					Next
+				</PongButton>
+			</div>
+		</>
 	);
 };
 

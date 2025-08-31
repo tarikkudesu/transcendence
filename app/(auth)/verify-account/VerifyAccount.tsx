@@ -3,11 +3,51 @@
 import { PongButton } from '@/app/_components/buttons/ServerButtons';
 import Logo from '@/app/_components/mini/Logo';
 import { useNotification } from '@/app/_components/mini/useNotify';
-import { useVerifyAccountCall } from '@/app/_service/auth/Fetchers';
+import client from '@/app/_service/axios/client';
+import { MutateResponse, PongError, VerifyAccountRequest } from '@/app/_service/schema';
 import { Box, Text } from '@radix-ui/themes';
+import { AxiosError, AxiosResponse } from 'axios';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { ResendCode } from '../2fa-authentication/Tfa';
+
+function useVerifyAccountCall() {
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [error, setError] = useState<PongError | null>(null);
+	const [data, setData] = useState<MutateResponse | null>(null);
+
+	const reset = useCallback(() => {
+		setData(null);
+		setError(null);
+		setIsLoading(false);
+	}, []);
+
+	const fetchData = useCallback(async (body: VerifyAccountRequest) => {
+		try {
+			setIsLoading(true);
+			const response: AxiosResponse<MutateResponse> = await client.post('/auth/verify-user', body);
+			setData(response.data);
+		} catch (err) {
+			if (err instanceof AxiosError && err.response) {
+				setError({
+					error: err.response.statusText,
+					statusCode: err.response.status,
+					message: err.response.data.message,
+				});
+			} else {
+				setError({
+					error: 'Unknown Error',
+					statusCode: 520,
+					message: 'Something went wrong, Please try again later',
+				});
+			}
+		} finally {
+			setIsLoading(false);
+		}
+	}, []);
+
+	return { isLoading, error, data, verifyaccountcall: fetchData, reset };
+}
 
 const VerifyAccount: React.FC<unknown> = () => {
 	const router = useRouter();

@@ -3,10 +3,50 @@
 import { PongButton } from '@/app/_components/buttons/ServerButtons';
 import Logo from '@/app/_components/mini/Logo';
 import { useNotification } from '@/app/_components/mini/useNotify';
-import { useForgotPasswordCall } from '@/app/_service/auth/Fetchers';
+import client from '@/app/_service/axios/client';
+import { PongError, MutateResponse, ForgotPasswordRequest } from '@/app/_service/schema';
 import { Box, Text } from '@radix-ui/themes';
+import { AxiosResponse, AxiosError } from 'axios';
 import Link from 'next/link';
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
+
+function useForgotPasswordCall() {
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [error, setError] = useState<PongError | null>(null);
+	const [data, setData] = useState<MutateResponse | null>(null);
+
+	const reset = useCallback(() => {
+		setData(null);
+		setError(null);
+		setIsLoading(false);
+	}, []);
+
+	const fetchData = useCallback(async (body: ForgotPasswordRequest) => {
+		try {
+			setIsLoading(true);
+			const response: AxiosResponse<MutateResponse> = await client.post('/auth/forgot-password', body);
+			setData(response.data);
+		} catch (err) {
+			if (err instanceof AxiosError && err.response) {
+				setError({
+					error: err.response.statusText,
+					statusCode: err.response.status,
+					message: err.response.data.message,
+				});
+			} else {
+				setError({
+					error: 'Unknown Error',
+					statusCode: 520,
+					message: 'Something went wrong, Please try again later',
+				});
+			}
+		} finally {
+			setIsLoading(false);
+		}
+	}, []);
+
+	return { isLoading, error, data, forgotpasscall: fetchData, reset };
+}
 
 const ForgotPassword: React.FC<unknown> = () => {
 	const { notify } = useNotification();

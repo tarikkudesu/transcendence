@@ -1,15 +1,19 @@
 'use client';
 
 import { Card, Flex, Text } from '@radix-ui/themes';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { PongButton } from '../../buttons/ServerButtons';
 import SafeImage from '../../mini/SafeImage';
 import { useUser } from '@/app/_service/user/userContext';
+import { useUpdateAvatarCall } from '@/app/_service/auth/Fetchers';
+import { useNotification } from '../../mini/useNotify';
 
 const UpdateAvatar: React.FC = () => {
 	const { avatar } = useUser();
+	const { notify } = useNotification();
 	const [file, setFile] = useState<File | null>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
+	const { data, isLoading, error, updateavatarcall, reset } = useUpdateAvatarCall();
 
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files && e.target.files[0]) setFile(e.target.files[0]);
@@ -18,6 +22,17 @@ const UpdateAvatar: React.FC = () => {
 	const triggerFileSelect = useCallback(() => {
 		fileInputRef.current?.click();
 	}, []);
+
+	useEffect(() => {
+		if (data) {
+			notify({ message: data.message, success: true });
+			reset();
+		}
+		if (error) {
+			notify({ message: error.message, error: true });
+			reset();
+		}
+	}, [data, error, notify, reset]);
 
 	return (
 		<div className="my-[36px]">
@@ -30,17 +45,15 @@ const UpdateAvatar: React.FC = () => {
 			<Card>
 				<Flex justify="between" align="center" p="4" gap="9">
 					<Card onClick={triggerFileSelect} className="flex justify-start items-start gap-4 p-4 flex-grow cursor-pointer">
-						<Card>
-							<SafeImage
-								priority
-								src={avatar}
-								height={40}
-								width={40}
-								alt="Logo as avatar"
-								fallbackSrc="/Logo.png"
-								className="rounded-full"
-							/>
-						</Card>
+						<SafeImage
+							priority
+							src={avatar}
+							height={40}
+							width={40}
+							alt="Logo as avatar"
+							fallbackSrc="/Logo.png"
+							className="rounded-full"
+						/>
 						<Text as="div" weight="bold" size="1" className="text-white">
 							Upload your avatar
 							{file && (
@@ -60,7 +73,14 @@ const UpdateAvatar: React.FC = () => {
 						onChange={handleFileChange}
 						style={{ display: 'none' }}
 					/>
-					<PongButton className="bg-accent-300 hover:bg-accent-200 text-black disabled:bg-dark-600 disabled:text-dark-200">
+					<PongButton
+						loading={isLoading}
+						disabled={isLoading}
+						onClick={() => {
+							if (file) updateavatarcall({ avatar: file });
+						}}
+						className="bg-accent-300 hover:bg-accent-200 text-black disabled:bg-dark-600 disabled:text-dark-200"
+					>
 						Save
 					</PongButton>
 				</Flex>

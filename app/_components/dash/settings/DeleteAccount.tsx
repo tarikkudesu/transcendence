@@ -1,26 +1,10 @@
 'use client';
 
-import { useAuth } from '@/app/_service/auth/authContext';
 import { Card, Flex, Text } from '@radix-ui/themes';
-import router from 'next/router';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { PongButton } from '../../buttons/ServerButtons';
-import { useNotification } from '../../mini/useNotify';
 
 const DeleteAccount: React.FC = () => {
-	const { deleteaccountcall, isLoading, error, data } = useAuth();
-	const { notify } = useNotification();
-
-	useEffect(() => {
-		if (data) {
-			notify({ message: data.message, success: true });
-			router.push('/login');
-		}
-		if (error) {
-			notify({ message: error.message, error: true });
-		}
-	}, [data, error, notify]);
-
 	return (
 		<div className="my-[36px]">
 			<Text as="div" mb="2" mt="4" weight="bold" size="5">
@@ -34,9 +18,9 @@ const DeleteAccount: React.FC = () => {
 					<Text as="div" weight="bold" size="2" className="text-white">
 						Delete my YingYangPong account
 					</Text>
-					<PongButton loading={isLoading} onClick={() => deleteaccountcall()} className="bg-red-600 text-white hover:bg-red-500">
+					{/* <PongButton loading={isLoading} onClick={() => deleteaccountcall()} className="bg-red-600 text-white hover:bg-red-500">
 						Delete account
-					</PongButton>
+					</PongButton> */}
 				</Flex>
 			</Card>
 		</div>
