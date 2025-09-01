@@ -1,30 +1,28 @@
 'use client';
 
-import client from '@/app/_service/axios/client';
-import { useBlockFriendCall } from '@/app/_service/friends/Mutaters';
-import { BlockedFriend } from '@/app/_service/schema';
+import { useFriends } from '@/app/_service/friends/FriendContext';
+import { useDeclineFriendCall } from '@/app/_service/friends/Mutaters';
 import { Card, Text } from '@radix-ui/themes';
-import { useQuery } from '@tanstack/react-query';
 import React, { useEffect } from 'react';
 import { PongButton } from '../../buttons/ServerButtons';
-import { Spinner } from '../../mini/Loading';
 import { useNotification } from '../../mini/useNotify';
 import { User } from '../game/User';
 
 const Blocked: React.FC = () => {
 	const { notify } = useNotification();
-	const { isLoading: blocking, error: blockError, blockCall } = useBlockFriendCall();
-	const fetchData = (): Promise<BlockedFriend[]> => client.get(`/friends/blocked`).then((response) => response.data);
-	const { data, isPending } = useQuery({
-		queryKey: ['friendsblocked'],
-		queryFn: fetchData,
-	});
+	const { data, isLoading: blocking, error: blockError, declineCall } = useDeclineFriendCall();
+	const { blocked, refetch } = useFriends();
 
 	useEffect(() => {
-		if (blockError) notify({ message: blockError.message, error: true });
-	}, [blockError, notify]);
-
-	if (isPending) return <Spinner />;
+		if (data) {
+			notify({ message: data.message, success: true });
+			refetch();
+		}
+		if (blockError) {
+			notify({ message: blockError.message, error: true });
+			refetch();
+		}
+	}, [blockError, data, notify, refetch]);
 
 	return (
 		<div className="my-[36px]">
@@ -35,9 +33,9 @@ const Blocked: React.FC = () => {
 				Manage your list of blocked friends. Note that once you unblock someone, they won’t automatically be added back to your
 				friends list.
 			</Text>
-			{data && (
+			{blocked && (
 				<Card>
-					{data.map((ele, index) => (
+					{blocked.map((ele, index) => (
 						<div key={index} className="p-2 flex justify-between items-center gap-8">
 							<User.Trigger
 								username={ele.username}
@@ -50,7 +48,7 @@ const Blocked: React.FC = () => {
 							/>
 							<PongButton
 								loading={blocking}
-								onClick={() => blockCall({ to: ele.username })}
+								onClick={() => declineCall({ to: ele.username })}
 								className="bg-dark-900 hover:bg-red-600 hover:text-white"
 							>
 								Unblock

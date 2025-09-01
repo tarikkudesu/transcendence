@@ -7,7 +7,6 @@ import './globals.css';
 
 const josefin = Josefin_Sans({
 	subsets: ['latin'],
-	display: 'swap',
 });
 
 const queryClient = new QueryClient();
@@ -17,6 +16,7 @@ export default function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	console.log('-----------------------------------------------------------------------------------------');
 	return (
 		<html lang="en">
 			<body className="antialiased m-0 p-0 bg-dark-900">
@@ -27,7 +27,9 @@ export default function RootLayout({
 					hasBackground={false}
 					className={`${josefin.className} text-amber-50 m-0`}
 				>
-					<QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+					<QueryClientProvider client={queryClient}>
+						<div className={josefin.className}>{children}</div>
+					</QueryClientProvider>
 				</Theme>
 			</body>
 		</html>

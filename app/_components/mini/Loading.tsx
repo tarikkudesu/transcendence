@@ -1,4 +1,4 @@
-import { SvgPongLoading } from '@/app/_svg/svg';
+import { SvgPongLoading, SvgSpinner } from '@/app/_svg/svg';
 
 function LoadingIndicator() {
 	return (
@@ -11,7 +11,7 @@ function LoadingIndicator() {
 export function Spinner(): React.ReactNode {
 	return (
 		<div className="text-accent-300 w-full">
-			<SvgPongLoading />
+			<SvgSpinner size={24} className="animate-spin mx-auto" />
 		</div>
 	);
 }

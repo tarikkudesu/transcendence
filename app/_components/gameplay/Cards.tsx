@@ -535,8 +535,8 @@ export const WonLocal: React.FC<WonLocalProps> = ({ winner }) => {
 		<div className="w-[300px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-cardenter">
 			<div className="relative">
 				<div className="bg-dark-950 rounded-md p-8 shadow-2xl border border-dark-500 relative overflow-hidden">
-					<div className="absolute top-0 left-0 right-0 flex justify-center items-center h-[100px] shadow-lg bg-acctext-accent-300">
-						<SvgTrophy size={40} />
+					<div className="absolute top-0 left-0 right-0 flex justify-center items-center h-[100px] shadow-lg bg-acctext-accent-300 bg-accent-300">
+						<SvgTrophy size={40} className='text-black' />
 					</div>
 					<div className="mt-[100px] relative z-10 text-center">
 						<h2 className="text-2xl font-bold mb-2 text-accent-300">Victory 🎊</h2>

@@ -55,11 +55,11 @@ const PongHistory: React.FC<{ username: string; page: number }> = ({ username, p
 				{data.map((ele: PongHistoryEntry, index: number) => (
 					<div key={index} className="grid grid-cols-6 grid-rows-5 gap-2 text-nowrap">
 						<Text as="div" size="2" className="text-dark-50 col-span-2 row-span-5">
-							<Link href={`/dashboard/profile/${ele.player_username}`}>{ele.player_username}</Link>
+							<Link href={`/profile/${ele.player_username}`}>{ele.player_username}</Link>
 							<Text weight="bold" className="text-accent-300 mx-2">
 								:
 							</Text>
-							<Link href={`/dashboard/profile/${ele.opponent_username}`}>{ele.opponent_username}</Link>
+							<Link href={`/profile/${ele.opponent_username}`}>{ele.opponent_username}</Link>
 						</Text>
 						<Text as="div" size="2" className="text-dark-50 row-span-5 col-start-3">
 							{ele.player_score}

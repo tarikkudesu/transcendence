@@ -67,8 +67,8 @@ const config = {
 				cardenter: 'cardenter 0.3s ease-out forwards',
 				'spin-reverse': 'spin-reverse 1s linear infinite',
 				'zoom-bounce': 'zoomInOutBounce 0.5s cubic-bezier(0.68,-0.55,0.265,1.55)',
-				'paddle': 'paddle 1s ease-in-out infinite',
-				'ball': 'ball 1s ease-in-out infinite',
+				paddle: 'paddle 1s ease-in-out infinite',
+				ball: 'ball 1s ease-in-out infinite',
 			},
 			keyframes: {
 				cardenter: {

@@ -52,11 +52,11 @@ const DoomHistory: React.FC<{ username: string; page: number }> = ({ username, p
 					data.map((ele, index) => (
 						<div key={index} className="grid grid-cols-6 grid-rows-5 gap-[8px] text-nowrap">
 							<Text as="div" size="2" className="text-dark-50 col-span-3 row-span-5">
-								<Link href={`/dashboard/profile/${ele.player_username}`}>{ele.player_username}</Link>
+								<Link href={`/profile/${ele.player_username}`}>{ele.player_username}</Link>
 								<Text weight="bold" className="text-accent-300 mx-2">
 									:
 								</Text>
-								<Link href={`/dashboard/profile/${ele.opponent_username}`}>{ele.opponent_username}</Link>
+								<Link href={`/profile/${ele.opponent_username}`}>{ele.opponent_username}</Link>
 							</Text>
 							<Text className="row-span-5 col-start-4">
 								{username === ele.winner_username ? <Badge color="green">Won</Badge> : <Badge color="red">Lost</Badge>}

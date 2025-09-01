@@ -24,7 +24,7 @@ const Playground: React.FC<unknown> = () => {
 					Follow players on hot winning streaks and see who’s dominating the tournament right now.
 				</Text>
 				<div className="p-4 rounded-md bg-dark-700">
-					<Link href="/dashboard/local" className="pb-3">
+					<Link href="/local" className="pb-3">
 						<PongButton className="w-full bg-dark-950 text-white hover:bg-accent-300 hover:text-black border-[2px] border-accent-300">
 							Play
 						</PongButton>

@@ -1,10 +1,11 @@
 'use client';
 
 import { createContext, useContext } from 'react';
-import { Friend, FriendRequest } from '../schema';
+import { BlockedFriend, Friend, FriendRequest } from '../schema';
 
 class FriendsState {
 	friends: Friend[] = [];
+	blocked: BlockedFriend[] = [];
 	requests: FriendRequest[] = [];
 
 	refetch: () => void = () => true;

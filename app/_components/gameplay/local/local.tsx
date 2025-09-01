@@ -45,7 +45,8 @@ const Ping: React.FC<{ updateWinner: (w: 'Player 1' | 'Player 2' | 'None') => vo
 			}
 			pong.clear();
 		};
-	}, [pong, sound, updateWinner, canvasRef]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [pong, updateWinner, canvasRef]);
 
 	return (
 		<canvas
@@ -152,11 +153,11 @@ const LocalPong: React.FC = ({}) => {
 					)}
 					{sound ? (
 						<PongButton className="bg-dark-500 hover:bg-dark-400" onClick={switchSound}>
-							<SvgSoundOff size={18} />
+							<SvgSoundOn size={18} />
 						</PongButton>
 					) : (
 						<PongButton className="bg-dark-500 hover:bg-dark-400" onClick={switchSound}>
-							<SvgSoundOn size={18} />
+							<SvgSoundOff size={18} />
 						</PongButton>
 					)}
 					<PongButton className="bg-dark-500 hover:bg-dark-400" onClick={resetGame}>

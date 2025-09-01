@@ -6,7 +6,7 @@ import SafeImage from './SafeImage';
 
 const Logo: React.FC<unknown> = () => {
 	return (
-		<Link href="/main">
+		<Link href="/">
 			<Flex justify="start" align="center" gap="4" className="h-[40px]">
 				<SafeImage fallbackSrc="/Logo.png" priority src="/Logo.png" height={28} width={28} alt="Ying Yang Pong Logo"></SafeImage>
 				<Text weight="bold" size="4">
