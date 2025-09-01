@@ -109,7 +109,7 @@ const LocalPong: React.FC = ({}) => {
 				{!start && winner === 'None' && (
 					<StartLocal>
 						<PongButton
-							onClick={() => router.push('/main/dashboard/playground')}
+							onClick={() => router.push('/playground')}
 							className="w-full bg-dark-700 hover:bg-accent-300 text-white hover:text-black mt-6"
 						>
 							<SvgGameBoy size={24} />

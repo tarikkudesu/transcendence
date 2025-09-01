@@ -23,9 +23,9 @@ const DoomLeaderBoard: React.FC<{ page: number }> = ({ page }) => {
 	const changePage = useCallback(
 		(back: boolean) => {
 			if (back) {
-				if (page > 0) router.push(`/main/doomhistory/${page - 1}`);
+				if (page > 0) router.push(`/doomhistory/${page - 1}`);
 			} else {
-				if (data?.length === 20) router.push(`/main/doomhistory/${page + 1}`);
+				if (data?.length === 20) router.push(`/doomhistory/${page + 1}`);
 			}
 		},
 		[data?.length, page]

@@ -31,7 +31,7 @@ const AddBio: React.FC<unknown> = () => {
 		if (data) {
 			notify({ message: data.message, success: true });
 			reset();
-			router.push('/main');
+			router.push('/');
 		}
 		if (error) {
 			notify({ message: error.message, error: true });
@@ -72,12 +72,12 @@ const AddBio: React.FC<unknown> = () => {
 						loading={isLoading || userLoading}
 						disabled={isLoading || userLoading}
 						onClick={() => updatebiocall({ bio })}
-						className="w-full disabled:bg-dark-600 disabled:text-white bg-accent-300 text-black hover:bg-accent-200"
+						className="w-full disabled:bg-dark-600 disabled:text-white bg-accent-300 text-black"
 					>
 						Continue
 					</PongButton>
 					<Box height="20px" />
-					<Link href="/main">
+					<Link href="">
 						<PongButton className="w-full bg-dark-600 text-dark-200 hover:text-white hover:bg-dark-500">Skip</PongButton>
 					</Link>
 				</div>

@@ -68,7 +68,7 @@ const PongHistory: React.FC<{ username: string }> = ({ username }) => {
 						Ping Pong History
 					</Text>
 				</div>
-				<Link href={`/main/ponghistory/${username}/0`}>
+				<Link href={`/ponghistory/${username}/0`}>
 					<SvgMore size={24} className="text-dark-200 hover:text-accent-300" />
 				</Link>
 			</Flex>

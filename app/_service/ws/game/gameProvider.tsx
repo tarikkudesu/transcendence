@@ -54,8 +54,8 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 				}
 				case 'PLAY': {
 					const p: Main.Play = Main.Json({ message, target: Main.Play.instance });
-					if (game === 'pong') router.push(`/main/dashboard/gameplay/pong/${p.opponent}/${p.gid}`);
-					else router.push(`/main/dashboard/gameplay/doom/${p.opponent}/${p.gid}`);
+					if (game === 'pong') router.push(`/pong/${p.opponent}/${p.gid}`);
+					else router.push(`/doom/${p.opponent}/${p.gid}`);
 					break;
 				}
 				case 'TOURNAMENT': {

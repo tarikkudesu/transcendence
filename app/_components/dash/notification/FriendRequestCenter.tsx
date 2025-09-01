@@ -65,7 +65,7 @@ const FriendRequestCenter = () => {
 												onClick={() => {
 													refetch();
 													send(ReadMessage(notification.id));
-													router.push(`/main/dashboard/${notification.sender}`);
+													router.push(`/profile/${notification.sender}`);
 												}}
 											>
 												Check Out

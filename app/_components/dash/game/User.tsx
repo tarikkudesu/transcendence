@@ -14,12 +14,12 @@ import SafeImage from '../../mini/SafeImage';
 
 const Username: React.FC<{ username: string; className?: string }> = ({ username, className }) => {
 	return (
-		<Link href={`/main/dashboard/${username}`}>
+		<Link href={`/profile/${username}`}>
 			<Text className={`${className} hover:text-accent-300`}>{username}</Text>
 		</Link>
 	);
 };
-const Avatar: React.FC<{ username: string }> = ({ username }) => {
+const Avatar: React.FC<{ username: string; size?: number, className?: string }> = ({ username, size, className }) => {
 	const fetchData = (): Promise<UserProfile> => client.get(`/users/${username}`).then((response) => response.data);
 	const { data } = useQuery({
 		queryKey: [`users${username}`],
@@ -31,24 +31,24 @@ const Avatar: React.FC<{ username: string }> = ({ username }) => {
 			<SafeImage
 				priority
 				fallbackSrc="/Logo.png"
-				className={`rounded-full cursor-pointer border-2 border-accent-300`}
+				className={`rounded-full cursor-pointer ${className}`}
 				src={'/Logo.png'}
 				alt="player card"
-				height={42}
-				width={42}
+				height={size ? size : 42}
+				width={size ? size : 42}
 			></SafeImage>
 		);
 	return (
 		<>
-			<Link href={`/main/dashboard/${username}`}>
+			<Link href={`/profile/${username}`}>
 				<SafeImage
 					priority
 					fallbackSrc="/Logo.png"
-					className={`rounded-full cursor-pointer border-2 border-accent-300`}
+					className={`rounded-full cursor-pointer ${className}`}
 					src={data.avatar}
 					alt="player card"
-					height={42}
-					width={42}
+					height={size ? size : 42}
+					width={size ? size : 42}
 				></SafeImage>
 			</Link>
 		</>
@@ -207,14 +207,14 @@ const Dialog: React.FC<{
 					{friend && friend.stat === 'accepted' && (
 						<>
 							<PongButton
-								onClick={() => router.push(`/main/dashboard/chat?chatemate=${friend.username}`)}
+								onClick={() => router.push(`/chat?chatemate=${friend.username}`)}
 								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-white disabled:text-dark-400 disabled:bg-dark-700"
 							>
 								<SvgChat size={24} />
 							</PongButton>
 							<PongButton
 								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-white disabled:text-dark-400 disabled:bg-dark-700"
-								onClick={() => router.push(`/main/dashboard/${friend.username}`)}
+								onClick={() => router.push(`/profile/${friend.username}`)}
 							>
 								<SvgProfile size={24} />
 							</PongButton>

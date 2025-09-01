@@ -70,11 +70,6 @@ const PongProvider: React.FC<PongProviderProps> = ({ children, gid }) => {
 					setWon(true);
 					break;
 				}
-				case 'ERROR': {
-					const r: Main.WSError = Main.Json({ message, target: Main.WSError.instance });
-					notify({ message: r.message, error: true });
-					break;
-				}
 				default:
 					break;
 			}

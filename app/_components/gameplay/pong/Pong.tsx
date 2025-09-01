@@ -96,11 +96,11 @@ class Pong {
 		this.ctx.fillText(pong.playerScore.toString(), PongWidth / 2 + 100, 70);
 	}
 	playSounds(sound: number) {
-		if (sound === 1 || sound === 2) {
+		if (this.sound && (sound === 1 || sound === 2)) {
 			const audio = new Audio('/audio/arena-hit.mp3');
 			audio.play().catch(console.error);
 		}
-		if (sound === 3 || sound === 4) {
+		if (this.sound && (sound === 3)) {
 			const audio = new Audio('/audio/arena-out.mp3');
 			audio.play().catch(console.error);
 		}

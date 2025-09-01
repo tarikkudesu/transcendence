@@ -1,5 +1,6 @@
 'use client';
 
+import { Nothing } from '@/app/_components/gameplay/Cards';
 import { useNotification } from '@/app/_components/mini/useNotify';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useWebsocketInterceptor } from '../useWebsocketInterceptor';
@@ -20,11 +21,19 @@ const DoomProvider: React.FC<DoomProviderProps> = ({ children, gid }) => {
 
 	const [won, setWon] = useState<boolean>(false);
 	const [lost, setLost] = useState<boolean>(false);
-	const [open, setOpen] = useState<boolean>(true);
+	const [error, setError] = useState<boolean>(false);
+	const [waiting, setWaiting] = useState<boolean>(true);
+	const [nothing, setNothing] = useState<boolean>(false);
 	const [disconnected, setDisonnected] = useState<boolean>(false);
 	const [doom, setDoom] = useState<Main.ClientCardOfDoom | null>(null);
 
 	const reset = useCallback(() => {
+		setWon(false);
+		setLost(false);
+		setError(false);
+		setWaiting(true);
+		setNothing(false);
+		setDisonnected(false);
 		setDoom(null);
 	}, []);
 
@@ -33,20 +42,32 @@ const DoomProvider: React.FC<DoomProviderProps> = ({ children, gid }) => {
 			switch (event) {
 				case 'DOOM': {
 					const d: Main.ClientCardOfDoom = Main.Json({ message, target: Main.ClientCardOfDoom.instance });
+					setWaiting(false);
 					setDoom(d);
 					break;
 				}
+				case 'DISCONNECTED': {
+					setDisonnected(true);
+					setWaiting(false);
+					break;
+				}
+				case 'WAITING': {
+					setWaiting(true);
+					break;
+				}
+				case 'NOTHING': {
+					setWaiting(false);
+					setNothing(true);
+					break;
+				}
 				case 'LOST': {
+					setWaiting(false);
 					setLost(true);
 					break;
 				}
 				case 'WON': {
+					setWaiting(false);
 					setWon(true);
-					break;
-				}
-				case 'ERROR': {
-					const r: Main.WSError = Main.Json({ message, target: Main.WSError.instance });
-					notify({ message: r.message, error: true });
 					break;
 				}
 				default:
@@ -62,17 +83,16 @@ const DoomProvider: React.FC<DoomProviderProps> = ({ children, gid }) => {
 
 	const onopen = useCallback(() => {
 		console.log('Doom WebSocket connection opened');
-		setOpen(true);
 	}, []);
 
 	const onerror = useCallback(() => {
 		console.log(`Doom WebSocket connection gave an error`);
-		setDisonnected(true);
+		setError(true);
 	}, []);
 
 	const onclose = useCallback((event: CloseEvent) => {
 		console.log(`Doom WebSocket connection closed: ${event?.reason ?? ''}`);
-		setDisonnected(true);
+		setError(true);
 	}, []);
 
 	const onmessage = useCallback(
@@ -107,9 +127,11 @@ const DoomProvider: React.FC<DoomProviderProps> = ({ children, gid }) => {
 					socketRef.current.onopen = onopen;
 				} else throw new Error('API_BASE not defined');
 			} catch (err: unknown) {
+				setError(true);
 				console.log('Error creating Pong WebSocket connection:', err);
 			}
 		} else {
+			setError(true);
 			notify({ message: 'Something went wrong, Please refresh the page', error: true });
 		}
 	}, [gid]);
@@ -120,13 +142,8 @@ const DoomProvider: React.FC<DoomProviderProps> = ({ children, gid }) => {
 	}, [initiateConnection]);
 
 	return (
-		<doomContext.Provider value={{ won, lost, disconnected, send, doom, gid, open }}>
-			{!open && (
-				<div className="fixed top-0 left-4 right-4 rounded-b-md bg-red-500 px-6 py-1  text-white z-50 font-bold">
-					You are not connected, Please refresh the page
-				</div>
-			)}
-			{children}
+		<doomContext.Provider value={{ won, lost, disconnected, send, doom, gid, waiting, nothing }}>
+			{error ? <Nothing /> : children}
 		</doomContext.Provider>
 	);
 };

@@ -23,9 +23,9 @@ const TournamentHistory: React.FC<{ page: number }> = ({ page }) => {
 	const changePage = useCallback(
 		(back: boolean) => {
 			if (back) {
-				if (page > 0) router.push(`/main/doomhistory/${page - 1}`);
+				if (page > 0) router.push(`/doomhistory/${page - 1}`);
 			} else {
-				if (data?.length === 20) router.push(`/main/doomhistory/${page + 1}`);
+				if (data?.length === 20) router.push(`/doomhistory/${page + 1}`);
 			}
 		},
 		[data?.length, page]
@@ -47,7 +47,7 @@ const TournamentHistory: React.FC<{ page: number }> = ({ page }) => {
 										{ele.tournament_date}
 									</Text>
 								</Text>
-								<Link href={'/main/dashboard/tournament/' + ele.tournament_name}>
+								<Link href={'/tournament/' + ele.tournament_name}>
 									<button className="py-3 px-6 text-center bg-accent-300 text-xs text-black rounded-md cursor-pointer font-bold">
 										See Details
 									</button>

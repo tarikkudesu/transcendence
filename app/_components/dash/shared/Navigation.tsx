@@ -10,40 +10,40 @@ const Navigation: React.FC = ({}) => {
 
 	return (
 		<div className="flex flex-col gap-2">
-			<Link href="/main/dashboard/playground">
+			<Link href="/playground">
 				<div
 					className={`py-3 px-4 text-sm font-bold hover:bg-dark-700 rounded-md flex justify-start items-center gap-4 cursor-pointer duration-200 ${
-						pathname === '/main/dashboard/playground' ? 'text-accent-300' : 'text-dark-100'
+						pathname === '/playground' ? 'text-accent-300' : 'text-dark-100'
 					}`}
 				>
 					<SvgGameBoy size={20} />
 					Playground
 				</div>
 			</Link>
-			<Link href="/main/dashboard/tournament">
+			<Link href="/tournament">
 				<div
 					className={`py-3 px-4 text-sm font-bold hover:bg-dark-700 rounded-md flex justify-start items-center gap-4 cursor-pointer duration-200 ${
-						pathname === '/main/dashboard/tournament' ? 'text-accent-300' : 'text-dark-100'
+						pathname === '/tournament' ? 'text-accent-300' : 'text-dark-100'
 					}`}
 				>
 					<SvgArmor size={20} />
 					Tournament
 				</div>
 			</Link>
-			<Link href="/main/dashboard/leaderboard">
+			<Link href="/leaderboard">
 				<div
 					className={`py-3 px-4 text-sm font-bold hover:bg-dark-700 rounded-md flex justify-start items-center gap-4 cursor-pointer duration-200 ${
-						pathname === '/main/dashboard/leaderboard' ? 'text-accent-300' : 'text-dark-100'
+						pathname === '/leaderboard' ? 'text-accent-300' : 'text-dark-100'
 					}`}
 				>
 					<SvgQueen size={20} />
 					Leaderboard
 				</div>
 			</Link>
-			<Link href="/main/dashboard/chat">
+			<Link href="/chat">
 				<div
 					className={`py-3 px-4 text-sm font-bold hover:bg-dark-700 rounded-md flex justify-start items-center gap-4 cursor-pointer duration-200 ${
-						pathname === '/main/dashboard/chat' ? 'text-accent-300' : 'text-dark-100'
+						pathname === '/chat' ? 'text-accent-300' : 'text-dark-100'
 					}`}
 				>
 					<SvgChatBubles size={20} />

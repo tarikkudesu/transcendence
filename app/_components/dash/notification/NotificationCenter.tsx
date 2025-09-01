@@ -115,7 +115,7 @@ const NotificationCenter = () => {
 						onClick={() => {
 							setActive(false);
 							send(ReadMessage(id));
-							router.push(`/main/dashboard/chat?chatemate=${sender}`);
+							router.push(`/chat?chatemate=${sender}`);
 						}}
 					>
 						Reply
@@ -133,7 +133,7 @@ const NotificationCenter = () => {
 							onClick={() => {
 								setActive(false);
 								send(ReadMessage(id));
-								router.push('/main/dashboard/tournament');
+								router.push('/tournament');
 							}}
 						>
 							Check Out
@@ -148,7 +148,7 @@ const NotificationCenter = () => {
 							onClick={() => {
 								setActive(false);
 								send(ReadMessage(id));
-								router.push('/main/dashboard/tournament');
+								router.push('/tournament');
 							}}
 						>
 							Check Out

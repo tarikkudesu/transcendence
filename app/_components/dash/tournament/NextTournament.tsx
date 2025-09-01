@@ -81,7 +81,7 @@ const NextTournament: React.FC = ({}) => {
 					{tournament.state === 'playing' && tournament.registered && (
 						<PongButton
 							disabled={tournament.gid === ''}
-							onClick={() => router.push(`/main/dashboard/gameplay/pong/${tournament.gid}/tournament`)}
+							onClick={() => router.push(`/pong/${tournament.gid}/tournament`)}
 							className="w-full bg-accent-300 disabled:bg-dark-600 disabled:text-white disabled:opacity-40 text-black font-bold"
 						>
 							Play

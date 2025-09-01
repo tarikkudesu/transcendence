@@ -55,7 +55,7 @@ const DoomHistory: React.FC<{ username: string }> = ({ username }) => {
 						Doom Cards History
 					</Text>
 				</div>
-				<Link href={`/main/doomhistory/${username}/0`}>
+				<Link href={`/doomhistory/${username}/0`}>
 					<SvgMore size={24} className="text-dark-200 hover:text-accent-300" />
 				</Link>
 			</Flex>

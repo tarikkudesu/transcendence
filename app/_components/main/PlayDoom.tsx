@@ -28,7 +28,7 @@ const PlayDoom: React.FC = () => {
 					Basic details that will be a representation of yourself across the YingYangPong playground.
 				</Text>
 				<Box height="20px" />
-				<Link href={`/main/dashboard/playground`}>
+				<Link href={`/playground`}>
 					<button className="py-3 px-4 text-center bg-orange-600 text-xs text-white rounded-md cursor-pointer font-bold">
 						Play Now
 					</button>

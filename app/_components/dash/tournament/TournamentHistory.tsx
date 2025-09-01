@@ -39,7 +39,7 @@ const TournamentHistory: React.FC = ({}) => {
 										{formatDistanceToNow(Number(ele.tournament_date), { addSuffix: true })}
 									</Text>
 								</Text>
-								<Link href={'/main/dashboard/tournament/' + ele.tournament_name}>
+								<Link href={'/tournament/' + ele.tournament_name}>
 									<PongButton className="bg-accent-300 text-black font-bold">See Details</PongButton>
 								</Link>
 							</Flex>
@@ -47,7 +47,7 @@ const TournamentHistory: React.FC = ({}) => {
 					);
 				})}
 			{data?.length === 10 && (
-				<Link href="/main/tournaments/0">
+				<Link href="/tournaments/0">
 					<Text as="div" align="center" size="1" mb="2" weight="bold" className="text-accent-300">
 						See full history
 					</Text>

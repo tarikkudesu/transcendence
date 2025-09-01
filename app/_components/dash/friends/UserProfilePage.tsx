@@ -138,7 +138,7 @@ const UserProfilePage: React.FC<{ username: string }> = ({ username }) => {
 					{friend && friend.stat === 'accepted' && (
 						<>
 							<PongButton
-								onClick={() => router.push(`/main/dashboard/chat?chatemate=${friend.username}`)}
+								onClick={() => router.push(`/chat?chatemate=${friend.username}`)}
 								className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black"
 							>
 								<SvgChat size={24} />

@@ -120,7 +120,7 @@ const Tfa: React.FC<unknown> = () => {
 		if (data) {
 			notify({ message: data.message });
 			reset();
-			router.push('/main');
+			router.push('/');
 		}
 		if (error) {
 			notify({ message: error.message, error: true });

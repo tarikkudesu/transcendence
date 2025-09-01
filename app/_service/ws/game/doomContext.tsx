@@ -5,7 +5,8 @@ class SocketState {
 	gid: string = '';
 	won: boolean = false;
 	lost: boolean = false;
-	open: boolean = false;
+	waiting: boolean = false;
+	nothing: boolean = false;
 	disconnected: boolean = false;
 	doom: Main.ClientCardOfDoom | null = null;
 	send: (message: string) => void = () => {};

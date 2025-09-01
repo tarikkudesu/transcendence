@@ -39,7 +39,7 @@ const Search: React.FC<{ search: string; clear: () => void }> = memo(({ search, 
 								className="py-1 cursor-pointer hover:bg-dark-700"
 								onClick={() => {
 									clear();
-									router.push(`/main/dashboard/${ele.username}`);
+									router.push(`/profile/${ele.username}`);
 								}}
 							>
 								<div className="scale-90">

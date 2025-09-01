@@ -9,8 +9,7 @@ import { usePongSocket } from '@/app/_service/ws/game/pongContext';
 import { SvgChat, SvgGameBoy, SvgSoundOff, SvgSoundOn } from '@/app/_svg/svg';
 import { useRouter } from 'next/navigation';
 import { User } from '../../dash/game/User';
-import { Spinner } from '../../mini/Loading';
-import { Disconnected, Lost, Waiting, Won } from '../Cards';
+import { DisconnectedPong, LostPong, WaitingPong, WonPong } from '../Cards';
 import Pong from './Pong';
 
 const Ping: React.FC<{ sound: boolean }> = ({ sound }) => {
@@ -86,12 +85,12 @@ const RemotePong: React.FC<{ opponent: string }> = ({ opponent }) => {
 	}, []);
 
 	const node = useCallback(() => {
-		if (won) return <Won player={username} opponent={opponent} />;
-		if (lost) return <Lost player={username} opponent={opponent} />;
-		if (waiting) return <Waiting player={username} opponent={opponent} />;
-		if (disconnected) return <Disconnected player={username} opponent={opponent} />;
-		return <Spinner />;
-	}, [disconnected, lost, opponent, username, waiting, won]);
+		if (won) return <WonPong player={username} opponent={opponent} />;
+		if (lost) return <LostPong player={username} opponent={opponent} />;
+		if (waiting) return <WaitingPong player={username} opponent={opponent} />;
+		if (disconnected) return <DisconnectedPong player={username} opponent={opponent} />;
+		return <Ping sound={sound} />;
+	}, [disconnected, lost, opponent, sound, username, waiting, won]);
 
 	return (
 		<div>
@@ -101,20 +100,16 @@ const RemotePong: React.FC<{ opponent: string }> = ({ opponent }) => {
 				<User.Username username={username} className="font-bold" />
 			</div>
 			<div className="w-[812px] bg-dark-950 aspect-[4/3] relative overflow-hidden mx-auto rounded-md border-[6px] border-accent-300 shadow-xl mb-6">
-				<Ping sound={sound} />
 				{node()}
 			</div>
 			<div className="flex justify-center items-center gap-4">
 				<PongButton
-					onClick={() => router.push(`/main/dashboard/chat?chatemate=${opponent}`)}
+					onClick={() => router.push(`/chat?chatemate=${opponent}`)}
 					className="bg-accent-300 hover:bg-accent-200 text-black"
 				>
 					<SvgChat size={18} />
 				</PongButton>
-				<PongButton
-					className="bg-accent-300 hover:bg-accent-200 text-black"
-					onClick={() => router.push('/main/dashboard/playground')}
-				>
+				<PongButton className="bg-accent-300 hover:bg-accent-200 text-black" onClick={() => router.push('/playground')}>
 					<SvgGameBoy size={18} />
 				</PongButton>
 				{sound ? (
