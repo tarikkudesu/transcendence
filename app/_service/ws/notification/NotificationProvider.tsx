@@ -89,8 +89,8 @@ const NotificationProvider: React.FC<NotificationProviderProps> = ({ children })
 	return (
 		<notificationContext.Provider value={{ send, notifications }}>
 			{!open && (
-				<div className="fixed top-0 left-4 right-4 rounded-b-md bg-red-500 px-6 py-1  text-white z-50 font-bold">
-					You are not connected, Please refresh the page
+				<div className="fixed top-0 left-4 right-4 rounded-b-md bg-red-500 px-6 py-1 text-white z-50 font-bold">
+					You have been disconnected, Please refresh the page
 				</div>
 			)}
 			{children}

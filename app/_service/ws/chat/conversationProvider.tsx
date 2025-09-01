@@ -88,8 +88,8 @@ const ConversationProvider: React.FC<ConversationProviderProps> = ({ children, f
 	return (
 		<conversationContext.Provider value={{ conversation, send }}>
 			{!open && (
-				<div className="fixed top-0 left-4 right-4 rounded-b-md bg-red-500 px-6 py-1  text-white z-50 font-bold">
-					You are not connected, Please refresh the page
+				<div className="fixed top-0 left-4 right-4 rounded-b-md bg-red-500 px-6 py-1 text-white z-50 font-bold">
+					You have been disconnected, Please refresh the page
 				</div>
 			)}
 			{children}
