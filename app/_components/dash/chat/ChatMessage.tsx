@@ -2,8 +2,7 @@ import { Message } from '@/app/_service/ws/chat/schemas';
 
 import { format, isThisWeek, isToday, isYesterday } from 'date-fns';
 import React from 'react';
-import SafeImage from '../../mini/SafeImage';
-import UserCallout from '../game/UserCallout';
+import { User } from '../game/User';
 
 interface ChatMyMessageProps {
 	data: Message;
@@ -42,17 +41,7 @@ export const ChatOtherMessage: React.FC<ChatMyMessageProps> = ({ data }) => {
 	return (
 		<div className="flex justify-between m-4">
 			<div className="flex justify-start items-end gap-2">
-				<UserCallout username={data.sender}>
-					<SafeImage
-						fallbackSrc="/Logo.png"
-						priority
-						className={`rounded-full cursor-pointer`}
-						src="https://res.cloudinary.com/drpmyxx4c/image/upload/v1751976105/avatars/avatar179.png"
-						alt="player card"
-						width={40}
-						height={40}
-					></SafeImage>
-				</UserCallout>
+				<User.Avatar username={data.sender} size={40} />
 				<div className="w-[70%]">
 					<div className="flex justify-between">
 						<div className="text-sm py-2 px-4 rounded-t-[12px] rounded-bl-[4px] rounded-br-[12px] bg-accent-900/80 text-white">

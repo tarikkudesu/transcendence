@@ -8,7 +8,6 @@ import { useCallback } from 'react';
 import { Spinner } from '../../mini/Loading';
 import SafeImage from '../../mini/SafeImage';
 import { User } from '../game/User';
-import UserCallout from '../game/UserCallout';
 
 interface DoomLeaderBoardPlayerProps {
 	player: LeaderboardEntry;
@@ -40,7 +39,7 @@ const DoomLeaderBoardFirstPlayer: React.FC<DoomLeaderBoardPlayerProps> = ({ play
 					height={120}
 				></SafeImage>
 				<Text as="div" align="center" size="4" weight="bold" className="text-white absolute bottom-4 left-1/2 -translate-x-1/2 ">
-					<UserCallout username={player.username}>{player.username}</UserCallout>
+					<User.Username username={player.username} />
 					<Text as="div" align="center" size="6" weight="bold" className="text-accent-300 my-4">
 						{player.winns}
 					</Text>
@@ -64,7 +63,7 @@ const DoomLeaderBoardSecondPlayer: React.FC<DoomLeaderBoardPlayerProps> = ({ pla
 					height={120}
 				></SafeImage>
 				<Text as="div" align="center" size="4" weight="bold" className="text-white absolute bottom-4 left-1/2 -translate-x-1/2 ">
-					<UserCallout username={player.username}>{player.username}</UserCallout>
+					<User.Username username={player.username} />
 					<Text as="div" align="center" size="6" weight="bold" className="text-orange-600 my-4">
 						{player.winns}
 					</Text>
@@ -88,7 +87,7 @@ const DoomLeaderBoardThirdPlayer: React.FC<DoomLeaderBoardPlayerProps> = ({ play
 					height={120}
 				></SafeImage>
 				<Text as="div" align="center" size="4" weight="bold" className="text-white absolute bottom-4 left-1/2 -translate-x-1/2 ">
-					<UserCallout username={player.username}>{player.username}</UserCallout>
+					<User.Username username={player.username} />
 					<Text as="div" align="center" size="6" weight="bold" className="text-magenta-600 my-4">
 						{player.winns}
 					</Text>

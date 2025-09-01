@@ -39,7 +39,7 @@ const PongLeaderBoardFirstPlayer: React.FC<PongLeaderBoardPlayerProps> = ({ play
 					height={120}
 				></SafeImage>
 				<Text as="div" align="center" size="4" weight="bold" className="text-white absolute bottom-2 left-1/2 -translate-x-1/2 ">
-					{player.username}
+					<User.Username username={player.username} />
 					<Text as="div" align="center" size="6" weight="bold" className="text-accent-300 my-2">
 						{player.winns}
 					</Text>
@@ -63,7 +63,7 @@ const PongLeaderBoardSecondPlayer: React.FC<PongLeaderBoardPlayerProps> = ({ pla
 					height={100}
 				></SafeImage>
 				<Text as="div" align="center" size="4" weight="bold" className="text-white absolute bottom-2 left-1/2 -translate-x-1/2 ">
-					{player.username}
+					<User.Username username={player.username} />
 					<Text as="div" align="center" size="6" weight="bold" className="text-orange-600 my-2">
 						{player.winns}
 					</Text>
@@ -87,7 +87,7 @@ const PongLeaderBoardThirdPlayer: React.FC<PongLeaderBoardPlayerProps> = ({ play
 					height={80}
 				></SafeImage>
 				<Text as="div" align="center" size="4" weight="bold" className="text-white absolute bottom-2 left-1/2 -translate-x-1/2 ">
-					{player.username}
+					<User.Username username={player.username} />
 					<Text as="div" align="center" size="6" weight="bold" className="text-magenta-600 my-2">
 						{player.winns}
 					</Text>
