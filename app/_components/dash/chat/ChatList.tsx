@@ -4,7 +4,7 @@ import { useFriends } from '@/app/_service/friends/FriendContext';
 import { Friend } from '@/app/_service/schema';
 import { useChatSocket } from '@/app/_service/ws/chat/chatContext';
 import ConversationProvider from '@/app/_service/ws/chat/conversationProvider';
-import { OuterMessage } from '@/app/_service/ws/chat/schemas';
+import { OuterMessage } from '@/app/_service/schema';
 import { Box, ScrollArea, Text } from '@radix-ui/themes';
 import { useSearchParams } from 'next/navigation';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';

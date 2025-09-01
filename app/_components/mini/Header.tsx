@@ -21,7 +21,7 @@ const Header: React.FC = ({}) => {
 		if (error) {
 			notify({ message: error.message, error: true });
 		}
-	}, [data, error, notify]);
+	}, [data, error, notify, router]);
 
 	return (
 		<header>

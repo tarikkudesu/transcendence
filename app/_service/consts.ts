@@ -1,31 +1,5 @@
 import type { Metadata } from 'next';
 
-export const routes = [
-	'/main',
-	'/login',
-	'/add-bio',
-	'/forgot-password',
-	'/2fa-authentication',
-	'/add-profile-picture',
-	'/chat',
-	'/profile/[profile]',
-	'/local',
-	'/doom/[gid]/[opponent]',
-	'/pong/[gid]/[opponent]',
-	'/tournament/[tournamentname]',
-	'/ponghistory/[profile]',
-	'/doomhistory/[profile]',
-	'/leaderboard',
-	'/playground',
-	'/tournament',
-	'/doomleaderboard',
-	'/pongleaderboard',
-	'/tournaments',
-	'/reset-password',
-	'/verify-account',
-	'/signup',
-];
-
 export const visitable = [
 	'/main',
 	'/chat',

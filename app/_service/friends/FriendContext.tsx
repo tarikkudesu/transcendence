@@ -8,8 +8,14 @@ class FriendsState {
 	requests: FriendRequest[] = [];
 
 	refetch: () => void = () => true;
-	friend: (u: string) => Friend | null = (u: string) => null;
-	request: (u: string) => FriendRequest | null = (u: string) => null;
+	friend: (u: string) => Friend | null = (u: string) => {
+		void u;
+		return null;
+	};
+	request: (u: string) => FriendRequest | null = (u: string) => {
+		void u;
+		return null;
+	};
 }
 
 export const friendsContext = createContext(new FriendsState());

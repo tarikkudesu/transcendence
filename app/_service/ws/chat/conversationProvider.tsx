@@ -4,7 +4,7 @@ import { useNotification } from '@/app/_components/mini/useNotify';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useWebsocketInterceptor } from '../useWebsocketInterceptor';
 import { conversationContext } from './conversationContext';
-import { Message } from './schemas';
+import { Message } from '../../schema';
 
 interface ConversationProviderProps {
 	children: React.ReactNode;
@@ -18,8 +18,6 @@ const ConversationProvider: React.FC<ConversationProviderProps> = ({ children, f
 	const { intercept } = useWebsocketInterceptor();
 	const socketRef = useRef<WebSocket | null>(null);
 	const [error, setError] = useState<boolean>(false);
-	const [close, setClose] = useState<boolean>(false);
-	const [open, setOpen] = useState<boolean>(true);
 
 	// * Data Holders
 	const [conversation, setConversation] = useState<Message[]>([]);
@@ -30,20 +28,16 @@ const ConversationProvider: React.FC<ConversationProviderProps> = ({ children, f
 
 	const onopen = useCallback(() => {
 		console.log('Conversation WebSocket connection opened');
-		setOpen(true);
 	}, []);
 
 	const onerror = useCallback(() => {
 		console.log(`Conversation WebSocket connection gave an error`);
-		setOpen(false);
-		setClose(true);
 		setError(true);
 	}, []);
-
+	
 	const onclose = useCallback((event: CloseEvent) => {
 		console.log(`Conversation WebSocket connection closed: ${event?.reason ?? ''}`);
-		setOpen(false);
-		setClose(true);
+		setError(true);
 	}, []);
 
 	const onmessage = useCallback(
@@ -78,7 +72,7 @@ const ConversationProvider: React.FC<ConversationProviderProps> = ({ children, f
 		} else {
 			notify({ message: 'Something went wrong, Please refresh the page', error: true });
 		}
-	}, [error, close]);
+	}, [intercept, friend, onmessage, onerror, onclose, onopen, notify]);
 
 	useEffect(() => {
 		initiateConnection();
@@ -87,7 +81,7 @@ const ConversationProvider: React.FC<ConversationProviderProps> = ({ children, f
 
 	return (
 		<conversationContext.Provider value={{ conversation, send }}>
-			{!open && (
+			{error && (
 				<div className="fixed top-0 left-4 right-4 rounded-b-md bg-red-500 px-6 py-1 text-white z-50 font-bold">
 					You have been disconnected, Please refresh the page
 				</div>

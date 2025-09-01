@@ -69,7 +69,7 @@ const SignUp: React.FC<unknown> = () => {
 			notify({ message: error.message, error: true });
 			reset();
 		}
-	}, [data, email, error, notify, reset]);
+	}, [data, email, error, notify, reset, router]);
 
 	const switchtype = useCallback(() => {
 		if (type === 'password') setType('text');

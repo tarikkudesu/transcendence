@@ -12,4 +12,3 @@ export const PaddleHeight = 60;
 export const PaddleDistance = 10;
 // ! Doom
 export const CardsNum = 25;
-export const DoomTimeLimite = 10000;

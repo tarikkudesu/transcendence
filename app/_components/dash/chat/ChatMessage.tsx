@@ -1,4 +1,4 @@
-import { Message } from '@/app/_service/ws/chat/schemas';
+import { Message } from '@/app/_service/schema';
 
 import { format, isThisWeek, isToday, isYesterday } from 'date-fns';
 import React from 'react';

@@ -25,7 +25,7 @@ const AddBio: React.FC<unknown> = () => {
 
 	useEffect(() => {
 		if (userError) router.push('/login');
-	}, [userError]);
+	}, [router, userError]);
 
 	useEffect(() => {
 		if (data) {
@@ -37,7 +37,7 @@ const AddBio: React.FC<unknown> = () => {
 			notify({ message: error.message, error: true });
 			reset();
 		}
-	}, [data, error, notify, reset]);
+	}, [data, error, notify, reset, router]);
 
 	return (
 		<main>

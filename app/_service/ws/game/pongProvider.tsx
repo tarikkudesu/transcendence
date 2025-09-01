@@ -74,7 +74,7 @@ const PongProvider: React.FC<PongProviderProps> = ({ children, gid }) => {
 					break;
 			}
 		},
-		[notify]
+		[]
 	);
 
 	const send = useCallback((message: string) => {
@@ -134,7 +134,7 @@ const PongProvider: React.FC<PongProviderProps> = ({ children, gid }) => {
 			setError(true);
 			notify({ message: 'Something went wrong, Please refresh the page', error: true });
 		}
-	}, [gid]);
+	}, [gid, intercept, notify, onclose, onerror, onmessage, onopen, reset]);
 
 	useEffect(() => {
 		initiateConnection();

@@ -5,7 +5,7 @@ import SafeImage from '../mini/SafeImage';
 export const WaitingDoom: React.FC<{
 	player: string;
 	opponent: string;
-}> = ({ player }) => {
+}> = () => {
 	return (
 		<div className="w-[300px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-cardenter">
 			<div className="relative">
@@ -29,7 +29,7 @@ export const WaitingDoom: React.FC<{
 export const WaitingPong: React.FC<{
 	player: string;
 	opponent: string;
-}> = ({ player }) => {
+}> = () => {
 	return (
 		<div className="w-[300px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-cardenter">
 			<div className="relative">

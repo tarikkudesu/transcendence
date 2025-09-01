@@ -74,7 +74,7 @@ const DoomProvider: React.FC<DoomProviderProps> = ({ children, gid }) => {
 					break;
 			}
 		},
-		[notify]
+		[]
 	);
 
 	const send = useCallback((message: string) => {
@@ -134,7 +134,7 @@ const DoomProvider: React.FC<DoomProviderProps> = ({ children, gid }) => {
 			setError(true);
 			notify({ message: 'Something went wrong, Please refresh the page', error: true });
 		}
-	}, [gid]);
+	}, [gid, intercept, notify, onclose, onerror, onmessage, onopen, reset]);
 
 	useEffect(() => {
 		initiateConnection();

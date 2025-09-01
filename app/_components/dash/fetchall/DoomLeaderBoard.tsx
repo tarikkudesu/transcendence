@@ -28,7 +28,7 @@ const DoomLeaderBoard: React.FC<{ page: number }> = ({ page }) => {
 				if (data?.length === 20) router.push(`/doomhistory/${page + 1}`);
 			}
 		},
-		[data?.length, page]
+		[data?.length, page, router]
 	);
 
 	if (isPending) return <Spinner />;

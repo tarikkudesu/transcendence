@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import { Message } from './schemas';
+import { Message } from '../../schema';
 
 class SocketState {
 	conversation: Message[] = [];

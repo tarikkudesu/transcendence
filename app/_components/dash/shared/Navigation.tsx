@@ -1,6 +1,6 @@
 'use client';
 
-import { SvgArmor, SvgChatBubles, SvgGameBoy, SvgPongLoading, SvgQueen } from '@/app/_svg/svg';
+import { SvgArmor, SvgChatBubles, SvgGameBoy, SvgQueen } from '@/app/_svg/svg';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React from 'react';

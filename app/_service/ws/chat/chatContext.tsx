@@ -1,8 +1,8 @@
 import { createContext, useContext } from 'react';
-import { Message, OuterMessage } from './schemas';
+import { Message, OuterMessage } from '../../schema';
 
 class SocketState {
-	lastMessage: (u: string) => Message | undefined = (u: string) => undefined;
+	lastMessage: (u: string) => Message | undefined = (u: string) => void u;
 	panel: OuterMessage[] = [];
 }
 

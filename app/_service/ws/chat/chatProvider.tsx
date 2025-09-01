@@ -4,7 +4,7 @@ import { useNotification } from '@/app/_components/mini/useNotify';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useWebsocketInterceptor } from '../useWebsocketInterceptor';
 import { chatContext } from './chatContext';
-import { Message, OuterMessage } from './schemas';
+import { Message, OuterMessage } from '../../schema';
 
 interface ChatProviderProps {
 	children: React.ReactNode;
@@ -16,9 +16,6 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 	const { notify } = useNotification();
 	const { intercept } = useWebsocketInterceptor();
 	const socketRef = useRef<WebSocket | null>(null);
-
-	const [open, setOpen] = useState<boolean>(true);
-	const [close, setClose] = useState<boolean>(false);
 	const [error, setError] = useState<boolean>(false);
 	const [panel, setPanel] = useState<OuterMessage[]>([]);
 
@@ -26,20 +23,16 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 
 	const onopen = useCallback(() => {
 		console.log('Chat WebSocket connection opened');
-		setOpen(true);
 	}, []);
 
 	const onerror = useCallback(() => {
-		setOpen(false);
-		setClose(true);
 		setError(true);
 	}, []);
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const onclose = useCallback((event: any) => {
 		console.log(`Chat WebSocket connection closed: ${event?.reason ?? ''}`);
-		setOpen(false);
-		setClose(true);
+		setError(true);
 	}, []);
 
 	const onmessage = useCallback(
@@ -80,7 +73,7 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 		} else {
 			notify({ message: 'Something went wrong, Please refresh the page', error: true });
 		}
-	}, [error, close]);
+	}, [intercept, onmessage, onerror, onclose, onopen, notify]);
 
 	useEffect(() => {
 		initiateConnection();
@@ -89,7 +82,7 @@ const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 
 	return (
 		<chatContext.Provider value={{ panel, lastMessage }}>
-			{!open && (
+			{error && (
 				<div className="fixed top-0 left-4 right-4 rounded-b-md bg-red-500 px-6 py-1 text-white z-50 font-bold">
 					You have been disconnected, Please refresh the page
 				</div>

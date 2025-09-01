@@ -3,14 +3,11 @@
 import { useUser } from '@/app/_service/user/userContext';
 import { FlipMessage } from '@/app/_service/ws/game';
 import { useDoomSocket } from '@/app/_service/ws/game/doomContext';
-import { SvgChat, SvgGameBoy } from '@/app/_svg/svg';
 import SvgBomb from '@/app/_svg/SvgBomb';
 import SvgCard from '@/app/_svg/SvgCard';
 import SvgDiamond from '@/app/_svg/SvgDiamond';
 import { Box, Grid } from '@radix-ui/themes';
-import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
-import { PongButton } from '../../buttons/ServerButtons';
 import { User } from '../../dash/game/User';
 import { DisconnectedDoom, LostDoom, WaitingDoom, WonDoom } from '../Cards';
 
@@ -62,7 +59,6 @@ const Doom: React.FC = () => {
 };
 
 const RemoteDoom: React.FC<{ opponent: string }> = ({ opponent }) => {
-	const router = useRouter();
 	const { username } = useUser();
 	const { won, lost, disconnected, waiting } = useDoomSocket();
 

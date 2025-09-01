@@ -1,6 +1,6 @@
-import { authMetadata, baseMetadata } from '@/app/_service/consts';
 import { Metadata } from 'next';
 import Login from './Login';
+import { baseMetadata, authMetadata } from '@/app/_service/consts';
 
 export const metadata: Metadata = {
 	...baseMetadata,

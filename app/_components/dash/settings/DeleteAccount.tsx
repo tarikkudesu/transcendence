@@ -1,10 +1,26 @@
 'use client';
 
 import { Card, Flex, Text } from '@radix-ui/themes';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { PongButton } from '../../buttons/ServerButtons';
+import { useDeleteAccoutCall } from '@/app/_service/auth/Fetchers';
+import { useNotification } from '../../mini/useNotify';
 
 const DeleteAccount: React.FC = () => {
+	const { notify } = useNotification();
+	const { data, error, isLoading, reset, deleteaccountcall } = useDeleteAccoutCall();
+
+	useEffect(() => {
+		if (data) {
+			notify({ message: data.message, success: true });
+			reset();
+		}
+		if (error) {
+			notify({ message: error.message, error: true });
+			reset();
+		}
+	}, [data, error, notify, reset]);
+
 	return (
 		<div className="my-[36px]">
 			<Text as="div" mb="2" mt="4" weight="bold" size="5">
@@ -18,9 +34,14 @@ const DeleteAccount: React.FC = () => {
 					<Text as="div" weight="bold" size="2" className="text-white">
 						Delete my YingYangPong account
 					</Text>
-					{/* <PongButton loading={isLoading} onClick={() => deleteaccountcall()} className="bg-red-600 text-white hover:bg-red-500">
+					<PongButton
+						loading={isLoading}
+						disabled={isLoading}
+						onClick={() => deleteaccountcall()}
+						className="bg-red-600 text-white hover:bg-red-500"
+					>
 						Delete account
-					</PongButton> */}
+					</PongButton>
 				</Flex>
 			</Card>
 		</div>

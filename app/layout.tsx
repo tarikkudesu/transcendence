@@ -1,5 +1,7 @@
+'use client';
+
 import { Theme } from '@radix-ui/themes';
-import type { Metadata } from 'next';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Josefin_Sans } from 'next/font/google';
 import './globals.css';
 
@@ -8,13 +10,7 @@ const josefin = Josefin_Sans({
 	display: 'swap',
 });
 
-export const metadata: Metadata = {
-	title: 'YingYangPong',
-	description: 'The perfect place to play',
-	icons: {
-		icon: '/favicon.png',
-	},
-};
+const queryClient = new QueryClient();
 
 export default function RootLayout({
 	children,
@@ -31,7 +27,7 @@ export default function RootLayout({
 					hasBackground={false}
 					className={`${josefin.className} text-amber-50 m-0`}
 				>
-					{children}
+					<QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 				</Theme>
 			</body>
 		</html>

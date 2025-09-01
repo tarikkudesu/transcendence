@@ -1,6 +1,6 @@
-import { authMetadata, baseMetadata } from '@/app/_service/consts';
 import { Metadata } from 'next';
 import Tfa from './Tfa';
+import { authMetadata, baseMetadata } from '@/app/_service/consts';
 
 export const metadata: Metadata = {
 	...baseMetadata,

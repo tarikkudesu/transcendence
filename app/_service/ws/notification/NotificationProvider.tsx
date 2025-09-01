@@ -15,9 +15,7 @@ const NotificationProvider: React.FC<NotificationProviderProps> = ({ children })
 	const { notify } = useNotification();
 	const socketRef = useRef<WebSocket | null>(null);
 	const { intercept } = useWebsocketInterceptor();
-	const [open, setOpen] = useState<boolean>(true);
 	const [error, setError] = useState<boolean>(false);
-	const [close, setClose] = useState<boolean>(false);
 	const [notifications, setNotifications] = useState<NotificationType[]>([]);
 
 	const send = useCallback((message: string) => {
@@ -26,19 +24,15 @@ const NotificationProvider: React.FC<NotificationProviderProps> = ({ children })
 
 	const onopen = useCallback(() => {
 		console.log('Notification WebSocket connection opened');
-		setOpen(true);
 	}, []);
 
 	const onerror = useCallback(() => {
-		setOpen(false);
-		setClose(true);
 		setError(true);
 	}, []);
 
 	const onclose = useCallback(() => {
 		console.log('Notification WebSocket connection closed');
-		setOpen(false);
-		setClose(true);
+		setError(true);
 	}, []);
 
 	const onmessage = useCallback(
@@ -79,7 +73,7 @@ const NotificationProvider: React.FC<NotificationProviderProps> = ({ children })
 		} else {
 			notify({ message: 'Something went wrong, Please refresh the page', error: true });
 		}
-	}, [error, close]);
+	}, [intercept, onmessage, onerror, onclose, onopen, notify]);
 
 	useEffect(() => {
 		initiateConnection();
@@ -88,7 +82,7 @@ const NotificationProvider: React.FC<NotificationProviderProps> = ({ children })
 
 	return (
 		<notificationContext.Provider value={{ send, notifications }}>
-			{!open && (
+			{error && (
 				<div className="fixed top-0 left-4 right-4 rounded-b-md bg-red-500 px-6 py-1 text-white z-50 font-bold">
 					You have been disconnected, Please refresh the page
 				</div>

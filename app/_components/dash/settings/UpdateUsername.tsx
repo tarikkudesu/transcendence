@@ -1,6 +1,5 @@
 'use client';
 
-import { useUser } from '@/app/_service/user/userContext';
 import { Card, Flex, Text } from '@radix-ui/themes';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { PongButton } from '../../buttons/ServerButtons';
@@ -8,7 +7,6 @@ import { useNotification } from '../../mini/useNotify';
 import { useUpdateUsernameCall } from '@/app/_service/auth/Fetchers';
 
 const UpdateUsername: React.FC = () => {
-	const { username } = useUser();
 	const { notify } = useNotification();
 	const [newUsername, setNewUsername] = useState<string>('');
 	const { data, error, isLoading, reset, updateusernamecall } = useUpdateUsernameCall();

@@ -126,7 +126,7 @@ const Tfa: React.FC<unknown> = () => {
 			notify({ message: error.message, error: true });
 			reset();
 		}
-	}, [data, error, notify, reset]);
+	}, [data, error, notify, reset, router]);
 
 	useEffect(() => {
 		const mail: string | null = searchParams.get('email');

@@ -26,7 +26,7 @@ const Header: React.FC = ({}) => {
 		if (error) {
 			notify({ message: error.message, error: true });
 		}
-	}, [data, error, notify]);
+	}, [data, error, notify, router]);
 
 	return (
 		<header className="w-full h-[150px] absolute top-0 left-0 right-0">

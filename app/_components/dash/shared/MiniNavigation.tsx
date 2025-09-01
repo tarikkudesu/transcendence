@@ -13,7 +13,7 @@ const MiniNavigation: React.FC = () => {
 
 	const onNavigate = useCallback((path: string) => {
 		if (visitable.some((ele) => ele === path)) router.push(path);
-	}, []);
+	}, [router]);
 
 	return (
 		<div className="flex items-center text-dark-200 text-sm my-[20px]">

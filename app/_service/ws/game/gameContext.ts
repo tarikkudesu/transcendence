@@ -6,8 +6,14 @@ class SocketState {
 	pool: Main.ClientPlayer[] = [];
 	invitations: Main.ClientInvitation[] = [];
 	tournament: Main.ClientTournament = Main.ClientTournament.instance;
-	pooler: (username: string) => Main.ClientPlayer | undefined = (u: string) => Main.ClientPlayer.instance;
-	online: (username: string) => "free" | "pong" | "doom" | undefined = (u: string) => undefined;
+	pooler: (username: string) => Main.ClientPlayer | undefined = (u: string) => {
+		void u;
+		return Main.ClientPlayer.instance;
+	};
+	online: (username: string) => 'free' | 'pong' | 'doom' | undefined = (u: string) => {
+		void u;
+		return undefined;
+	};
 	send: (message: string) => void = () => {};
 }
 

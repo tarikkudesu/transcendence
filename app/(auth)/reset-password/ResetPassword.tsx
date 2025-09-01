@@ -75,7 +75,7 @@ const ResetPassword: React.FC<unknown> = () => {
 			notify({ message: error.message, error: true });
 			reset();
 		}
-	}, [data, error, notify, reset]);
+	}, [data, error, notify, reset, router]);
 
 	useEffect(() => {
 		const temp: string | null = searchParams.get('token');
@@ -84,7 +84,7 @@ const ResetPassword: React.FC<unknown> = () => {
 			return;
 		}
 		setToken(temp);
-	}, [searchParams]);
+	}, [router, searchParams]);
 
 	return (
 		<main>

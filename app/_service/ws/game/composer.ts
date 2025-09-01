@@ -1,19 +1,10 @@
 import * as Main from './index';
 
 // ? Protocole Message Builders
-export function ErrorMessage(error: string) {
-	return JSON.stringify(new Main.Message({ message: 'ERROR', game: 'pong', data: new Main.WSError(error) }));
-}
 
 // ? CONNECT, ENGAGE, INVITE, ACCEPT, REJECT, DELETE, HOOK, FLIP, REGISTER
 // * HASH, POOL, INVITATIONS, PLAY, PONG, DOOM, TOURNAMENT, ERROR
 
-export function ConnectMessage(): string {
-	return JSON.stringify(new Main.Message({ message: 'CONNECT', game: 'pong', data: {} }));
-}
-export function EngageMessage(game: 'pong' | 'card of doom', gid: string): string {
-	return JSON.stringify(new Main.Message({ message: 'ENGAGE', game, data: new Main.Engage(gid) }));
-}
 export function InviteMessage(game: 'pong' | 'card of doom', recipient: string): string {
 	return JSON.stringify(new Main.Message({ message: 'INVITE', game, data: new Main.Invite(recipient) }));
 }

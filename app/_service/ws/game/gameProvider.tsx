@@ -17,9 +17,7 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 	const { notify } = useNotification();
 	const { intercept } = useWebsocketInterceptor();
 	const socketRef = useRef<WebSocket | null>(null);
-	const [open, setOpen] = useState<boolean>(true);
 	const [error, setError] = useState<boolean>(false);
-	const [close, setClose] = useState<boolean>(false);
 	const [pool, setPool] = useState<Main.ClientPlayer[]>([]);
 	const [invitations, setInvitations] = useState<Main.ClientInvitation[]>([]);
 	const [tournament, setTournament] = useState<Main.ClientTournament>(Main.ClientTournament.instance);
@@ -72,7 +70,7 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 					break;
 			}
 		},
-		[notify]
+		[notify, router]
 	);
 
 	const send = useCallback((message: string) => {
@@ -81,20 +79,16 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 
 	const onopen = useCallback(() => {
 		console.log('Game WebSocket connection opened');
-		setOpen(true);
 	}, []);
 
 	const onerror = useCallback(() => {
 		console.log(`Game WebSocket connection gave an error`);
-		setOpen(false);
-		setClose(true);
 		setError(true);
 	}, []);
-
+	
 	const onclose = useCallback((event: CloseEvent) => {
 		console.log(`Game WebSocket connection closed: ${event?.reason ?? ''}`);
-		setOpen(false);
-		setClose(true);
+		setError(true);
 	}, []);
 
 	const onmessage = useCallback(
@@ -129,7 +123,7 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 		} else {
 			notify({ message: 'Something went wrong, Please refresh the page', error: true });
 		}
-	}, [error, close]);
+	}, [intercept, onmessage, onerror, onclose, onopen, notify]);
 
 	useEffect(() => {
 		initiateConnection();
@@ -138,7 +132,7 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 
 	return (
 		<Main.gameContext.Provider value={{ send, pool, invitations, tournament, online, pooler }}>
-			{!open && (
+			{error && (
 				<div className="fixed top-0 left-4 right-4 rounded-b-md bg-red-500 px-6 py-1 text-white z-50 font-bold">
 					You have been disconnected, Please refresh the page
 				</div>

@@ -28,7 +28,7 @@ const DoomHistory: React.FC<{ username: string; page: number }> = ({ username, p
 				if (data?.length === 20) router.push(`/ponghistory/${username}/${page + 1}`);
 			}
 		},
-		[data?.length, page]
+		[data?.length, page, router, username]
 	);
 
 	if (isPending) return <Spinner />;

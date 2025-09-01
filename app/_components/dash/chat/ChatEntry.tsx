@@ -1,6 +1,6 @@
 'use client';
 
-import { OuterMessage } from '@/app/_service/ws/chat/schemas';
+import { OuterMessage } from '@/app/_service/schema';
 import { Text } from '@radix-ui/themes';
 
 import React from 'react';
