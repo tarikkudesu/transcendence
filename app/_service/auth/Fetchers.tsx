@@ -57,7 +57,7 @@ export function useDeleteAccoutCall() {
 	const fetchData = useCallback(async () => {
 		try {
 			setIsLoading(true);
-			const response: AxiosResponse<MutateResponse> = await client.post('/users/delete', undefined);
+			const response: AxiosResponse<MutateResponse> = await client.delete('/users/');
 			setData(response.data);
 		} catch (err) {
 			if (err instanceof AxiosError && err.response) {

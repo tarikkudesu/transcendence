@@ -7,12 +7,10 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import React from 'react';
 
-
 export const metadata: Metadata = {
 	...baseMetadata,
 	...mainAppMetadata.doomLeaderboard,
 };
-
 
 const Page: React.FC<{ params: Promise<{ page: string }> }> = async ({ params }) => {
 	const { page } = await params;
@@ -27,7 +25,8 @@ const Page: React.FC<{ params: Promise<{ page: string }> }> = async ({ params })
 						Doom Cards LeaderBoard
 					</Text>
 					<Text as="div" size="3" mb="8" align="center" className="text-dark-200">
-						Watch ongoing tournament games in real time and track their progress from start to finish.
+						See how you stack up! This is where legends are forged and champions rise. Track your rank, challenge the top
+						players, and climb your way to the top of the leaderboard.
 					</Text>
 				</div>
 				<DoomLeaderBoard page={Number(page)} />

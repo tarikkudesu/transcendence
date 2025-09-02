@@ -11,8 +11,8 @@ const PlayDoom: React.FC = () => {
 			<Card className="relative overflow-hidden p-8 mb-[20px]">
 				<div className="h-[350px] w-[350px] bg-orange-600 rounded-full absolute bottom-0 left-0 -translate-x-1/2 translate-y-1/2 blur-3xl opacity-45 -z-10"></div>
 				<SafeImage
-					fallbackSrc="/Logo.png"
 					priority
+					fallbackSrc="/Logo.png"
 					draggable={false}
 					src="/Diamond.png"
 					height={150}

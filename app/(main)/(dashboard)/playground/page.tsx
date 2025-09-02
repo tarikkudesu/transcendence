@@ -21,7 +21,8 @@ const Playground: React.FC<unknown> = () => {
 					Play IRL
 				</Text>
 				<Text as="div" size="3" mb="8" align="center" className="text-dark-200">
-					Follow players on hot winning streaks and see who’s dominating the tournament right now.
+					Think you have what it takes? Settle the score in our Local Versus mode. Two players, one keyboard—the ultimate test of
+					skill begins now.
 				</Text>
 				<div className="p-4 rounded-md bg-dark-700">
 					<Link href="/local" className="pb-3">

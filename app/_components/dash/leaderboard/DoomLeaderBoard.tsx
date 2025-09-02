@@ -30,9 +30,9 @@ const DoomLeaderBoardFirstPlayer: React.FC<DoomLeaderBoardPlayerProps> = ({ play
 					/>
 				</svg>
 				<SafeImage
-					fallbackSrc="/Logo.png"
 					priority
-					className="rounded-full border-4 border-accent-300 absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/4"
+					fallbackSrc="/Logo.png"
+					className="rounded-full border-4 border-accent-300 absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/4 object-cover aspect-square"
 					src={player.avatar_url}
 					alt="player card"
 					width={120}
@@ -54,9 +54,9 @@ const DoomLeaderBoardSecondPlayer: React.FC<DoomLeaderBoardPlayerProps> = ({ pla
 			<Box height="140px" />
 			<Box height="250px" className="bg-dark-900 rounded-tr-[100px] relative w-[200px]">
 				<SafeImage
-					fallbackSrc="/Logo.png"
 					priority
-					className="rounded-full border-4 border-orange-600 absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/4"
+					fallbackSrc="/Logo.png"
+					className="rounded-full border-4 border-orange-600 absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/4 object-cover aspect-square"
 					src={player.avatar_url}
 					alt="player card"
 					width={120}
@@ -78,9 +78,9 @@ const DoomLeaderBoardThirdPlayer: React.FC<DoomLeaderBoardPlayerProps> = ({ play
 			<Box height="160px" />
 			<Box height="230px" className="bg-dark-800 rounded-tl-[100px] relative w-[200px]">
 				<SafeImage
-					fallbackSrc="/Logo.png"
 					priority
-					className="rounded-full border-4 border-magenta-600 absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/4"
+					fallbackSrc="/Logo.png"
+					className="rounded-full border-4 border-magenta-600 absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/4 object-cover aspect-square"
 					src={player.avatar_url}
 					alt="player card"
 					width={120}
@@ -109,7 +109,7 @@ const DoomLeaderBoard: React.FC = ({}) => {
 		if (isPending) return <Spinner />;
 		return (
 			<>
-				{leaderBoard && leaderBoard.length && (
+				{leaderBoard && (
 					<>
 						<Flex justify="center" align="center" className="px-[40px] pt-[20px] min-h-[410px]">
 							{leaderBoard[2] && <DoomLeaderBoardThirdPlayer player={leaderBoard[2]} />}

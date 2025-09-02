@@ -37,45 +37,42 @@ const DoomProvider: React.FC<DoomProviderProps> = ({ children, gid }) => {
 		setDoom(null);
 	}, []);
 
-	const parse = useCallback(
-		(event: string, message: string) => {
-			switch (event) {
-				case 'DOOM': {
-					const d: Main.ClientCardOfDoom = Main.Json({ message, target: Main.ClientCardOfDoom.instance });
-					setWaiting(false);
-					setDoom(d);
-					break;
-				}
-				case 'DISCONNECTED': {
-					setDisonnected(true);
-					setWaiting(false);
-					break;
-				}
-				case 'WAITING': {
-					setWaiting(true);
-					break;
-				}
-				case 'NOTHING': {
-					setWaiting(false);
-					setNothing(true);
-					break;
-				}
-				case 'LOST': {
-					setWaiting(false);
-					setLost(true);
-					break;
-				}
-				case 'WON': {
-					setWaiting(false);
-					setWon(true);
-					break;
-				}
-				default:
-					break;
+	const parse = useCallback((event: string, message: string) => {
+		switch (event) {
+			case 'DOOM': {
+				const d: Main.ClientCardOfDoom = Main.Json({ message, target: Main.ClientCardOfDoom.instance });
+				setWaiting(false);
+				setDoom(d);
+				break;
 			}
-		},
-		[]
-	);
+			case 'DISCONNECTED': {
+				setDisonnected(true);
+				setWaiting(false);
+				break;
+			}
+			case 'WAITING': {
+				setWaiting(true);
+				break;
+			}
+			case 'NOTHING': {
+				setWaiting(false);
+				setNothing(true);
+				break;
+			}
+			case 'LOST': {
+				setWaiting(false);
+				setLost(true);
+				break;
+			}
+			case 'WON': {
+				setWaiting(false);
+				setWon(true);
+				break;
+			}
+			default:
+				break;
+		}
+	}, []);
 
 	const send = useCallback((message: string) => {
 		if (socketRef.current?.OPEN && message) socketRef.current?.send(message);

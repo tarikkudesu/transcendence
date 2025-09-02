@@ -16,7 +16,7 @@ const nextConfig: NextConfig = {
 				protocol: 'http',
 				hostname: 'res.cloudinary.com',
 				port: '',
-				pathname: '/drpmyxx4c/image/upload/v1756647204/fastify_avatar/**',
+				pathname: '/drpmyxx4c/image/upload/**/fastify_avatar/**',
 				search: '',
 			},
 		],

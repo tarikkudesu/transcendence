@@ -4,14 +4,13 @@ import { useUser } from '@/app/_service/user/userContext';
 import { RegisterMessage, useGameSocket } from '@/app/_service/ws/game';
 import { Badge, Box, Text } from '@radix-ui/themes';
 import { useRouter } from 'next/navigation';
-import React, { ChangeEvent, useState } from 'react';
+import React from 'react';
 import { PongButton } from '../../buttons/ServerButtons';
 
 const NextTournament: React.FC = ({}) => {
 	const router = useRouter();
 	const { username } = useUser();
 	const { tournament, send } = useGameSocket();
-	const [alias, setAlias] = useState<string>(username);
 
 	return (
 		<>
@@ -53,25 +52,9 @@ const NextTournament: React.FC = ({}) => {
 					<Box height="18px" />
 					{tournament.state !== 'playing' && (
 						<>
-							<label className="text-sm text-dark-200 my-4">
-								Alias
-								<input
-									required
-									minLength={4}
-									maxLength={24}
-									value={alias}
-									placeholder="alias"
-									className={`w-full mt-1 mb-4 outline-none rounded-md px-3 py-2.5 text-sm bg-dark-600 text-white ${
-										alias ? '' : 'border border-red-600'
-									}`}
-									onChange={(e: ChangeEvent<HTMLInputElement>) => setAlias(e.target.value)}
-									type="text"
-									name="alias"
-								></input>
-							</label>
 							<PongButton
-								disabled={tournament.state !== 'open' || tournament.registered || !alias}
-								onClick={() => send(RegisterMessage('pong', alias))}
+								disabled={tournament.state !== 'open' || tournament.registered}
+								onClick={() => send(RegisterMessage('pong', username))}
 								className="w-full bg-accent-300 disabled:bg-dark-600 disabled:text-white disabled:opacity-40 text-black font-bold"
 							>
 								Register Now!
@@ -81,7 +64,13 @@ const NextTournament: React.FC = ({}) => {
 					{tournament.state === 'playing' && tournament.registered && (
 						<PongButton
 							disabled={tournament.gid === ''}
-							onClick={() => router.push(`/pong/${tournament.gid}/tournament`)}
+							onClick={() => {
+								const match = tournament.nextMatches.find((e) => e.player === username || e.opponent === username);
+								if (match) {
+									if (match.player === username) router.push(`/pong/${match.opponent}/${tournament.gid}`);
+									else router.push(`/pong/${match.player}/${tournament.gid}`);
+								}
+							}}
 							className="w-full bg-accent-300 disabled:bg-dark-600 disabled:text-white disabled:opacity-40 text-black font-bold"
 						>
 							Play

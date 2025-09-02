@@ -8,14 +8,13 @@ const ErrorPage: React.FC = () => {
 		<>
 			<div className="relative mx-auto w-[800px] h-[800px] overflow-hidden rounded-md">
 				<SafeImage
+					fill
 					priority
 					draggable={false}
 					src="/arena.jpeg"
 					fallbackSrc=""
 					alt="cover image"
-					fill
-					className="opacity-5"
-					style={{ objectFit: 'cover' }}
+					className="opacity-5 object-cover"
 				/>
 				<SvgNoyhing />
 			</div>

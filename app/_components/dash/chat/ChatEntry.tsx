@@ -31,7 +31,7 @@ const ChatEntry: React.FC<ChatEntryProps> = ({ data, active, setActive }) => {
 						height={50}
 						alt="player card"
 						fallbackSrc="/Logo.png"
-						className="rounded-full cursor-pointer"
+						className="rounded-full cursor-pointer object-cover aspect-square"
 						src={data.avatar}
 					></SafeImage>
 				</div>

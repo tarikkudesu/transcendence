@@ -11,12 +11,21 @@ import { useNotification } from '../../mini/useNotify';
 const UpdateAvatar: React.FC = () => {
 	const { avatar } = useUser();
 	const { notify } = useNotification();
+	const [src, setSrc] = useState<string>('');
 	const [file, setFile] = useState<File | null>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const { data, isLoading, error, updateavatarcall, reset } = useUpdateAvatarCall();
 
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		if (e.target.files && e.target.files[0]) setFile(e.target.files[0]);
+		if (e.target.files && e.target.files[0]) {
+			setFile(e.target.files[0]);
+			const reader: FileReader = new FileReader();
+			reader.readAsDataURL(e.target.files[0]);
+			reader.onload = () => {
+				setSrc(typeof reader.result === 'string' ? reader.result : '');
+				console.log(reader.result);
+			};
+		}
 	};
 
 	const triggerFileSelect = useCallback(() => {
@@ -37,33 +46,34 @@ const UpdateAvatar: React.FC = () => {
 	return (
 		<div className="my-[36px]">
 			<Text as="div" mb="2" mt="4" weight="bold" size="5">
-				Change your avatar
+				Ready for a New Look?
 			</Text>
 			<Text as="div" mb="4" mt="1" className="text-sm text-dark-200">
-				We support .png .jpg .jpeg.
+				Click to change. Supports .PNG, .JPG, and .GIF. Max file size: 4MB.
 			</Text>
 			<Card>
 				<Flex justify="between" align="center" p="4" gap="9">
 					<Card onClick={triggerFileSelect} className="flex justify-start items-start gap-4 p-4 flex-grow cursor-pointer">
 						<SafeImage
 							priority
-							src={avatar}
-							height={40}
-							width={40}
+							height={100}
+							width={100}
+							src={'/Logo.png'}
 							alt="Logo as avatar"
 							fallbackSrc="/Logo.png"
-							className="rounded-full"
+							className="rounded-full aspect-square object-cover"
+							loader={() => (src ? src : avatar)}
 						/>
-						<Text as="div" weight="bold" size="1" className="text-white">
+						<div className="text-dark-300">
 							Upload your avatar
 							{file && (
-								<ul className="mt-2 text-xs text-dark-200">
+								<ul className="mt-2 text-xs text-dark-400">
 									<li>Name: {file.name}</li>
 									<li>Type: {file.type}</li>
 									<li>Size: {file.size} bytes</li>
 								</ul>
 							)}
-						</Text>
+						</div>
 					</Card>
 					<input
 						id="file"

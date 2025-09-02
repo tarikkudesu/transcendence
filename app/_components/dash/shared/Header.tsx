@@ -3,7 +3,7 @@
 import { useLogoutCall } from '@/app/_service/auth/Fetchers';
 import { Flex } from '@radix-ui/themes';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { PongButton } from '../../buttons/ServerButtons';
 import Logo from '../../mini/Logo';
 import SafeImage from '../../mini/SafeImage';
@@ -17,10 +17,12 @@ const Header: React.FC = ({}) => {
 	const router = useRouter();
 	const { notify } = useNotification();
 	const { data, error, isLoading, logoutcall } = useLogoutCall();
+	const [out, setOut] = useState<boolean>(false);
 
 	useEffect(() => {
 		if (data) {
 			notify({ message: data.message, success: true });
+			setOut(true);
 			router.push('/login');
 		}
 		if (error) {
@@ -31,7 +33,7 @@ const Header: React.FC = ({}) => {
 	return (
 		<header className="w-full h-[150px] absolute top-0 left-0 right-0">
 			<div className="w-full h-[150px] absolute top-0 left-0 right-0 bg-dark-700 -z-10"></div>
-			<SafeImage src="/header.jpeg" fallbackSrc="" alt="cover image" fill sizes='100vw' className='opacity-25 -z-10' />
+			<SafeImage src="/header.jpeg" fallbackSrc="" alt="cover image" fill sizes="100vw" className="opacity-25 -z-10 object-cover" />
 			<Flex justify="between" align="center" height="80px" mx="100px" className="z-10">
 				<Flex justify="start" align="center" gap="4">
 					<Logo />
@@ -42,7 +44,9 @@ const Header: React.FC = ({}) => {
 					<FriendRequestCenter />
 					<NotificationCenter />
 					<PongButton
-						onClick={() => logoutcall()}
+						onClick={() => {
+							if (!out) logoutcall();
+						}}
 						loading={isLoading}
 						className="bg-dark-700 text-dark-200 hover:bg-accent-300 hover:text-black"
 					>

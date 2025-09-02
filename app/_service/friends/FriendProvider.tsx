@@ -174,14 +174,14 @@ const FriendsProvider: React.FC<FriendsProviderProps> = ({ children }) => {
 		friendsRefetch();
 		blockedRefetch();
 		requestsRefetch();
-	}, [friendsRefetch, requestsRefetch]);
+	}, [blockedRefetch, friendsRefetch, requestsRefetch]);
 
 	return (
 		<friendsContext.Provider
 			value={{
-				requests: requests ? requests : [],
-				friends: friends ? friends : [],
-				blocked: blocked ? blocked : [],
+				friends: friends ? friends : [] as Friend[],
+				blocked: blocked ? blocked : [] as BlockedFriend[],
+				requests: requests ? requests : [] as FriendRequest[],
 				friend,
 				request,
 				refetch,

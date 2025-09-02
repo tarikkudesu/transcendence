@@ -6,13 +6,12 @@ const Page404: React.FC = () => {
 	return (
 		<>
 			<SafeImage
+				fill
 				priority
 				src="/arena.jpeg"
 				fallbackSrc=""
 				alt="cover image"
-				fill
-				className="opacity-5"
-				style={{ objectFit: 'cover' }}
+				className="opacity-5 object-cover"
 			/>
 			<div className="relative h-screen">
 				<Svg404 />

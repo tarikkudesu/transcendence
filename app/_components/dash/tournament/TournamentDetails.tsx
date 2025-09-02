@@ -48,7 +48,7 @@ const TournamentDetails: React.FC<{ name: string }> = ({ name }) => {
 										<Flex align="center" direction="column" gap="2">
 											<User.Avatar username={ele.username} />
 											<Box
-												height={`${ele.round_level * 20}px`}
+												height={`${(ele.round_level + 1) * 20}px`}
 												width="20px"
 												className="rounded-full bg-accent-300"
 											></Box>

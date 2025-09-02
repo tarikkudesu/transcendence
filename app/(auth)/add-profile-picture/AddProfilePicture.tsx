@@ -16,6 +16,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 const AddProfilePicture: React.FC<unknown> = () => {
 	const router = useRouter();
 	const { notify } = useNotification();
+	const [src, setSrc] = useState<string>('');
 	const [file, setFile] = useState<File | null>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const { data, isLoading, error, updateavatarcall, reset } = useUpdateAvatarCall();
@@ -30,7 +31,15 @@ const AddProfilePicture: React.FC<unknown> = () => {
 	});
 
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		if (e.target.files && e.target.files[0]) setFile(e.target.files[0]);
+		if (e.target.files && e.target.files[0]) {
+			setFile(e.target.files[0]);
+			const reader: FileReader = new FileReader();
+			reader.readAsDataURL(e.target.files[0]);
+			reader.onload = () => {
+				setSrc(typeof reader.result === 'string' ? reader.result : '');
+				console.log(reader.result);
+			};
+		}
 	};
 
 	const triggerFileSelect = useCallback(() => {
@@ -77,10 +86,11 @@ const AddProfilePicture: React.FC<unknown> = () => {
 							priority
 							width={100}
 							height={100}
+							src={'/Logo.png'}
 							alt="Logo as avatar"
 							fallbackSrc="/Logo.png"
-							src={user ? user.avatar : '/Logo.png'}
-							className="m-auto rounded-full"
+							className="m-auto rounded-full aspect-square object-cover"
+							loader={() => src ? src : (user ? user.avatar : '/Logo.png')}
 						/>
 					</div>
 					<Box height="12px" />

@@ -5,8 +5,10 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import { PongButton } from '../../buttons/ServerButtons';
 import { useNotification } from '../../mini/useNotify';
 import { useUpdateUsernameCall } from '@/app/_service/auth/Fetchers';
+import { useUser } from '@/app/_service/user/userContext';
 
 const UpdateUsername: React.FC = () => {
+	const { username } = useUser();
 	const { notify } = useNotification();
 	const [newUsername, setNewUsername] = useState<string>('');
 	const { data, error, isLoading, reset, updateusernamecall } = useUpdateUsernameCall();
@@ -26,7 +28,7 @@ const UpdateUsername: React.FC = () => {
 	return (
 		<div className="my-[36px]">
 			<Text as="div" mb="2" mt="4" weight="bold" size="5">
-				Update your username
+				Update Your Username
 			</Text>
 			<Text as="div" mb="4" mt="1" className="text-sm text-dark-200">
 				This action is irreversible. Once you delete your account, restoring your account or any associated data will be impossible.
@@ -48,7 +50,9 @@ const UpdateUsername: React.FC = () => {
 						className="bg-accent-300 text-black disabled:bg-dark-600 disabled:text-dark-200"
 						disabled={!newUsername || isLoading}
 						loading={isLoading}
-						onClick={() => updateusernamecall({ newusername: newUsername })}
+						onClick={() => {
+							if (username !== newUsername) updateusernamecall({ newusername: newUsername });
+						}}
 					>
 						Save
 					</PongButton>

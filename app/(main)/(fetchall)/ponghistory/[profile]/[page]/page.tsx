@@ -32,7 +32,8 @@ const Page: React.FC<{ params: Promise<{ profile: string; page: string }> }> = a
 						Ping Pong History
 					</Text>
 					<Text as="div" size="3" mb="8" align="center" className="text-dark-200">
-						Watch ongoing tournament games in real time and track their progress from start to finish.
+						Your game log. Look back at past matches, see your win/loss record, and revisit classic rivalries. Who did you play?
+						Who won? The answers are all here.
 					</Text>
 				</div>
 				<PongHistory username={profile} page={Number(page)} />

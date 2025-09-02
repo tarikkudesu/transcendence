@@ -7,12 +7,10 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import React from 'react';
 
-
 export const metadata: Metadata = {
 	...baseMetadata,
 	...mainAppMetadata.tournaments,
 };
-
 
 const Page: React.FC<{ params: Promise<{ page: string }> }> = async ({ params }) => {
 	const { page } = await params;
@@ -27,7 +25,8 @@ const Page: React.FC<{ params: Promise<{ page: string }> }> = async ({ params })
 						Tournaments History
 					</Text>
 					<Text as="div" size="3" mb="8" align="center" className="text-dark-200">
-						Watch ongoing tournament games in real time and track their progress from start to finish.
+						The hall of champions. Look back at the history and outcomes of every tournament. See who participated, who
+						conquered, and who claimed the top prize.
 					</Text>
 				</div>
 				<TournamentHistory page={Number(page)} />

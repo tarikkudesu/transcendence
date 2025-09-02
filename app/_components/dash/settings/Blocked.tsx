@@ -35,26 +35,30 @@ const Blocked: React.FC = () => {
 			</Text>
 			{blocked && (
 				<Card>
-					{blocked.map((ele, index) => (
-						<div key={index} className="p-2 flex justify-between items-center gap-8">
-							<User.Trigger
-								username={ele.username}
-								avatar={ele.avatar_url}
-								extra={
-									<Text as="div" size="1" weight="medium" className="text-dark-300">
-										{ele.stat}
-									</Text>
-								}
-							/>
-							<PongButton
-								loading={blocking}
-								onClick={() => declineCall({ to: ele.username })}
-								className="bg-dark-900 hover:bg-red-600 hover:text-white"
-							>
-								Unblock
-							</PongButton>
-						</div>
-					))}
+					{blocked.length === 0 ? (
+						<div className="text-dark-200 text-center text-sm">You have no blocked friends</div>
+					) : (
+						blocked.map((ele, index) => (
+							<div key={index} className="p-2 flex justify-between items-center gap-8">
+								<User.Trigger
+									username={ele.username}
+									avatar={ele.avatar_url}
+									extra={
+										<Text as="div" size="1" weight="medium" className="text-dark-300">
+											{ele.stat}
+										</Text>
+									}
+								/>
+								<PongButton
+									loading={blocking}
+									onClick={() => declineCall({ to: ele.username })}
+									className="bg-dark-900 hover:bg-red-600 hover:text-white"
+								>
+									Unblock
+								</PongButton>
+							</div>
+						))
+					)}
 				</Card>
 			)}
 		</div>

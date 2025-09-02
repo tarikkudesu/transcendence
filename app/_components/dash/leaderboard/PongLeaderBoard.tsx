@@ -32,7 +32,7 @@ const PongLeaderBoardFirstPlayer: React.FC<PongLeaderBoardPlayerProps> = ({ play
 				<SafeImage
 					fallbackSrc="/Logo.png"
 					priority
-					className="rounded-full border-4 border-accent-300 absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/4"
+					className="rounded-full border-4 border-accent-300 absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/4 object-cover aspect-square"
 					src={player.avatar_url}
 					alt="player card"
 					width={120}
@@ -56,7 +56,7 @@ const PongLeaderBoardSecondPlayer: React.FC<PongLeaderBoardPlayerProps> = ({ pla
 				<SafeImage
 					fallbackSrc="/Logo.png"
 					priority
-					className="rounded-full border-4 border-orange-600 absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/4"
+					className="rounded-full border-4 border-orange-600 absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/4 object-cover aspect-square"
 					src={player.avatar_url}
 					alt="player card"
 					width={100}
@@ -80,7 +80,7 @@ const PongLeaderBoardThirdPlayer: React.FC<PongLeaderBoardPlayerProps> = ({ play
 				<SafeImage
 					fallbackSrc="/Logo.png"
 					priority
-					className="rounded-full border-4 border-magenta-600 absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/4"
+					className="rounded-full border-4 border-magenta-600 absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/4 object-cover aspect-square"
 					src={player.avatar_url}
 					alt="player card"
 					width={80}
@@ -109,7 +109,7 @@ const PongLeaderBoard: React.FC = ({}) => {
 		if (isPending) return <Spinner />;
 		return (
 			<>
-				{leaderBoard && leaderBoard.length && (
+				{leaderBoard && (
 					<>
 						<Flex justify="center" align="center" className="px-[40px] pt-[20px] min-h-[410px]">
 							{leaderBoard[2] && <PongLeaderBoardThirdPlayer player={leaderBoard[2]} />}

@@ -83,6 +83,8 @@ const UserProfilePage: React.FC<{ username: string }> = ({ username }) => {
 		queryFn: fetchData,
 	});
 
+	console.log(user);
+
 	const pooler: ClientPlayer | undefined = getPooler(username);
 	const request: FriendRequest | null = getRequest(username);
 	const friend: Friend | null = getFriend(username);
@@ -100,7 +102,7 @@ const UserProfilePage: React.FC<{ username: string }> = ({ username }) => {
 						src={user.avatar}
 						alt="player card"
 						fallbackSrc="/Logo.png"
-						className={`rounded-full cursor-pointer border-4 ${friend && pooler ? 'border-accent-300' : 'border-dark-400'}`}
+						className={`rounded-full cursor-pointer border-4 aspect-square object-cover ${friend && pooler ? 'border-accent-300' : 'border-dark-400'}`}
 					></SafeImage>
 					<Text as="div" size="7" weight="bold" align="center" className="mt-4 text-white font-bold">
 						{username}

@@ -32,7 +32,7 @@ const UpdatePassword: React.FC = () => {
 	return (
 		<div className="my-[36px]">
 			<Text as="div" mb="2" mt="4" weight="bold" size="5">
-				Update your password
+				Update Your Password
 			</Text>
 			<Text as="div" mb="4" mt="1" className="text-sm text-dark-200">
 				This action is irreversible. Once you delete your account, restoring your account or any associated data will be impossible.
@@ -73,7 +73,7 @@ const UpdatePassword: React.FC = () => {
 						onClick={() => updatepasscall({ newpassword: password })}
 						disabled={!password || isLoading}
 						loading={isLoading}
-					></PongButton>
+					>Save</PongButton>
 				</Flex>
 			</Card>
 		</div>

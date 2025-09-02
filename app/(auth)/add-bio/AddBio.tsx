@@ -18,14 +18,19 @@ const AddBio: React.FC<unknown> = () => {
 	const [bio, setBio] = useState<string>('');
 	const { data, error, isLoading, updatebiocall, reset } = useUpdateBioCall();
 	const fetchData = (): Promise<UserProfile> => client.get(`/users/me`).then((response) => response.data);
-	const { error: userError, isPending: userLoading } = useQuery({
+	const {
+		data: user,
+		error: userError,
+		isPending: userLoading,
+	} = useQuery({
 		queryKey: ['usersme'],
 		queryFn: fetchData,
 	});
 
 	useEffect(() => {
 		if (userError) router.push('/login');
-	}, [router, userError]);
+		if (user) setBio(user.bio);
+	}, [router, user, userError]);
 
 	useEffect(() => {
 		if (data) {
@@ -62,9 +67,11 @@ const AddBio: React.FC<unknown> = () => {
 							minLength={4}
 							maxLength={1000}
 							value={bio}
-							className="text-white w-full my-1 outline-none rounded-md p-3 text-sm border border-dark-500 bg-transparent resize-y h-40 min-h-20 max-h-60"
-							onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setBio(e.target.value)}
 							name="bio"
+							className="text-white w-full my-1 outline-none rounded-md p-3 text-sm border border-dark-500 bg-transparent resize-y h-40 min-h-20 max-h-60"
+							onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
+								if (user) setBio(e.target.value);
+							}}
 						></textarea>
 					</label>
 					<Box height="20px" />
@@ -72,12 +79,12 @@ const AddBio: React.FC<unknown> = () => {
 						loading={isLoading || userLoading}
 						disabled={isLoading || userLoading}
 						onClick={() => updatebiocall({ bio })}
-						className="w-full disabled:bg-dark-600 disabled:text-white bg-accent-300 text-black"
+						className="w-full disabled:bg-dark-600 disabled:text-white bg-accent-300 text-black hover:bg-accent-200"
 					>
 						Continue
 					</PongButton>
 					<Box height="20px" />
-					<Link href="">
+					<Link href="/">
 						<PongButton className="w-full bg-dark-600 text-dark-200 hover:text-white hover:bg-dark-500">Skip</PongButton>
 					</Link>
 				</div>

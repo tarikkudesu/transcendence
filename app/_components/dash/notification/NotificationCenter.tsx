@@ -15,7 +15,7 @@ const NotificationCenter = () => {
 	const { notifications, send } = useNotificationSocket();
 	const [active, setActive] = useState<boolean>(false);
 
-	const getNotificationTitle = (
+	const getNotificationTitle = useCallback((
 		event:
 			| 'NEWTOURNAMENTDATE'
 			| 'REGESTRATIONOPEN'
@@ -40,8 +40,8 @@ const NotificationCenter = () => {
 				return 'You Won!';
 		}
 		return '';
-	};
-	const getNotificationMessage = (
+	}, []);
+	const getNotificationMessage = useCallback((
 		sender: string,
 		event:
 			| 'NEWTOURNAMENTDATE'
@@ -67,8 +67,8 @@ const NotificationCenter = () => {
 				return 'Congratulations on winning the tournament, Keep up the good work.';
 		}
 		return '';
-	};
-	const getNotificationIcon = (
+	}, []);
+	const getNotificationIcon = useCallback((
 		event:
 			| 'NEWTOURNAMENTDATE'
 			| 'REGESTRATIONOPEN'
@@ -94,8 +94,8 @@ const NotificationCenter = () => {
 				return <SvgTrophy size={18} />;
 		}
 		return null;
-	};
-	const getNotificationAction = (
+	}, [])
+	const getNotificationAction = useCallback((
 		sender: string,
 		id: number,
 		event:
@@ -159,7 +159,7 @@ const NotificationCenter = () => {
 				return <></>;
 		}
 		return null;
-	};
+	}, []);
 
 	const filterNotifications = useCallback((notification: NotificationType): boolean => {
 		if (notification.event !== 'FRIENDREQUEST') return true;

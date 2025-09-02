@@ -45,8 +45,7 @@ const ChatList: React.FC = ({}) => {
 				draggable={false}
 				alt="cover image"
 				src="/chatback.png"
-				className="opacity-25"
-				style={{ objectFit: 'cover', objectPosition: 'right' }}
+				className="opacity-25 object-cover object-right"
 			/>
 			<div className="row-span-5 py-6 shadow-lg bg-accent-900/10 border-r-[1px] border-accent-700 h-full select-none relative">
 				<Text as="div" my="4" size="4" weight="bold" className="mx-6">

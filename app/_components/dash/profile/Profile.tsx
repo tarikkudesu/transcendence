@@ -20,7 +20,8 @@ const DashboardProfile: React.FC = ({}) => {
 					width={100}
 					height={100}
 					alt="My profile image"
-					className="mx-auto border-4 border-accent-300 border-dashed rounded-full"
+					className="mx-auto border-4 border-accent-300 border-dashed rounded-full object-cover aspect-square"
+
 				/>
 				<Box height="16px" />
 				<Text as="div" align="center" size="4" weight="bold" className="text-white">

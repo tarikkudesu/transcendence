@@ -2,9 +2,10 @@ import { Box, Tabs } from '@radix-ui/themes';
 import React from 'react';
 
 import { Text } from '@radix-ui/themes';
+import { Metadata } from 'next';
 import Blocked from '../_components/dash/settings/Blocked';
 import DeleteAccount from '../_components/dash/settings/DeleteAccount';
-import UpdateAvatar from '../_components/dash/settings/UpdateAvater';
+import UpdateAvatar from '../_components/dash/settings/UpdateAvatar';
 import UpdateBio from '../_components/dash/settings/UpdateBio';
 import UpdatePassword from '../_components/dash/settings/UpdatePassword';
 import UpdateUsername from '../_components/dash/settings/UpdateUsername';
@@ -16,15 +17,12 @@ import Footer from '../_components/mini/Footer';
 import Header from '../_components/mini/Header';
 import TitleSubTitle from '../_components/mini/TitleSubTitle';
 import Username from '../_components/mini/Username';
-import { Metadata } from 'next';
 import { baseMetadata, mainAppMetadata } from '../_service/consts';
-
 
 export const metadata: Metadata = {
 	...baseMetadata,
 	...mainAppMetadata.dashboard,
 };
-
 
 const Dashboard: React.FC<unknown> = () => {
 	return (

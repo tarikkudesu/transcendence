@@ -45,7 +45,8 @@ const LeaderBoard: React.FC<unknown> = () => {
 					</Tooltip>
 				</Flex>
 				<Text as="div" size="3" mb="8" className="text-dark-200">
-					Browse a live list of players currently online, ready to join matches or challenges.
+					See how you stack up! This is where legends are forged and champions rise. Track your rank, challenge the top players,
+					and climb your way to the top of the leaderboard.
 				</Text>
 				<PongLeaderBoard />
 			</div>
@@ -80,7 +81,8 @@ const LeaderBoard: React.FC<unknown> = () => {
 					</Tooltip>
 				</Flex>
 				<Text as="div" size="3" mb="8" className="text-dark-200">
-					Browse a live list of players currently online, ready to join matches or challenges.
+					See how you stack up! This is where legends are forged and champions rise. Track your rank, challenge the top players,
+					and climb your way to the top of the leaderboard.
 				</Text>
 				<DoomLeaderBoard />
 			</div>

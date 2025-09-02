@@ -126,13 +126,12 @@ const MainSearch: React.FC = () => {
 				}`}
 			>
 				<SafeImage
+					fill
 					priority
 					src="/search.png"
 					fallbackSrc=""
 					alt="cover image"
-					fill
-					className="opacity-50 -z-10"
-					style={{ objectFit: 'contain', objectPosition: 'right' }}
+					className="opacity-50 -z-10 object-contain object-right"
 				/>
 				{active && search && <Search search={search} clear={closeAndClear} />}
 				<SearchInput setSearch={setSearch} />

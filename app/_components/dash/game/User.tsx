@@ -31,7 +31,7 @@ const Avatar: React.FC<{ username: string; size?: number, className?: string }> 
 			<SafeImage
 				priority
 				fallbackSrc="/Logo.png"
-				className={`rounded-full cursor-pointer ${className}`}
+				className={`rounded-full cursor-pointer object-cover aspect-square ${className}`}
 				src={'/Logo.png'}
 				alt="player card"
 				height={size ? size : 42}
@@ -44,7 +44,7 @@ const Avatar: React.FC<{ username: string; size?: number, className?: string }> 
 				<SafeImage
 					priority
 					fallbackSrc="/Logo.png"
-					className={`rounded-full cursor-pointer ${className}`}
+					className={`rounded-full cursor-pointer object-cover aspect-square ${className}`}
 					src={data.avatar}
 					alt="player card"
 					height={size ? size : 42}
@@ -72,7 +72,7 @@ const Profile: React.FC<{ username: string }> = ({ username }) => {
 						src={'/Logo.png'}
 						alt="player card"
 						fallbackSrc="/Logo.png"
-						className={'rounded-full cursor-pointer'}
+						className={'rounded-full cursor-pointer object-cover aspect-square'}
 					></SafeImage>
 					<Text as="div" className="ml-4 text-md font-bold">
 						{username}
@@ -90,7 +90,7 @@ const Profile: React.FC<{ username: string }> = ({ username }) => {
 					src={data.avatar}
 					alt="player card"
 					fallbackSrc="/Logo.png"
-					className={'rounded-full cursor-pointer'}
+					className={'rounded-full cursor-pointer object-cover aspect-square'}
 				></SafeImage>
 				<Text as="div" className="ml-4 text-md font-bold">
 					{username}
@@ -114,7 +114,7 @@ const Trigger: React.FC<{
 					src={avatar}
 					alt="player card"
 					fallbackSrc="/Logo.png"
-					className={'rounded-full cursor-pointer'}
+					className={'rounded-full cursor-pointer object-cover aspect-square'}
 				></SafeImage>
 				<Text as="div" className="ml-4 text-md font-bold">
 					{username}
@@ -159,7 +159,7 @@ const Dialog: React.FC<{
 						src={user.avatar}
 						alt="player card"
 						fallbackSrc="/Logo.png"
-						className={'rounded-full cursor-pointer'}
+						className={'rounded-full cursor-pointer object-cover aspect-square'}
 					></SafeImage>
 					<Text as="div" className="ml-4 text-md font-bold">
 						{username}

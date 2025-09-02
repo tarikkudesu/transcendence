@@ -18,7 +18,7 @@ export default function Layout({
 	};
 	return (
 		<>
-			<SafeImage priority src="/arena.jpeg" fallbackSrc="" alt="cover image" fill className="opacity-5" style={{ objectFit: 'cover' }} />
+			<SafeImage priority src="/arena.jpeg" fallbackSrc="" alt="cover image" fill className="opacity-5 object-cover" />
 			<ToastContainer
 				position="bottom-right"
 				autoClose={5000}

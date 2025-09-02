@@ -16,7 +16,6 @@ export default function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	console.log('-----------------------------------------------------------------------------------------');
 	return (
 		<html lang="en">
 			<body className="antialiased m-0 p-0 bg-dark-900">
