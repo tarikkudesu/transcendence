@@ -26,7 +26,7 @@ client.interceptors.response.use(
 				console.log('refreshing token failed client', refreshError);
 				return Promise.reject("could not refresh token");
 			}
-		} else return Promise.reject("");
+		} else return Promise.reject(error);
 	}
 );
 
