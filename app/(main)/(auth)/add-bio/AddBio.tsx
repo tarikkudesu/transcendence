@@ -4,10 +4,8 @@ import { PongButton } from '@/app/_components/buttons/ServerButtons';
 import Logo from '@/app/_components/mini/Logo';
 import { useNotification } from '@/app/_components/mini/useNotify';
 import { useUpdateBioCall } from '@/app/_service/auth/Fetchers';
-import client from '@/app/_service/axios/client';
-import { UserProfile } from '@/app/_service/schema';
+import { useUser } from '@/app/_service/user/userContext';
 import { Box, Text } from '@radix-ui/themes';
-import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { ChangeEvent, useEffect, useState } from 'react';
@@ -15,22 +13,9 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 const AddBio: React.FC<unknown> = () => {
 	const router = useRouter();
 	const { notify } = useNotification();
-	const [bio, setBio] = useState<string>('');
+	const { bio: old } = useUser();
+	const [bio, setBio] = useState<string>(old);
 	const { data, error, isLoading, updatebiocall, reset } = useUpdateBioCall();
-	const fetchData = (): Promise<UserProfile> => client.get(`/users/me`).then((response) => response.data);
-	const {
-		data: user,
-		error: userError,
-		isPending: userLoading,
-	} = useQuery({
-		queryKey: ['usersme'],
-		queryFn: fetchData,
-	});
-
-	useEffect(() => {
-		if (userError) router.push('/login');
-		if (user) setBio(user.bio);
-	}, [router, user, userError]);
 
 	useEffect(() => {
 		if (data) {
@@ -69,15 +54,13 @@ const AddBio: React.FC<unknown> = () => {
 							value={bio}
 							name="bio"
 							className="text-white w-full my-1 outline-none rounded-md p-3 text-sm border border-dark-500 bg-transparent resize-y h-40 min-h-20 max-h-60"
-							onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
-								if (user) setBio(e.target.value);
-							}}
+							onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setBio(e.target.value)}
 						></textarea>
 					</label>
 					<Box height="20px" />
 					<PongButton
-						loading={isLoading || userLoading}
-						disabled={isLoading || userLoading}
+						loading={isLoading}
+						disabled={isLoading}
 						onClick={() => updatebiocall({ bio })}
 						className="w-full disabled:bg-dark-600 disabled:text-white bg-accent-300 text-black hover:bg-accent-200"
 					>

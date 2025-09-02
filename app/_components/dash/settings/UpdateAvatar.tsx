@@ -23,7 +23,6 @@ const UpdateAvatar: React.FC = () => {
 			reader.readAsDataURL(e.target.files[0]);
 			reader.onload = () => {
 				setSrc(typeof reader.result === 'string' ? reader.result : '');
-				console.log(reader.result);
 			};
 		}
 	};

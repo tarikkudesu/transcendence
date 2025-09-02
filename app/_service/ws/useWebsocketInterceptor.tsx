@@ -7,9 +7,10 @@ export function useWebsocketInterceptor() {
 		return new Promise(async (resolve, reject) => {
 			try {
 				await client.post('/auth/refresh');
+				console.log('refreshing token success websocket');
 				resolve('success');
 			} catch (refreshError) {
-				console.log('refreshing token failed', refreshError);
+				console.log('refreshing token failed websocket', refreshError);
 				reject('failed');
 			}
 		});

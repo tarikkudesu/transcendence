@@ -5,30 +5,20 @@ import Logo from '@/app/_components/mini/Logo';
 import SafeImage from '@/app/_components/mini/SafeImage';
 import { useNotification } from '@/app/_components/mini/useNotify';
 import { useUpdateAvatarCall } from '@/app/_service/auth/Fetchers';
-import client from '@/app/_service/axios/client';
-import { UserProfile } from '@/app/_service/schema';
+import { useUser } from '@/app/_service/user/userContext';
 import { Box, Text } from '@radix-ui/themes';
-import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 const AddProfilePicture: React.FC<unknown> = () => {
 	const router = useRouter();
+	const { avatar } = useUser();
 	const { notify } = useNotification();
 	const [src, setSrc] = useState<string>('');
 	const [file, setFile] = useState<File | null>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const { data, isLoading, error, updateavatarcall, reset } = useUpdateAvatarCall();
-	const fetchData = (): Promise<UserProfile> => client.get(`/users/me`).then((response) => response.data);
-	const {
-		data: user,
-		error: userError,
-		isPending: userLoading,
-	} = useQuery({
-		queryKey: ['usersme'],
-		queryFn: fetchData,
-	});
 
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files && e.target.files[0]) {
@@ -37,7 +27,6 @@ const AddProfilePicture: React.FC<unknown> = () => {
 			reader.readAsDataURL(e.target.files[0]);
 			reader.onload = () => {
 				setSrc(typeof reader.result === 'string' ? reader.result : '');
-				console.log(reader.result);
 			};
 		}
 	};
@@ -45,10 +34,6 @@ const AddProfilePicture: React.FC<unknown> = () => {
 	const triggerFileSelect = useCallback(() => {
 		fileInputRef.current?.click();
 	}, []);
-
-	useEffect(() => {
-		if (userError) router.push('/login');
-	}, [router, userError]);
 
 	useEffect(() => {
 		if (data) {
@@ -89,8 +74,8 @@ const AddProfilePicture: React.FC<unknown> = () => {
 							src={'/Logo.png'}
 							alt="Logo as avatar"
 							fallbackSrc="/Logo.png"
+							loader={() => (src ? src : avatar)}
 							className="m-auto rounded-full aspect-square object-cover"
-							loader={() => src ? src : (user ? user.avatar : '/Logo.png')}
 						/>
 					</div>
 					<Box height="12px" />
@@ -104,8 +89,8 @@ const AddProfilePicture: React.FC<unknown> = () => {
 					/>
 					<Box height="20px" />
 					<PongButton
-						loading={isLoading || userLoading}
-						disabled={isLoading || userLoading}
+						loading={isLoading}
+						disabled={isLoading}
 						className="w-full disabled:bg-dark-600 disabled:text-white bg-accent-300 text-black hover:bg-accent-200"
 						onClick={() => {
 							if (file) updateavatarcall({ avatar: file });

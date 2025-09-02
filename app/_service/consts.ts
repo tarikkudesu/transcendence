@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 
+export const auth: string[] = ['/2fa-authentication', '/forgot-password', '/reset-password', '/verify-account', '/signup', '/login'];
+
 export const visitable = [
 	'/',
 	'/chat',

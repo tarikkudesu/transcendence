@@ -3,7 +3,6 @@
 import { useUpdatePassCall } from '@/app/_service/auth/Fetchers';
 import { SvgCheckCircle } from '@/app/_svg/svg';
 import { Box, Card, Flex, Text } from '@radix-ui/themes';
-import Link from 'next/link';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { PongButton } from '../../buttons/ServerButtons';
 import { useNotification } from '../../mini/useNotify';
@@ -56,9 +55,6 @@ const UpdatePassword: React.FC = () => {
 						</label>
 						<Box height="8px" />
 						<Flex justify="between" align="center">
-							<Link href="/forgot-password" className="text-sm text-dark-200 hover:text-accent-300">
-								Forgot password?
-							</Link>
 							<label className="flex items-center gap-2 cursor-pointer select-none">
 								<input type="checkbox" checked={type === 'text'} onChange={switchType} className="peer hidden" />
 								<span className="text-sm text-dark-200">show password</span>

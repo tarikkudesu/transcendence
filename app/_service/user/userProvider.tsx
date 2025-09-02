@@ -26,6 +26,7 @@ const UserProvider: React.FC<{
 	const { data: user, error: userError, isPending: userLoading } = useQuery({
 		queryKey: ['usersme'],
 		queryFn: fetchData,
+		staleTime: 0,
 	});
 
 	useEffect(() => {

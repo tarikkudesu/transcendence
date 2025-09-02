@@ -83,8 +83,6 @@ const UserProfilePage: React.FC<{ username: string }> = ({ username }) => {
 		queryFn: fetchData,
 	});
 
-	console.log(user);
-
 	const pooler: ClientPlayer | undefined = getPooler(username);
 	const request: FriendRequest | null = getRequest(username);
 	const friend: Friend | null = getFriend(username);

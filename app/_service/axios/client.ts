@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 
-export const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const client = axios.create({
 	baseURL: API_BASE,
@@ -20,14 +20,13 @@ client.interceptors.response.use(
 		if (error.response?.status === 401) {
 			try {
 				await client.post('/auth/refresh');
-				console.log('refreshing token success');
+				console.log('refreshing token success client');
 				return client(originalRequest);
 			} catch (refreshError) {
-				console.log('refreshing token failed', refreshError);
-				window.location.href = '/login';
-				return Promise.reject(refreshError);
+				console.log('refreshing token failed client', refreshError);
+				return Promise.reject("could not refresh token");
 			}
-		} else return Promise.reject(error);
+		} else return Promise.reject("");
 	}
 );
 

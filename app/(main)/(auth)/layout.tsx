@@ -2,7 +2,6 @@
 
 import { ToastContainer } from 'react-toastify';
 import SafeImage from '../_components/mini/SafeImage';
-import AuthWrapper from '../_service/auth/authWrapper';
 
 export default function Layout({
 	children,
@@ -36,7 +35,7 @@ export default function Layout({
 				}
 				closeButton={false}
 			/>
-			<AuthWrapper>{children}</AuthWrapper>
+			{children}
 		</>
 	);
 }
