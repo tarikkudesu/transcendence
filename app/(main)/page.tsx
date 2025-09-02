@@ -4,7 +4,6 @@ import React from 'react';
 import { Text } from '@radix-ui/themes';
 import { Metadata } from 'next';
 import Blocked from '../_components/dash/settings/Blocked';
-import DeleteAccount from '../_components/dash/settings/DeleteAccount';
 import UpdateAvatar from '../_components/dash/settings/UpdateAvatar';
 import UpdateBio from '../_components/dash/settings/UpdateBio';
 import UpdatePassword from '../_components/dash/settings/UpdatePassword';

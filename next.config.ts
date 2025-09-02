@@ -1,7 +1,7 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-	distDir: 'build',
+	distDir: '.next',
 	reactStrictMode: false,
 	images: {
 		remotePatterns: [

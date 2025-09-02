@@ -1,8 +1,8 @@
 'use client';
 
 import { ToastContainer } from 'react-toastify';
-import SafeImage from '../_components/mini/SafeImage';
 import AuthWrapper from '../_service/auth/authWrapper';
+import SafeImage from '../_components/mini/SafeImage';
 
 export default function Layout({
 	children,

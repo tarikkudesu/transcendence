@@ -1,7 +1,7 @@
 'use client';
 
+import SafeImage from '@/app/_components/mini/SafeImage';
 import { ToastContainer } from 'react-toastify';
-import SafeImage from '../_components/mini/SafeImage';
 
 export default function Layout({
 	children,

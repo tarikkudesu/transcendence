@@ -159,7 +159,7 @@ const NotificationCenter = () => {
 				return <></>;
 		}
 		return null;
-	}, []);
+	}, [router, send]);
 
 	const filterNotifications = useCallback((notification: NotificationType): boolean => {
 		if (notification.event !== 'FRIENDREQUEST') return true;
