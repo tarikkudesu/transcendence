@@ -13,7 +13,6 @@ const UpdateBio: React.FC = () => {
 	const { notify } = useNotification();
 	const { data, error, isLoading, reset, updatebiocall } = useUpdateBioCall();
 
-
 	useEffect(() => {
 		if (data) {
 			notify({ message: data.message, success: true });
@@ -31,7 +30,7 @@ const UpdateBio: React.FC = () => {
 				Update Your Bio
 			</Text>
 			<div className="mt-1 mb-4 text-sm text-dark-200">
-				This action is irreversible. Once you delete your account, restoring your account or any associated data will be impossible.
+				Here&apos;s your chance to share a bit about yourself. Keep it short, sweet, or funny—make it uniquely you!
 			</div>
 			<Card>
 				<Flex justify="between" align="center" p="2" gap="9">
@@ -49,7 +48,6 @@ const UpdateBio: React.FC = () => {
 							if (bio) updatebiocall({ bio });
 						}}
 						loading={isLoading}
-
 						className="bg-accent-300 hover:bg-accent-200 text-black disabled:bg-dark-600 disabled:text-dark-200"
 					>
 						Save

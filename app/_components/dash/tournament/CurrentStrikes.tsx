@@ -21,7 +21,7 @@ const CurrentStrikes: React.FC = ({}) => {
 					<Tooltip content={ele.username} key={index}>
 						<Flex align="center" direction="column" gap="2">
 							<User.Avatar username={ele.username} />
-							<Box height={`${ele.level * 20}px`} width="20px" className="rounded-full bg-accent-300"></Box>
+							<Box height={`${(ele.level + 1) * 20}px`} width="20px" className="rounded-full bg-accent-300"></Box>
 							<Text weight="bold" size="4">
 								{ele.level}
 							</Text>

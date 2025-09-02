@@ -61,9 +61,8 @@ const Dashboard: React.FC<unknown> = () => {
 						</Tabs.Content>
 
 						<Tabs.Content value="account">
-							<TitleSubTitle subtitle="Delete your account, reset your password">Account Settings</TitleSubTitle>
+							<TitleSubTitle subtitle="This is your personal space to control how your account works. Adjust your security settings and manage who you interact with.">Account Settings</TitleSubTitle>
 							<UpdatePassword />
-							<DeleteAccount />
 							<Blocked />
 						</Tabs.Content>
 					</Box>

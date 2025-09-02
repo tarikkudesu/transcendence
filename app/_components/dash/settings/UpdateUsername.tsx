@@ -31,7 +31,8 @@ const UpdateUsername: React.FC = () => {
 				Update Your Username
 			</Text>
 			<Text as="div" mb="4" mt="1" className="text-sm text-dark-200">
-				This action is irreversible. Once you delete your account, restoring your account or any associated data will be impossible.
+				You can set a new username, but choose carefully. Changing it will affect how others mention you, and your old name may
+				become available to someone else.
 			</Text>
 			<Card>
 				<Flex justify="between" align="center" gap="9" p="2">

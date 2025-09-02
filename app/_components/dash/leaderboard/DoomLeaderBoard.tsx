@@ -59,8 +59,8 @@ const DoomLeaderBoardSecondPlayer: React.FC<DoomLeaderBoardPlayerProps> = ({ pla
 					className="rounded-full border-4 border-orange-600 absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/4 object-cover aspect-square"
 					src={player.avatar_url}
 					alt="player card"
-					width={120}
-					height={120}
+					width={100}
+					height={100}
 				></SafeImage>
 				<Text as="div" align="center" size="4" weight="bold" className="text-white absolute bottom-4 left-1/2 -translate-x-1/2 ">
 					<User.Username username={player.username} />
@@ -83,8 +83,8 @@ const DoomLeaderBoardThirdPlayer: React.FC<DoomLeaderBoardPlayerProps> = ({ play
 					className="rounded-full border-4 border-magenta-600 absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/4 object-cover aspect-square"
 					src={player.avatar_url}
 					alt="player card"
-					width={120}
-					height={120}
+					width={80}
+					height={80}
 				></SafeImage>
 				<Text as="div" align="center" size="4" weight="bold" className="text-white absolute bottom-4 left-1/2 -translate-x-1/2 ">
 					<User.Username username={player.username} />

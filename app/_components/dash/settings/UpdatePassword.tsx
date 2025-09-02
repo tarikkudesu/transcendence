@@ -35,7 +35,8 @@ const UpdatePassword: React.FC = () => {
 				Update Your Password
 			</Text>
 			<Text as="div" mb="4" mt="1" className="text-sm text-dark-200">
-				This action is irreversible. Once you delete your account, restoring your account or any associated data will be impossible.
+				Please set a new, strong password to protect your account. Use a combination of letters, numbers, and symbols for the best
+				security.
 			</Text>
 			<Card>
 				<Flex justify="between" align="center" gap="9" p="2">
@@ -73,7 +74,9 @@ const UpdatePassword: React.FC = () => {
 						onClick={() => updatepasscall({ newpassword: password })}
 						disabled={!password || isLoading}
 						loading={isLoading}
-					>Save</PongButton>
+					>
+						Save
+					</PongButton>
 				</Flex>
 			</Card>
 		</div>
