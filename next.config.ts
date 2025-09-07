@@ -1,3 +1,4 @@
+
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
@@ -9,18 +10,24 @@ const nextConfig: NextConfig = {
 				protocol: 'https',
 				hostname: 'res.cloudinary.com',
 				port: '',
-				pathname: '/drpmyxx4c/image/upload/v1751976105/avatars/**',
+				pathname: '/drpmyxx4c/image/upload/**/avatars/**',
 				search: '',
 			},
 			{
-				protocol: 'http',
+				protocol: 'https',
 				hostname: 'res.cloudinary.com',
 				port: '',
 				pathname: '/drpmyxx4c/image/upload/**/fastify_avatar/**',
 				search: '',
 			},
+			{
+				protocol: 'https',
+				hostname: 'lh3.googleusercontent.com',
+				port: '',
+				pathname: '/**',
+				search: '',
+			},
 		],
 	},
 };
-
 export default nextConfig;

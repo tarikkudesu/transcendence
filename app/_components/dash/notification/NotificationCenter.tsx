@@ -3,6 +3,7 @@
 import { NotificationType, useNotificationSocket } from '@/app/_service/ws/notification/notificationContext';
 import { Badge, ScrollArea, Text } from '@radix-ui/themes';
 
+import { useFriends } from '@/app/_service/friends/FriendContext';
 import { ReadMessage } from '@/app/_service/ws/notification/composer';
 import { SvgChat, SvgFriend, SvgInbox, SvgPong, SvgTrash, SvgTrophy } from '@/app/_svg/svg';
 import { formatDistanceToNow } from 'date-fns';
@@ -13,153 +14,180 @@ import { PongButton } from '../../buttons/ServerButtons';
 const NotificationCenter = () => {
 	const router = useRouter();
 	const { notifications, send } = useNotificationSocket();
+	const { refetch } = useFriends();
 	const [active, setActive] = useState<boolean>(false);
 
-	const getNotificationTitle = useCallback((
-		event:
-			| 'NEWTOURNAMENTDATE'
-			| 'REGESTRATIONOPEN'
-			| 'TOURNAMENTMATCHUP'
-			| 'TOURNAMENTWON'
-			| 'FRIENDACCEPTEDYOURREQUEST'
-			| 'CHATMESSAGE'
-			| 'FRIENDREQUEST'
-	): string => {
-		switch (event) {
-			case 'CHATMESSAGE':
-				return 'New Message';
-			case 'FRIENDACCEPTEDYOURREQUEST':
-				return 'Friend Request Accepted';
-			case 'NEWTOURNAMENTDATE':
-				return 'Next Tournament';
-			case 'REGESTRATIONOPEN':
-				return 'Registration Open';
-			case 'TOURNAMENTMATCHUP':
-				return "You're Up Next";
-			case 'TOURNAMENTWON':
-				return 'You Won!';
-		}
-		return '';
-	}, []);
-	const getNotificationMessage = useCallback((
-		sender: string,
-		event:
-			| 'NEWTOURNAMENTDATE'
-			| 'REGESTRATIONOPEN'
-			| 'TOURNAMENTMATCHUP'
-			| 'TOURNAMENTWON'
-			| 'FRIENDACCEPTEDYOURREQUEST'
-			| 'CHATMESSAGE'
-			| 'FRIENDREQUEST'
-	): string => {
-		switch (event) {
-			case 'CHATMESSAGE':
-				return `${sender} sent you a new message.`;
-			case 'FRIENDACCEPTEDYOURREQUEST':
-				return `${sender} accepted your friend request.`;
-			case 'NEWTOURNAMENTDATE':
-				return 'New tournament is now available, check the tournament tab.';
-			case 'REGESTRATIONOPEN':
-				return 'Take your place in the next tournament, registration is now open.';
-			case 'TOURNAMENTMATCHUP':
-				return "Get ready, you're up next.";
-			case 'TOURNAMENTWON':
-				return 'Congratulations on winning the tournament, Keep up the good work.';
-		}
-		return '';
-	}, []);
-	const getNotificationIcon = useCallback((
-		event:
-			| 'NEWTOURNAMENTDATE'
-			| 'REGESTRATIONOPEN'
-			| 'TOURNAMENTMATCHUP'
-			| 'TOURNAMENTWON'
-			| 'FRIENDACCEPTEDYOURREQUEST'
-			| 'CHATMESSAGE'
-			| 'FRIENDREQUEST'
-	): React.ReactNode => {
-		switch (event) {
-			case 'CHATMESSAGE':
-				return <SvgChat size={18} />;
-
-			case 'FRIENDACCEPTEDYOURREQUEST':
-				return <SvgFriend size={18} />;
-			case 'NEWTOURNAMENTDATE':
-				return <SvgTrophy size={18} />;
-			case 'REGESTRATIONOPEN':
-				return <SvgTrophy size={18} />;
-			case 'TOURNAMENTMATCHUP':
-				return <SvgPong size={18} />;
-			case 'TOURNAMENTWON':
-				return <SvgTrophy size={18} />;
-		}
-		return null;
-	}, [])
-	const getNotificationAction = useCallback((
-		sender: string,
-		id: number,
-		event:
-			| 'NEWTOURNAMENTDATE'
-			| 'REGESTRATIONOPEN'
-			| 'TOURNAMENTMATCHUP'
-			| 'TOURNAMENTWON'
-			| 'FRIENDACCEPTEDYOURREQUEST'
-			| 'CHATMESSAGE'
-			| 'FRIENDREQUEST'
-	): React.ReactNode => {
-		switch (event) {
-			case 'CHATMESSAGE':
-				return (
-					<PongButton
-						className="w-full bg-dark-950 hover:bg-accent-300 hover:text-black text-sm"
-						onClick={() => {
-							setActive(false);
-							send(ReadMessage(id));
-							router.push(`/chat?chatemate=${sender}`);
-						}}
-					>
-						Reply
-					</PongButton>
-				);
-			case 'FRIENDACCEPTEDYOURREQUEST':
-				return <></>;
-			case 'NEWTOURNAMENTDATE':
-				return <></>;
-			case 'REGESTRATIONOPEN':
-				return (
-					<div className="flex gap-2 mt-2">
-						<PongButton
-							className="w-full bg-dark-950 hover:bg-accent-300 hover:text-black text-sm"
-							onClick={() => {
-								setActive(false);
-								send(ReadMessage(id));
-								router.push('/tournament');
-							}}
-						>
-							Check Out
-						</PongButton>
-					</div>
-				);
-			case 'TOURNAMENTMATCHUP':
-				return (
-					<div className="flex gap-2 mt-2">
-						<PongButton
-							className="w-full bg-dark-950 hover:bg-accent-300 hover:text-black text-sm"
-							onClick={() => {
-								setActive(false);
-								send(ReadMessage(id));
-								router.push('/tournament');
-							}}
-						>
-							Check Out
-						</PongButton>
-					</div>
-				);
-			case 'TOURNAMENTWON':
-				return <></>;
-		}
-		return null;
-	}, [router, send]);
+	const getNotificationTitle = useCallback(
+		(
+			event:
+				| 'NEWTOURNAMENTDATE'
+				| 'REGESTRATIONOPEN'
+				| 'TOURNAMENTMATCHUP'
+				| 'TOURNAMENTWON'
+				| 'FRIENDACCEPTEDYOURREQUEST'
+				| 'CHATMESSAGE'
+				| 'FRIENDREQUEST'
+		): string => {
+			switch (event) {
+				case 'CHATMESSAGE':
+					return 'New Message';
+				case 'FRIENDACCEPTEDYOURREQUEST':
+					return 'Friend Request Accepted';
+				case 'NEWTOURNAMENTDATE':
+					return 'Next Tournament';
+				case 'REGESTRATIONOPEN':
+					return 'Registration Open';
+				case 'TOURNAMENTMATCHUP':
+					return "You're Up Next";
+				case 'TOURNAMENTWON':
+					return 'You Won!';
+			}
+			return '';
+		},
+		[]
+	);
+	const getNotificationMessage = useCallback(
+		(
+			sender: string,
+			event:
+				| 'NEWTOURNAMENTDATE'
+				| 'REGESTRATIONOPEN'
+				| 'TOURNAMENTMATCHUP'
+				| 'TOURNAMENTWON'
+				| 'FRIENDACCEPTEDYOURREQUEST'
+				| 'CHATMESSAGE'
+				| 'FRIENDREQUEST'
+		): string => {
+			switch (event) {
+				case 'CHATMESSAGE':
+					return `${sender} sent you a new message.`;
+				case 'FRIENDACCEPTEDYOURREQUEST':
+					return `${sender} accepted your friend request.`;
+				case 'NEWTOURNAMENTDATE':
+					return 'New tournament is now available, check the tournament tab.';
+				case 'REGESTRATIONOPEN':
+					return 'Take your place in the next tournament, registration is now open.';
+				case 'TOURNAMENTMATCHUP':
+					return "Get ready, you're up next.";
+				case 'TOURNAMENTWON':
+					return 'Congratulations on winning the tournament, Keep up the good work.';
+			}
+			return '';
+		},
+		[]
+	);
+	const getNotificationIcon = useCallback(
+		(
+			event:
+				| 'NEWTOURNAMENTDATE'
+				| 'REGESTRATIONOPEN'
+				| 'TOURNAMENTMATCHUP'
+				| 'TOURNAMENTWON'
+				| 'FRIENDACCEPTEDYOURREQUEST'
+				| 'CHATMESSAGE'
+				| 'FRIENDREQUEST'
+		): React.ReactNode => {
+			switch (event) {
+				case 'CHATMESSAGE':
+					return <SvgChat size={18} />;
+				case 'FRIENDACCEPTEDYOURREQUEST':
+					return <SvgFriend size={18} />;
+				case 'NEWTOURNAMENTDATE':
+					return <SvgTrophy size={18} />;
+				case 'REGESTRATIONOPEN':
+					return <SvgTrophy size={18} />;
+				case 'TOURNAMENTMATCHUP':
+					return <SvgPong size={18} />;
+				case 'TOURNAMENTWON':
+					return <SvgTrophy size={18} />;
+			}
+			return null;
+		},
+		[]
+	);
+	const getNotificationAction = useCallback(
+		(
+			sender: string,
+			id: number,
+			event:
+				| 'NEWTOURNAMENTDATE'
+				| 'REGESTRATIONOPEN'
+				| 'TOURNAMENTMATCHUP'
+				| 'TOURNAMENTWON'
+				| 'FRIENDACCEPTEDYOURREQUEST'
+				| 'CHATMESSAGE'
+				| 'FRIENDREQUEST'
+		): React.ReactNode => {
+			switch (event) {
+				case 'CHATMESSAGE':
+					return (
+						<div className="flex gap-2 mt-2">
+							<PongButton
+								className="w-full bg-dark-950 hover:bg-accent-300 hover:text-black text-sm"
+								onClick={() => {
+									setActive(false);
+									send(ReadMessage(id));
+									router.push(`/chat?chatemate=${sender}`);
+								}}
+							>
+								Reply
+							</PongButton>
+						</div>
+					);
+				case 'FRIENDACCEPTEDYOURREQUEST':
+					return (
+						<div className="flex gap-2 mt-2">
+							<PongButton
+								className="w-full bg-dark-950 hover:bg-accent-300 hover:text-black text-sm"
+								onClick={() => {
+									refetch();
+									send(ReadMessage(id));
+									router.push(`/profile/${sender}`);
+								}}
+							>
+								Check Out
+							</PongButton>
+						</div>
+					);
+				case 'NEWTOURNAMENTDATE':
+					return <></>;
+				case 'REGESTRATIONOPEN':
+					return (
+						<div className="flex gap-2 mt-2">
+							<PongButton
+								className="w-full bg-dark-950 hover:bg-accent-300 hover:text-black text-sm"
+								onClick={() => {
+									setActive(false);
+									send(ReadMessage(id));
+									router.push('/tournament');
+								}}
+							>
+								Check Out
+							</PongButton>
+						</div>
+					);
+				case 'TOURNAMENTMATCHUP':
+					return (
+						<div className="flex gap-2 mt-2">
+							<PongButton
+								className="w-full bg-dark-950 hover:bg-accent-300 hover:text-black text-sm"
+								onClick={() => {
+									setActive(false);
+									send(ReadMessage(id));
+									router.push('/tournament');
+								}}
+							>
+								Check Out
+							</PongButton>
+						</div>
+					);
+				case 'TOURNAMENTWON':
+					return <></>;
+			}
+			return null;
+		},
+		[router, send]
+	);
 
 	const filterNotifications = useCallback((notification: NotificationType): boolean => {
 		if (notification.event !== 'FRIENDREQUEST') return true;

@@ -4,9 +4,9 @@ import { PongButton } from '@/app/_components/buttons/ServerButtons';
 import Logo from '@/app/_components/mini/Logo';
 import { useNotification } from '@/app/_components/mini/useNotify';
 import client from '@/app/_service/axios/client';
-import { PongError, MutateResponse, ForgotPasswordRequest } from '@/app/_service/schema';
+import { ForgotPasswordRequest, MutateResponse, PongError } from '@/app/_service/schema';
 import { Box, Text } from '@radix-ui/themes';
-import { AxiosResponse, AxiosError } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
 import Link from 'next/link';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 

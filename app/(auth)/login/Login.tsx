@@ -12,6 +12,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 function useLoginCall() {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [error, setError] = useState<PongError | null>(null);
@@ -61,9 +63,11 @@ const Login: React.FC<unknown> = () => {
 	useEffect(() => {
 		if (data) {
 			notify({ message: data.message, success: true });
-			const email: string = data.email ?? '';
 			reset();
-			router.push(`2fa-authentication?email=${email ?? ''}`);
+			if (data.path)
+				router.push(data.path);
+			else
+				router.push('/');
 		}
 		if (error) {
 			notify({ message: error.message, error: true });
@@ -143,7 +147,7 @@ const Login: React.FC<unknown> = () => {
 						<Box height="2px" className="bg-dark-600 w-full"></Box>
 					</Flex>
 					<Box height="20px" />
-					<Link href="http://localhost/api/v1/auth/google">
+					<Link href={`${API_BASE}/auth/google`}>
 						<PongButton className="w-full text-white hover:text-black bg-transparent hover:bg-accent-300 border border-accent-300">
 							Sign in with Google
 						</PongButton>

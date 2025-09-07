@@ -18,7 +18,7 @@ const CurrentStrikes: React.FC = ({}) => {
 		return (
 			<Flex align="end" justify="center" gap="4">
 				{tournament.results.map((ele, index) => (
-					<Tooltip content={ele.username} key={index}>
+					<Tooltip content={ele.alias} key={index}>
 						<Flex align="center" direction="column" gap="2">
 							<User.Avatar username={ele.username} />
 							<Box height={`${(ele.level + 1) * 20}px`} width="20px" className="rounded-full bg-accent-300"></Box>
@@ -31,7 +31,9 @@ const CurrentStrikes: React.FC = ({}) => {
 			</Flex>
 		);
 	}, [tournament.results, tournament.state]);
-	
+
+	if (tournament.state === 'not registered') return null;
+
 	return (
 		<div className="my-[80px]">
 			<Text as="div" align="center" size="7" mb="2" weight="bold" className="text-accent-300">

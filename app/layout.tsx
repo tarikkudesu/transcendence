@@ -20,6 +20,9 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
+			<head>
+				<meta name="viewport" content="width=1200, initial-scale=0.5, minimum-scale=0.1, maximum-scale=2.0, user-scalable=yes" />
+			</head>
 			<body className="antialiased m-0 p-0 bg-dark-900">
 				<Theme
 					panelBackground="translucent"

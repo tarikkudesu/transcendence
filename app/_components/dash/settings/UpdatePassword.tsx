@@ -20,10 +20,12 @@ const UpdatePassword: React.FC = () => {
 	useEffect(() => {
 		if (data) {
 			notify({ message: data.message, success: true });
+			setPassword('');
 			reset();
 		}
 		if (error) {
 			notify({ message: error.message, error: true });
+			setPassword('');
 			reset();
 		}
 	}, [data, error, notify, reset]);

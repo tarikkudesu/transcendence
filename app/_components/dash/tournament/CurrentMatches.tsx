@@ -22,16 +22,18 @@ const CurrentMatches: React.FC = ({}) => {
 				</Text>
 				{tournament.nextMatches.map((ele, index) => (
 					<div key={index} className="my-2 flex justify-center">
-						<User.Username className="text-white" username={ele.player} />
+						<User.Username className="text-white" username={ele.playerAlias} />
 						<Text weight="bold" className="text-accent-300 mx-2">
 							:
 						</Text>
-						<User.Username className="text-white" username={ele.opponent} />
+						<User.Username className="text-white" username={ele.opponentAlias} />
 					</div>
 				))}
 			</>
 		);
 	}, [tournament.nextMatches, tournament.round, tournament.state]);
+
+	if (tournament.state === 'not registered') return null;
 
 	return (
 		<div className="my-[80px]">

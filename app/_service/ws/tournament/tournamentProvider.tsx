@@ -1,71 +1,32 @@
 'use client';
 
 import { useNotification } from '@/app/_components/mini/useNotify';
-import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import * as Main from '../game/index';
 import { useWebsocketInterceptor } from '../useWebsocketInterceptor';
-import * as Main from './index';
+import { tournamentContext } from './tournamentContext';
 
-interface GameProviderProps {
+interface TournamentProviderProps {
 	children: React.ReactNode;
 }
 
-const API_BASE = process.env.NEXT_PUBLIC_WS_GAME_URL;
+const API_BASE = process.env.NEXT_PUBLIC_WS_TOURNAMENT_URL;
 
-const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
-	const router = useRouter();
+const TournamentProvider: React.FC<TournamentProviderProps> = ({ children }) => {
 	const { notify } = useNotification();
 	const { intercept } = useWebsocketInterceptor();
 	const socketRef = useRef<WebSocket | null>(null);
 	const [error, setError] = useState<boolean>(false);
-	const [pool, setPool] = useState<Main.ClientPlayer[]>([]);
-	const [invitations, setInvitations] = useState<Main.ClientInvitation[]>([]);
 	const [tournaments, setTournaments] = useState<Main.TournamentOverview[]>([]);
 	const [tournament, setTournament] = useState<Main.ClientTournament>(Main.ClientTournament.instance);
 
-	const online = useCallback(
-		(username: string): 'free' | 'pong' | 'doom' | undefined => {
-			const pooler = pool.find((ele) => ele.username === username);
-			return pooler ? pooler.playerStatus : undefined;
-		},
-		[pool]
-	);
-
-	const pooler = useCallback(
-		(username: string): Main.ClientPlayer | undefined => {
-			return pool.find((ele) => ele.username === username);
-		},
-		[pool]
-	);
-
 	const parse = useCallback(
-		(event: string, message: string, game: 'pong' | 'card of doom') => {
-			console.log(event, message);
+		(event: string, message: string) => {
+			console.log('Tournament socket', event, message);
 			switch (event) {
 				case 'TOURNAMENTS': {
 					const t: Main.Tournaments = Main.Json({ message, target: Main.Tournaments.instance });
 					setTournaments(t.tournaments);
-					break;
-				}
-				case 'TOURNAMENT': {
-					const t: Main.ClientTournament = Main.Json({ message, target: Main.ClientTournament.instance });
-					setTournament(t);
-					break;
-				}
-				case 'POOL': {
-					const p: Main.Pool = Main.Json({ message, target: Main.Pool.instance });
-					setPool(p.pool);
-					break;
-				}
-				case 'INVITATIONS': {
-					const i: Main.Invitations = Main.Json({ message, target: Main.Invitations.instance });
-					setInvitations(i.invitations);
-					break;
-				}
-				case 'PLAY': {
-					const p: Main.Play = Main.Json({ message, target: Main.Play.instance });
-					if (game === 'pong') router.push(`/pong/${p.opponent}/${p.gid}`);
-					else router.push(`/doom/${p.opponent}/${p.gid}`);
 					break;
 				}
 				case 'TOURNAMENT': {
@@ -82,7 +43,7 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 					break;
 			}
 		},
-		[notify, router]
+		[notify]
 	);
 
 	const send = useCallback((message: string) => {
@@ -107,7 +68,7 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 		(e: MessageEvent) => {
 			try {
 				const m: Main.Message = Main.Json({ message: e.data, target: Main.Message.instance });
-				parse(m.message, m.data, m.game);
+				parse(m.message, m.data);
 			} catch (err: unknown) {
 				if (err instanceof Error) notify({ message: err.message, error: true });
 				else notify({ message: 'message error, game socket', error: true });
@@ -143,15 +104,15 @@ const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 	}, [initiateConnection]);
 
 	return (
-		<Main.gameContext.Provider value={{ send, pool, invitations, tournament, tournaments, online, pooler }}>
+		<tournamentContext.Provider value={{ send, tournament, tournaments }}>
 			{error && (
 				<div className="fixed top-0 left-4 right-4 rounded-b-md bg-red-500 px-6 py-1 text-white z-50 font-bold">
 					You have been disconnected, Please refresh the page
 				</div>
 			)}
 			{children}
-		</Main.gameContext.Provider>
+		</tournamentContext.Provider>
 	);
 };
 
-export default GameProvider;
+export default TournamentProvider;

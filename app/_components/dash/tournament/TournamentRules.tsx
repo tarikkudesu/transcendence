@@ -3,7 +3,7 @@ import React from 'react';
 
 const TournamentRules: React.FC = ({}) => {
 	return (
-		<div>
+		<div className="mt-[60px]">
 			<Text
 				mt="4"
 				as="div"

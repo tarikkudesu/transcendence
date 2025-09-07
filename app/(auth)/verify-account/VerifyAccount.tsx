@@ -7,7 +7,7 @@ import client from '@/app/_service/axios/client';
 import { MutateResponse, PongError, VerifyAccountRequest } from '@/app/_service/schema';
 import { Box, Text } from '@radix-ui/themes';
 import { AxiosError, AxiosResponse } from 'axios';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { ResendCode } from '../2fa-authentication/Tfa';
 
@@ -52,9 +52,7 @@ function useVerifyAccountCall() {
 const VerifyAccount: React.FC<unknown> = () => {
 	const router = useRouter();
 	const { notify } = useNotification();
-	const searchParams = useSearchParams();
 	const [code, setCode] = useState<string>('');
-	const [email, setEmail] = useState<string>('');
 	const { verifyaccountcall, data, error, isLoading, reset } = useVerifyAccountCall();
 
 	useEffect(() => {
@@ -68,15 +66,6 @@ const VerifyAccount: React.FC<unknown> = () => {
 			reset();
 		}
 	}, [data, error, notify, reset, router]);
-
-	useEffect(() => {
-		const mail: string | null = searchParams.get('email');
-		if (!mail) {
-			router.push('/login');
-			return;
-		}
-		setEmail(mail);
-	}, [router, searchParams]);
 
 	return (
 		<main>
@@ -105,12 +94,12 @@ const VerifyAccount: React.FC<unknown> = () => {
 						></input>
 					</label>
 					<Box height="20px" />
-					<ResendCode email={email} />
+					<ResendCode />
 					<Box height="20px" />
 					<PongButton
 						loading={isLoading}
-						disabled={!code || !email || code.length !== 6}
-						onClick={() => verifyaccountcall({ email, verificationCode: code })}
+						disabled={!code || code.length !== 6}
+						onClick={() => verifyaccountcall({ verificationCode: code })}
 						className="w-full disabled:bg-dark-600 disabled:text-white bg-accent-300 text-black hover:bg-accent-200"
 					>
 						Sign In

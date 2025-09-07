@@ -29,13 +29,11 @@ const Doom: React.FC = () => {
 			<div className="flex justify-between mb-2">
 				<div
 					className="w-[80px] text-center rounded-sm py-1 text-sm font-bold px-3 bg-white text-black"
-					style={{ opacity: !doom.myturn ? 1 : 0.5 }}
 				>
 					{!doom.myturn ? doom.timer : 10}
 				</div>
 				<div
 					className="w-[80px] text-center rounded-sm py-1 text-sm font-bold px-3 bg-white text-black"
-					style={{ opacity: doom.myturn ? 1 : 0.5 }}
 				>
 					{doom.myturn ? doom.timer : 10}
 				</div>
@@ -45,7 +43,6 @@ const Doom: React.FC = () => {
 				columns="5"
 				rows="5"
 				gap="5"
-				style={{ opacity: won || lost || disconnected ? 0.5 : 1 }}
 				className="bg-dark-950 rounded-md shadow-xl min-h-[700px]"
 			>
 				{doom.cards.map((card, index) => (

@@ -60,13 +60,13 @@ const DoomProvider: React.FC<DoomProviderProps> = ({ children, gid }) => {
 				break;
 			}
 			case 'LOST': {
+				setTimeout(() => setLost(true), 1500)
 				setWaiting(false);
-				setLost(true);
 				break;
 			}
 			case 'WON': {
+				setTimeout(() => setWon(true), 1500)
 				setWaiting(false);
-				setWon(true);
 				break;
 			}
 			default:

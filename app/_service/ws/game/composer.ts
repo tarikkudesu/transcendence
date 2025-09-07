@@ -24,7 +24,9 @@ export function HookMessage(game: 'pong' | 'card of doom', gid: string, up: bool
 export function FlipMessage(game: 'pong' | 'card of doom', gid: string, pos: number): string {
 	return JSON.stringify(new Main.Message({ message: 'FLIP', game, data: new Main.Flip(gid, pos) }));
 }
-export function RegisterMessage(game: 'pong' | 'card of doom', name: string): string {
-	return JSON.stringify(new Main.Message({ message: 'REGISTER', game, data: new Main.Register(name) }));
+export function RegisterMessage(game: 'pong' | 'card of doom', alias: string, creator: string): string {
+	return JSON.stringify(new Main.Message({ message: 'REGISTER', game, data: new Main.Register(alias, creator) }));
 }
-
+export function CreateMessage(game: 'pong' | 'card of doom', name: string, max: number, alias: string): string {
+	return JSON.stringify(new Main.Message({ message: 'CREATE', game, data: new Main.Create(name, max, alias) }));
+}

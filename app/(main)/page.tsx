@@ -17,6 +17,7 @@ import Header from '../_components/mini/Header';
 import TitleSubTitle from '../_components/mini/TitleSubTitle';
 import Username from '../_components/mini/Username';
 import { baseMetadata, mainAppMetadata } from '../_service/consts';
+import UpdateTFA from '../_components/dash/settings/UpdateTFA';
 
 export const metadata: Metadata = {
 	...baseMetadata,
@@ -62,6 +63,7 @@ const Dashboard: React.FC<unknown> = () => {
 						<Tabs.Content value="account">
 							<TitleSubTitle subtitle="This is your personal space to control how your account works. Adjust your security settings and manage who you interact with.">Account Settings</TitleSubTitle>
 							<UpdatePassword />
+							<UpdateTFA />
 							<Blocked />
 						</Tabs.Content>
 					</Box>

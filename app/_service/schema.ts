@@ -5,7 +5,6 @@ export interface SignupRequest {
 }
 export interface VerifyAccountRequest {
 	verificationCode: string;
-	email: string;
 }
 export interface ForgotPasswordRequest {
 	email: string;
@@ -24,12 +23,8 @@ export interface LoginRequest {
 
 export interface Verify2FARequest {
 	verificationCode: string;
-	email: string;
 }
 
-export interface ResendOtpRequest {
-	email: string;
-}
 export interface FriendSearch {
 	avatar_url: string;
 	username: string;
@@ -94,6 +89,7 @@ export interface DoomSummary {
 }
 
 export interface TournamentContestant {
+	alias: string;
 	username: string;
 	avatar_url: string;
 	round_level: number;
@@ -124,6 +120,7 @@ export interface MutateResponse {
 	success: boolean;
 	message: string;
 	email?: string;
+	path?: string;
 }
 
 export interface UpdatePasswordRequest {

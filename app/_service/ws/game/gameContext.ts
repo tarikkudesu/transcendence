@@ -5,6 +5,7 @@ class SocketState {
 	// * Incoming data
 	pool: Main.ClientPlayer[] = [];
 	invitations: Main.ClientInvitation[] = [];
+	tournaments: Main.TournamentOverview[] = [];
 	tournament: Main.ClientTournament = Main.ClientTournament.instance;
 	pooler: (username: string) => Main.ClientPlayer | undefined = (u: string) => {
 		void u;

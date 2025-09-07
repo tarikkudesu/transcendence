@@ -56,14 +56,18 @@ export class ClientInvitation {
 	static instance = new ClientInvitation('', 'pong', 'unsent');
 }
 
-export type TournamentStateTYPE = 'not open' | 'open' | 'playing' | 'finished';
+export type TournamentStateTYPE = 'not registered' | 'open' | 'playing' | 'finished';
+
 export type TournamentMatchTYPE = {
 	player: string;
 	opponent: string;
+	playerAlias: string;
+	opponentAlias: string;
 	finished: boolean;
 };
 export type TournamentPlayerTYPE = {
 	username: string;
+	alias: string;
 	level: number;
 };
 interface ClientTournamentProps {
@@ -73,10 +77,31 @@ interface ClientTournamentProps {
 	round: number;
 	emptySlots: number;
 	registered: boolean;
+	restriction: string;
 	state: TournamentStateTYPE;
 	results: TournamentPlayerTYPE[];
 	nextMatches: TournamentMatchTYPE[];
 }
+
+export class TournamentOverview {
+	name: string;
+	date: string;
+	state: string;
+	creator: string;
+	constructor({ name, date, state, creator }: { name: string; date: string; state: string; creator: string }) {
+		this.name = name;
+		this.date = date;
+		this.state = state;
+		this.creator = creator;
+	}
+	static instance: TournamentOverview = new TournamentOverview({
+		name: '',
+		date: '',
+		state: '',
+		creator: '',
+	});
+}
+
 export class ClientTournament {
 	public gid: string;
 	public date: string;
@@ -84,11 +109,13 @@ export class ClientTournament {
 	public round: number;
 	public emptySlots: number;
 	public registered: boolean;
+	public restriction: string;
 	public state: TournamentStateTYPE;
 	public results: TournamentPlayerTYPE[];
 	public nextMatches: TournamentMatchTYPE[];
-	constructor({ name, date, emptySlots, state, results, registered, nextMatches, round, gid }: ClientTournamentProps) {
+	constructor({ name, date, emptySlots, state, results, registered, nextMatches, round, gid, restriction }: ClientTournamentProps) {
 		this.nextMatches = nextMatches;
+		this.restriction = restriction;
 		this.registered = registered;
 		this.emptySlots = emptySlots;
 		this.results = results;
@@ -102,10 +129,11 @@ export class ClientTournament {
 		name: '',
 		date: '',
 		emptySlots: 0,
+		restriction: '',
 		registered: false,
-		state: 'not open',
-		results: [],
+		state: 'not registered',
 		nextMatches: [],
+		results: [],
 		round: 0,
 		gid: '',
 	});
@@ -117,10 +145,23 @@ export class ClientTournament {
 
 export class Register {
 	alias: string;
-	constructor(alias: string) {
+	creator: string;
+	constructor(alias: string, creator: string) {
+		this.creator = creator;
 		this.alias = alias;
 	}
-	public static instance = new Register('');
+	public static instance = new Register('', '');
+}
+export class Create {
+	alias: string;
+	name: string;
+	max: number;
+	constructor(name: string, max: number, alias: string) {
+		this.alias = alias;
+		this.name = name;
+		this.max = max;
+	}
+	public static instance = new Create('', 0, '');
 }
 
 export class Engage {
@@ -190,6 +231,13 @@ export class Invitations {
 		this.invitations = invitations;
 	}
 	static instance = new Invitations([]);
+}
+export class Tournaments {
+	public tournaments: TournamentOverview[];
+	constructor(tournaments: TournamentOverview[]) {
+		this.tournaments = tournaments;
+	}
+	static instance = new Tournaments([]);
 }
 
 // * Game

@@ -4,10 +4,10 @@ import { PongButton } from '@/app/_components/buttons/ServerButtons';
 import Logo from '@/app/_components/mini/Logo';
 import { useNotification } from '@/app/_components/mini/useNotify';
 import client from '@/app/_service/axios/client';
-import { MutateResponse, PongError, ResendOtpRequest, Verify2FARequest } from '@/app/_service/schema';
+import { MutateResponse, PongError, Verify2FARequest } from '@/app/_service/schema';
 import { Box, Text } from '@radix-ui/themes';
 import { AxiosError, AxiosResponse } from 'axios';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 
 function useResendOtpCall() {
@@ -21,10 +21,10 @@ function useResendOtpCall() {
 		setIsLoading(false);
 	}, []);
 
-	const fetchData = useCallback(async (body: ResendOtpRequest) => {
+	const fetchData = useCallback(async () => {
 		try {
 			setIsLoading(true);
-			const response: AxiosResponse<MutateResponse> = await client.post('/auth/resend-otp', body);
+			const response: AxiosResponse<MutateResponse> = await client.post('/auth/resend-otp', {});
 			setData(response.data);
 		} catch (err) {
 			if (err instanceof AxiosError && err.response) {
@@ -86,7 +86,7 @@ function useTwofaCall() {
 	return { isLoading, error, data, twofacall: fetchData, reset };
 }
 
-export const ResendCode: React.FC<{ email: string }> = ({ email }) => {
+export const ResendCode: React.FC = () => {
 	const { notify } = useNotification();
 	const { resendotp, data, error, isLoading, reset } = useResendOtpCall();
 
@@ -102,7 +102,7 @@ export const ResendCode: React.FC<{ email: string }> = ({ email }) => {
 	}, [data, error, notify, reset]);
 
 	return (
-		<button disabled={isLoading} onClick={() => resendotp({ email })} className="text-sm text-dark-200 hover:text-accent-300">
+		<button disabled={isLoading} onClick={() => resendotp()} className="text-sm text-dark-200 hover:text-accent-300">
 			resend code?
 		</button>
 	);
@@ -111,9 +111,7 @@ export const ResendCode: React.FC<{ email: string }> = ({ email }) => {
 const Tfa: React.FC<unknown> = () => {
 	const router = useRouter();
 	const { notify } = useNotification();
-	const searchParams = useSearchParams();
 	const [code, setCode] = useState<string>('');
-	const [email, setEmail] = useState<string>('');
 	const { twofacall, data, error, isLoading, reset } = useTwofaCall();
 
 	useEffect(() => {
@@ -127,15 +125,6 @@ const Tfa: React.FC<unknown> = () => {
 			reset();
 		}
 	}, [data, error, notify, reset, router]);
-
-	useEffect(() => {
-		const mail: string | null = searchParams.get('email');
-		if (!mail) {
-			router.push('/login');
-			return;
-		}
-		setEmail(mail);
-	}, [router, searchParams]);
 
 	return (
 		<main>
@@ -164,12 +153,12 @@ const Tfa: React.FC<unknown> = () => {
 						></input>
 					</label>
 					<Box height="20px" />
-					<ResendCode email={email} />
+					<ResendCode />
 					<Box height="20px" />
 					<PongButton
 						loading={isLoading}
-						disabled={!code || !email || code.length !== 6}
-						onClick={() => twofacall({ email, verificationCode: code })}
+						disabled={!code || code.length !== 6}
+						onClick={() => twofacall({ verificationCode: code })}
 						className="w-full disabled:bg-dark-600 disabled:text-white bg-accent-300 text-black hover:bg-accent-200"
 					>
 						Sign In

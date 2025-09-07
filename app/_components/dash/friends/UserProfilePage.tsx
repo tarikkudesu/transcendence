@@ -15,52 +15,64 @@ import { PongButton } from '../../buttons/ServerButtons';
 import { Spinner } from '../../mini/Loading';
 import SafeImage from '../../mini/SafeImage';
 
-const AddFriend: React.FC<{ username: string }> = ({ username }) => {
+const AddFriend: React.FC<{ username: string; refetch: () => void }> = ({ username, refetch }) => {
 	const { isLoading, addCall } = useAddFriendCall();
 
 	return (
 		<PongButton
 			loading={isLoading}
-			onClick={() => addCall({ to: username })}
+			onClick={async () => {
+				await addCall({ to: username });
+				refetch();
+			}}
 			className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black"
 		>
 			<SvgAddFriend size={24} />
 		</PongButton>
 	);
 };
-const AcceptFriend: React.FC<{ username: string }> = ({ username }) => {
+const AcceptFriend: React.FC<{ username: string; refetch: () => void }> = ({ username, refetch }) => {
 	const { isLoading, acceptCall } = useAcceptFriendCall();
 
 	return (
 		<PongButton
 			loading={isLoading}
-			onClick={() => acceptCall({ to: username })}
+			onClick={async () => {
+				await acceptCall({ to: username });
+				refetch();
+			}}
 			className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black"
 		>
 			Accept
 		</PongButton>
 	);
 };
-const DeclineFriend: React.FC<{ username: string }> = ({ username }) => {
+const DeclineFriend: React.FC<{ username: string; refetch: () => void }> = ({ username, refetch }) => {
 	const { isLoading, declineCall } = useDeclineFriendCall();
 
 	return (
 		<PongButton
 			loading={isLoading}
-			onClick={() => declineCall({ to: username })}
+			onClick={async () => {
+				await declineCall({ to: username });
+				refetch();
+			}}
 			className="bg-dark-700 w-full hover:bg-accent-300 hover:text-black"
 		>
 			Remove
 		</PongButton>
 	);
 };
-const BlockFriend: React.FC<{ username: string }> = ({ username }) => {
+const BlockFriend: React.FC<{ username: string; refetch: () => void }> = ({ username, refetch }) => {
 	const { isLoading, blockCall } = useBlockFriendCall();
 
 	return (
 		<PongButton
 			loading={isLoading}
-			onClick={() => blockCall({ to: username })}
+			onClick={async () => {
+				await blockCall({ to: username });
+				refetch();
+			}}
 			className="bg-dark-700 w-full hover:bg-red-600 hover:text-white"
 		>
 			<SvgBan size={24} />
@@ -71,7 +83,7 @@ const BlockFriend: React.FC<{ username: string }> = ({ username }) => {
 const UserProfilePage: React.FC<{ username: string }> = ({ username }) => {
 	const router = useRouter();
 	const { pooler: getPooler, send } = useGameSocket();
-	const { request: getRequest, friend: getFriend } = useFriends();
+	const { request: getRequest, friend: getFriend, refetch } = useFriends();
 
 	const fetchData = (): Promise<UserProfile> => client.get(`/users/${username}`).then((response) => response.data);
 	const {
@@ -79,7 +91,7 @@ const UserProfilePage: React.FC<{ username: string }> = ({ username }) => {
 		error,
 		isPending,
 	} = useQuery({
-		queryKey: [`users${username}`],
+		queryKey: ['users', username],
 		queryFn: fetchData,
 	});
 
@@ -100,7 +112,9 @@ const UserProfilePage: React.FC<{ username: string }> = ({ username }) => {
 						src={user.avatar}
 						alt="player card"
 						fallbackSrc="/Logo.png"
-						className={`rounded-full cursor-pointer border-4 aspect-square object-cover ${friend && pooler ? 'border-accent-300' : 'border-dark-400'}`}
+						className={`rounded-full cursor-pointer border-4 aspect-square object-cover ${
+							friend && pooler ? 'border-accent-300' : 'border-dark-400'
+						}`}
 					></SafeImage>
 					<Text as="div" size="7" weight="bold" align="center" className="mt-4 text-white font-bold">
 						{username}
@@ -128,11 +142,11 @@ const UserProfilePage: React.FC<{ username: string }> = ({ username }) => {
 							<Callout.Text>This Profile is restricted</Callout.Text>
 						</Callout.Root>
 					)}
-					{!friend && <AddFriend username={username} />}
+					{!friend && <AddFriend username={username} refetch={refetch} />}
 					{request && request.stat === 'pending' && (
 						<>
-							<AcceptFriend username={username} />
-							<DeclineFriend username={username} />
+							<AcceptFriend username={username} refetch={refetch} />
+							<DeclineFriend username={username} refetch={refetch} />
 						</>
 					)}
 					{friend && friend.stat === 'accepted' && (
@@ -143,7 +157,7 @@ const UserProfilePage: React.FC<{ username: string }> = ({ username }) => {
 							>
 								<SvgChat size={24} />
 							</PongButton>
-							<BlockFriend username={username} />
+							<BlockFriend username={username} refetch={refetch} />
 						</>
 					)}
 					{friend && friend.stat === 'accepted' && pooler && (
@@ -177,7 +191,7 @@ const UserProfilePage: React.FC<{ username: string }> = ({ username }) => {
 				</div>
 			</>
 		);
-	}, [error, friend, isPending, pooler, request, router, send, user, username]);
+	}, [error, friend, isPending, pooler, refetch, request, router, send, user, username]);
 
 	return <div className="bg-dark-950 rounded-md shadow-xl my-8">{Node()}</div>;
 };

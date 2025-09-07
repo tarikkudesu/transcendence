@@ -12,6 +12,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 function useSignupCall() {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [error, setError] = useState<PongError | null>(null);
@@ -63,7 +65,7 @@ const SignUp: React.FC<unknown> = () => {
 		if (data) {
 			notify({ message: data.message, success: true });
 			reset();
-			router.push(`verify-account?email=${email ?? ''}`);
+			router.push("verify-account");
 		}
 		if (error) {
 			notify({ message: error.message, error: true });
@@ -155,7 +157,7 @@ const SignUp: React.FC<unknown> = () => {
 						<Box height="2px" className="bg-dark-600 w-full"></Box>
 					</Flex>
 					<Box height="20px" />
-					<Link href="http://localhost/api/v1/auth/google">
+					<Link href={`${API_BASE}/auth/google`}>
 						<PongButton className="w-full text-white hover:text-white bg-transparent hover:bg-accent-300 border border-accent-300">
 							Sign up with Google
 						</PongButton>

@@ -65,7 +65,7 @@ const AddProfilePicture: React.FC<unknown> = () => {
 					<Box height="12px" />
 					<div
 						onClick={triggerFileSelect}
-						className="flex justify-center items-center bg-dark-600 rounded-full w-[120px] aspect-square mx-auto"
+						className="flex justify-center items-center bg-dark-600 rounded-full w-[120px] aspect-square mx-auto cursor-pointer"
 					>
 						<SafeImage
 							priority

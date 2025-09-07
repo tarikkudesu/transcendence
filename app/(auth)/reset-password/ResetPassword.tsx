@@ -69,7 +69,7 @@ const ResetPassword: React.FC<unknown> = () => {
 		if (data) {
 			notify({ message: data.message, success: true });
 			reset();
-			router.push('/main');
+			router.push('/');
 		}
 		if (error) {
 			notify({ message: error.message, error: true });
@@ -136,9 +136,7 @@ const ResetPassword: React.FC<unknown> = () => {
 					</PongButton>
 					<Box height="20px" />
 					<Flex justify="between" align="center">
-						<Link href="/forgot-password" className="text-sm text-dark-200 hover:text-accent-300">
-							didn&apos;t receive the an email?
-						</Link>
+						<div className=""></div>
 						<label className="flex items-center gap-2 cursor-pointer select-none">
 							<input type="checkbox" checked={type === 'text'} onChange={switchtype} className="peer hidden" />
 							<span className="text-sm text-dark-200">show password</span>
