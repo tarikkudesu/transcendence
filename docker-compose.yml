@@ -1,0 +1,192 @@
+services:
+  rabbitmq:
+    image: rabbitmq
+    container_name: rabbitmq
+    networks:
+      - trance
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  prometheus:
+    build: prometheus
+    image: prometheus:1.0
+    container_name: prometheus
+    mem_limit: 400m
+    env_file: 
+      - ./prometheus/.env
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/alert.rules.yml:/etc/prometheus/alert.rules.yml
+    networks:
+      - trance
+
+  alertmanager:
+    build: alertmanager
+    image: alertmanager:1.0
+    container_name: alertmanager
+    mem_limit: 300m
+    networks:
+      - trance
+    env_file:
+      - ./alertmanager/.env
+    depends_on:
+      - prometheus
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    mem_limit: 400m
+    volumes:
+      - ./grafana:/var/lib/grafana
+    networks:
+      - trance
+    env_file:
+      - ./grafana/.env
+    depends_on:
+      - prometheus
+
+  docker-stats-exporter:
+    image: wywywywy/docker_stats_exporter
+    container_name: docker-stats-exporter
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - trance
+
+  redis:
+    image: redis
+    container_name: redis
+    networks:
+      - trance
+
+  nginx:
+    build: nginx
+    image: nginx:1.0
+    container_name: nginx
+    networks:
+      - trance
+    ports:
+      - "443:443"
+      - "3000:3000"
+      - "9090:9090"
+      - "9093:9093"
+    env_file:
+      - ./nginx/.env
+    volumes:
+      - ./nginx/config/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      gateway:
+        condition: service_started
+
+  front:
+    build: ui
+    image: ui:1.0
+    container_name: front
+    networks:
+      - trance
+    env_file:
+      - ./ui/app/.env
+    depends_on:
+      - gateway
+
+  gateway:
+    build: gateway
+    image: gateway:1.0
+    container_name: gateway
+    networks:
+      - trance
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    env_file:
+      - ./gateway/app/.env
+
+  auth:
+    build: auth
+    image: auth:1.0
+    container_name: auth
+    networks:
+      - trance
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    env_file:
+      - ./auth/app/.env
+
+  user:
+    build: user
+    image: user:1.0
+    container_name: user
+    networks:
+      - trance
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    env_file:
+      - ./user/app/.env
+    volumes:
+      - ./user/app/db:/app/db
+
+  friend:
+    build: friend
+    image: friend:1.0
+    container_name: friend
+    networks:
+      - trance
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    env_file:
+      - ./friend/app/.env
+    volumes:
+      - ./friend/app/db:/app/db
+
+  chat:
+    build: chat
+    image: chat:1.0
+    container_name: chat
+    networks:
+      - trance
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    env_file:
+      - ./chat/app/.env
+    volumes:
+      - ./chat/app/db:/app/db
+
+  game:
+    build: game
+    image: game:1.0
+    container_name: game
+    networks:
+      - trance
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    env_file:
+      - ./game/app/.env
+    volumes:
+      - ./game/app/db:/app/db
+
+  notification:
+    build: notification
+    image: notification:1.0
+    container_name: notification
+    networks:
+      - trance
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    env_file:
+      - ./notification/app/.env
+    volumes:
+      - ./notification/app/db:/app/db
+
+networks:
+  trance:
+    name: trance
+    driver: bridge

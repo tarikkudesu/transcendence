@@ -1,5 +1,27 @@
 # transcendence
 
+## **Project UI**
+
+### Home
+
+![Home](./assets/home.png)
+
+### Playground
+
+![Playground](./assets/playground.png)
+
+### Game
+
+![Game](./assets/game.png)
+
+### Chat
+
+![Chat](./assets/chat.png)
+
+### Tournament
+
+![Tournament](./assets/tournament.png)
+
 ## **Minimal technical requirement + 25%**
 
 - The frontend should be developed using `Typescript` as base code

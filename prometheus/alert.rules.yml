@@ -1,0 +1,51 @@
+groups:
+    - name: ServiceAvailability
+      interval: 1m
+      rules:
+          - alert: FastifyServiceDown
+            expr: up{job="fastify-services"} == 0
+            for: 1m
+            labels:
+                severity: critical
+            annotations:
+                summary: 'Fastify service {{ $labels.instance }} is down'
+                description: 'Prometheus could not scrape the metrics endpoint of {{ $labels.instance }} for at least 1 minute.'
+
+          - alert: NginxContainerDown
+            expr: absent(dockerstats_cpu_usage_ratio{name="nginx"})
+            for: 1m
+            labels:
+                severity: critical
+            annotations:
+                summary: 'NGINX container is not reporting metrics'
+                description: 'Prometheus is not receiving CPU usage metrics for NGINX — container might be stopped.'
+
+          - alert: RabbitMQContainerDown
+            expr: absent(dockerstats_cpu_usage_ratio{name="rabbitmq"})
+            for: 1m
+            labels:
+                severity: critical
+            annotations:
+                summary: 'RabbitMQ container is not reporting metrics'
+                description: 'RabbitMQ container might be stopped or unresponsive.'
+
+          - alert: RedisContainerDown
+            expr: absent(dockerstats_cpu_usage_ratio{name="redis"})
+            for: 1m
+            labels:
+                severity: critical
+            annotations:
+                summary: 'Redis container is not reporting metrics'
+                description: 'Redis container might be stopped or unresponsive.'
+
+    - name: ContainerMemoryUsage
+      interval: 1m
+      rules:
+          - alert: HighContainerMemoryUsage
+            expr: (dockerstats_memory_usage_ratio / dockerstats_memory_limit_bytes) * 100 > 50
+            for: 1m
+            labels:
+                severity: critical
+                container: '{{ $labels.name }}'
+            annotations:
+                summary: 'Container {{ $labels.name }} is using more than 50% of its memory limit (current: {{ $value }}%)'

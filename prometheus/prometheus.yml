@@ -1,0 +1,19 @@
+global:
+  scrape_interval: 15s
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ['alertmanager:9093']
+
+rule_files: 
+  - 'alert.rules.yml'
+
+scrape_configs:
+  - job_name: 'fastify-services'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['gateway:4000', 'auth:3001', 'game:3004', 'notification:3005', 'user:3002', 'chat:3003']
+  - job_name: "docker-stats"
+    static_configs:
+      - targets: ["docker-stats-exporter:9487"]

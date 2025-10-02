@@ -1,0 +1,29 @@
+{
+	"name": "chat",
+	"type": "module",
+	"main": "index.js",
+	"version": "1.0.0",
+	"scripts": {
+		"dev": "nodemon",
+		"start": "node index",
+		"lint": "eslint . --ext .js"
+	},
+	"author": "",
+	"keywords": [],
+	"license": "ISC",
+	"description": "",
+	"dependencies": {
+		"fastify": "^5.4.0",
+		"amqplib": "^0.10.8",
+		"@fastify/cors": "^11.1.0",
+		"fastify-plugin": "^5.0.1",
+		"better-sqlite3": "^12.2.0",
+		"fastify-metrics": "^12.1.0",
+		"@fastify/websocket": "^11.2.0"
+	},
+	"devDependencies": {
+		"eslint": "^9.34.0",
+		"nodemon": "^3.1.10",
+		"fastify-print-routes": "^4.1.0"
+	}
+}

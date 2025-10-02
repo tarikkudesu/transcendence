@@ -1,0 +1,13 @@
+export const friendSql = `CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE NOT NULL,
+    avatar_url TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS friends (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    u_from TEXT NOT NULL,
+    u_to TEXT NOT NULL,
+    stat TEXT NOT NULL
+);
+`
