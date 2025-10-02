@@ -40,11 +40,11 @@
 
 - **Major module**: Use a framework to build the backend.
 - **Minor module**: Use a database for the backend.
+- **Minor module**: Use a framework or a toolkit to build the frontend.
 - **Major module**: Standard user management, authentication, users across tournaments.
 - **Major module**: Designing the backend as microservices.
 - **Major module**: Implement Two-Factor Authentication (2FA) and JWT.
 - **Major module**: Implementing a remote authentication.
-- **Minor module**: Support on all devices.
 - **Major module**: Live chat.
 
 ## Bonus + 25%
@@ -57,7 +57,7 @@
 
 - **Web**
     - **Major module**: Use a framework to build the backend. ✅
-    - **Minor module**: Use a framework or a toolkit to build the frontend.
+    - **Minor module**: Use a framework or a toolkit to build the frontend. ✅
     - **Minor module**: Use a database for the backend. ✅
     - **Major module**: Store the score of a tournament in the Blockchain.
 - **User Management**
@@ -83,7 +83,7 @@
 - **Graphics**
     - **Major module**: Use advanced 3D techniques.
 - **Accessibility**
-    - **Minor module**: Support on all devices. ✅
+    - **Minor module**: Support on all devices.
     - **Minor module**: Expanding browser compatibility.
     - **Minor module**: Supports multiple languages.
     - **Minor module**: Add accessibility features for visually impaired users.
